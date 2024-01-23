@@ -1,5 +1,8 @@
 package org.complete.domain.member.oauth.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum RoleType {
 
     USER("ROLE_USER", "일반 사용자 권한"),
