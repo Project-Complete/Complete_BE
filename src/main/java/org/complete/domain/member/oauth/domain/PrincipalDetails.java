@@ -1,4 +1,4 @@
-package org.complete.domain.member.oauth.user;
+package org.complete.domain.member.oauth.domain;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

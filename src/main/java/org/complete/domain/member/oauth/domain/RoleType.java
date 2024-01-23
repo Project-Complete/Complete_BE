@@ -1,4 +1,4 @@
-package org.complete.domain.member.oauth.user;
+package org.complete.domain.member.oauth.domain;
 
 public enum RoleType {
 
