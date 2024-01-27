@@ -1,10 +1,10 @@
-package org.complete.domain;
+package org.complete.challang;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DomainApplicationTests {
+class ChallangApplicationTests {
 
     @Test
     void contextLoads() {
