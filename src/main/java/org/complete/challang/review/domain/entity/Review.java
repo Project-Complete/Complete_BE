@@ -39,4 +39,8 @@ public class Review extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewFlavor> reviewFlavors = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewFood> reviewFoods = new ArrayList<>();
 }
