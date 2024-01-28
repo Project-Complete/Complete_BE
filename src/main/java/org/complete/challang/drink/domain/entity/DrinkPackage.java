@@ -20,5 +20,5 @@ public class DrinkPackage extends BaseEntity {
     private Drink drink;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Package Package;
+    private Package packages;
 }

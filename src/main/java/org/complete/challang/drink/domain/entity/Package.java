@@ -21,6 +21,6 @@ public class Package extends BaseEntity {
     private int volume;
 
     @Builder.Default
-    @OneToMany(mappedBy = "package", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "packages", cascade = CascadeType.ALL)
     private List<DrinkPackage> drinkPackages = new ArrayList<>();
 }
