@@ -1,13 +1,13 @@
-package org.complete.domain;
+package org.complete.challang;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DomainApplication {
+public class ChallangApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DomainApplication.class, args);
+        SpringApplication.run(ChallangApplication.class, args);
     }
 
 }
