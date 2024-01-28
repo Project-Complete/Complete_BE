@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.complete.challang.common.domain.entity.BaseEntity;
 import org.complete.challang.drink.domain.entity.Drink;
 
 @Getter
@@ -14,7 +15,7 @@ import org.complete.challang.drink.domain.entity.Drink;
 @AllArgsConstructor
 @AttributeOverride(name = "id", column = @Column(name = "drink_bookmark_id"))
 @Entity
-public class DrinkBookmark {
+public class DrinkBookmark extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Drink drink;
