@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.complete.challang.common.domain.entity.BaseEntity;
 
 @Getter
 @SuperBuilder
@@ -15,5 +16,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @AttributeOverride(name = "id", column = @Column(name = "drink_like_id"))
 @Entity
-public class DrinkLike {
+public class DrinkLike extends BaseEntity {
 }
