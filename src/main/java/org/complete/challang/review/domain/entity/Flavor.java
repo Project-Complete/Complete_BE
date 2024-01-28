@@ -1,14 +1,12 @@
 package org.complete.challang.review.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.complete.challang.common.domain.entity.BaseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @SuperBuilder
@@ -19,4 +17,8 @@ import org.complete.challang.common.domain.entity.BaseEntity;
 public class Flavor extends BaseEntity {
 
     private String flavor;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "flavor", cascade = CascadeType.ALL)
+    private List<ReviewFlavor> reviewFlavors = new ArrayList<>();
 }

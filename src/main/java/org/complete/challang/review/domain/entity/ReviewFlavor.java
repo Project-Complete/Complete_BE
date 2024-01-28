@@ -1,8 +1,6 @@
 package org.complete.challang.review.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,4 +15,10 @@ import org.complete.challang.common.domain.entity.BaseEntity;
 @AttributeOverride(name = "id", column = @Column(name = "review_flavor_id"))
 @Entity
 public class ReviewFlavor extends BaseEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Flavor flavor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Review review;
 }

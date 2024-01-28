@@ -1,14 +1,14 @@
 package org.complete.challang.review.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.common.domain.entity.BaseEntity;
 import org.complete.challang.drink.domain.entity.Drink;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @SuperBuilder
@@ -35,4 +35,8 @@ public class Review extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewFlavor> reviewFlavors = new ArrayList<>();
 }
