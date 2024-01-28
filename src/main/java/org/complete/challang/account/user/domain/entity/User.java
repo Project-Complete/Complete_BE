@@ -1,13 +1,11 @@
 package org.complete.challang.account.user.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.complete.challang.common.domain.entity.BaseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,6 +25,11 @@ public class User extends BaseEntity {
 
     private String profileImageUrl;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<DrinkBookmark> drinkBookmark;
+    private List<DrinkBookmark> drinkBookmarks = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<DrinkLike> drinkLikes = new ArrayList<>();
 }
