@@ -1,14 +1,15 @@
 package org.complete.challang.drink.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.complete.challang.account.user.domain.entity.DrinkBookmark;
 import org.complete.challang.common.domain.entity.BaseEntity;
+
+import java.util.List;
 
 @Getter
 @SuperBuilder
@@ -51,4 +52,7 @@ public class Drink extends BaseEntity {
     private Long businessSum;
 
     private Long aloneSum;
+
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    private List<DrinkBookmark> drinkBookmarks;
 }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.complete.challang.common.domain.entity.BaseEntity;
 
+import java.util.List;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,4 +26,7 @@ public class User extends BaseEntity {
     private String email;
 
     private String profileImageUrl;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<DrinkBookmark> drinkBookmark;
 }

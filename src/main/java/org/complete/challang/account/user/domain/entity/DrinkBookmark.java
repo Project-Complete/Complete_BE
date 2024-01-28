@@ -1,13 +1,12 @@
 package org.complete.challang.account.user.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.complete.challang.drink.domain.entity.Drink;
 
 @Getter
 @SuperBuilder
@@ -16,4 +15,10 @@ import lombok.experimental.SuperBuilder;
 @AttributeOverride(name = "id", column = @Column(name = "drink_bookmark_id"))
 @Entity
 public class DrinkBookmark {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Drink drink;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 }
