@@ -59,6 +59,10 @@ public class Drink extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    private List<DrinkFood> drinkFoods = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
     private List<DrinkLike> drinkLikes = new ArrayList<>();
 
     @Builder.Default
