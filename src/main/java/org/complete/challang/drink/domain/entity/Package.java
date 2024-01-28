@@ -1,14 +1,12 @@
 package org.complete.challang.drink.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.complete.challang.common.domain.entity.BaseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @SuperBuilder
@@ -21,4 +19,8 @@ public class Package extends BaseEntity {
     private String type;
 
     private int volume;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "package", cascade = CascadeType.ALL)
+    private List<DrinkPackage> drinkPackages = new ArrayList<>();
 }

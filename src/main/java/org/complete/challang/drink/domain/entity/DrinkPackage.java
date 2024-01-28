@@ -1,8 +1,6 @@
 package org.complete.challang.drink.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,4 +15,10 @@ import org.complete.challang.common.domain.entity.BaseEntity;
 @AttributeOverride(name = "id", column = @Column(name = "drink_package_id"))
 @Entity
 public class DrinkPackage extends BaseEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Drink drink;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Package Package;
 }
