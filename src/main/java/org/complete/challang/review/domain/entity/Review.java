@@ -29,4 +29,10 @@ public class Review extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Drink drink;
+
+    @OneToOne(orphanRemoval = true)
+    private Taste taste;
+
+    @OneToOne(orphanRemoval = true)
+    private Situation situation;
 }
