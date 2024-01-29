@@ -33,25 +33,14 @@ public class Drink extends BaseEntity {
 
     private float reviewSumRating;
 
-    private float sweetSumRating;
+    @Embedded
+    private FoodStatistic foodStatistic;
 
-    private float sourSumRating;
+    @Embedded
+    private SituationStatistic situationStatistic;
 
-    private float bitterSumRating;
-
-    private float bodySumRating;
-
-    private float refreshSumRating;
-
-    private Long adultSum;
-
-    private Long partnerSum;
-
-    private Long friendSum;
-
-    private Long businessSum;
-
-    private Long aloneSum;
+    @Embedded
+    private TasteStatistic tasteStatistic;
 
     @Builder.Default
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
