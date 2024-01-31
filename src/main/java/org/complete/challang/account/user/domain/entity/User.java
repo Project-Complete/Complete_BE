@@ -26,6 +26,8 @@ public class User extends BaseEntity {
 
     private String profileImageUrl;
 
+    private RoleType roleType;
+
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DrinkBookmark> drinkBookmarks = new ArrayList<>();
