@@ -20,6 +20,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
+    private String socialId;
+
     private String nickname;
 
     private String email;

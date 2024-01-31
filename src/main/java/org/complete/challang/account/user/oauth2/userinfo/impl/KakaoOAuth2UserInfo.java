@@ -11,7 +11,7 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
     }
 
     @Override
-    public String getId() {
+    public String getSocialId() {
         return attributes.get("id").toString();
     }
 
@@ -36,6 +36,7 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
         return (String) properties.get("email");
     }
+
     @Override
     public String getImageUrl() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("properties");
