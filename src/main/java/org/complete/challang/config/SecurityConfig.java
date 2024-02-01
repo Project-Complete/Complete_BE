@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -29,11 +29,6 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers("/assets/**", "/h2-console/**", "/h2/**", "/favicon.ico");
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.httpBasic(HttpBasicConfigurer::disable)
                 .cors(Customizer.withDefaults())
@@ -41,9 +36,8 @@ public class SecurityConfig {
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(FormLoginConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                                .requestMatchers("/assets/**", "/h2-console/**", "/h2/**", "/favicon.ico").permitAll()
-                                .anyRequest().permitAll()
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(configurer ->
                                 configurer
