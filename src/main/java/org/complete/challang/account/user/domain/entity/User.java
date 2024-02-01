@@ -3,7 +3,7 @@ package org.complete.challang.account.user.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.complete.challang.account.user.oauth2.CustomOAuth2User;
+import org.complete.challang.account.oauth2.CustomOAuth2User;
 import org.complete.challang.common.domain.entity.BaseEntity;
 import org.complete.challang.review.domain.entity.Review;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,6 +34,8 @@ public class User extends BaseEntity {
 
     private RoleType roleType;
 
+    private String refreshToken;
+
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DrinkBookmark> drinkBookmarks = new ArrayList<>();
@@ -46,7 +48,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
-    public CustomOAuth2User toOAuth2User(Map<String, Object> attributes, String nameAttributeKey){
+    public CustomOAuth2User toOAuth2User(Map<String, Object> attributes, String nameAttributeKey) {
         return CustomOAuth2User.builder()
                 .email(this.email)
                 .roleType(this.roleType)
@@ -54,5 +56,9 @@ public class User extends BaseEntity {
                 .attributes(attributes)
                 .nameAttributeKey(nameAttributeKey)
                 .build();
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
