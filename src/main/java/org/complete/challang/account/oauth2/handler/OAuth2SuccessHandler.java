@@ -28,7 +28,7 @@ import java.io.IOException;
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private String frontRedirectUri;
+    private String frontRedirectUri = "/";
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
@@ -48,7 +48,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 loginSuccess(response, user);
             }
             response.setStatus(HttpServletResponse.SC_OK);
-            getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+//            getRedirectStrategy().sendRedirect(request, response, redirectUrl);
         } catch (Exception e) {
             throw e;
         }
