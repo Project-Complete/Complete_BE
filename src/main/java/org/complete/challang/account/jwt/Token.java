@@ -3,7 +3,6 @@ package org.complete.challang.account.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
@@ -13,9 +12,6 @@ import java.util.stream.Collectors;
 
 public class Token {
 
-    @Value("${jwt.secret}")
-    private String secretKey;
-
     @Getter
     private final String token;
 
@@ -23,14 +19,15 @@ public class Token {
 
     public Token(String subject,
                  Claims claims,
-                 Long tokenExpirationDate) {
-        this.key = getKey();
+                 Long tokenExpirationDate,
+                 String secretKey) {
+        this.key = getKey(secretKey);
         token = generateKey(subject, claims, tokenExpirationDate, key);
     }
 
-    public Token(String token) {
+    public Token(String token, String secretKey) {
         this.token = token;
-        this.key = getKey();
+        this.key = getKey(secretKey);
     }
 
     public String generateKey(String subject,
@@ -87,7 +84,7 @@ public class Token {
                 .getBody();
     }
 
-    private SecretKey getKey() {
+    private SecretKey getKey(String secretKey) {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 }
