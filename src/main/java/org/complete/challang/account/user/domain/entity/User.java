@@ -32,6 +32,7 @@ public class User extends BaseEntity {
 
     private String profileImageUrl;
 
+    @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
     private String refreshToken;
