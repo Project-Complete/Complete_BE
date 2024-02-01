@@ -1,9 +1,9 @@
-package org.complete.challang.account.user.oauth2.userinfo;
+package org.complete.challang.account.oauth2.userinfo;
 
+import org.complete.challang.account.oauth2.userinfo.impl.NaverOAuth2UserInfo;
 import org.complete.challang.account.user.domain.entity.SocialType;
-import org.complete.challang.account.user.oauth2.userinfo.impl.GoogleOAuth2UserInfo;
-import org.complete.challang.account.user.oauth2.userinfo.impl.KakaoOAuth2UserInfo;
-import org.complete.challang.account.user.oauth2.userinfo.impl.NaverOAuth2UserInfo;
+import org.complete.challang.account.oauth2.userinfo.impl.GoogleOAuth2UserInfo;
+import org.complete.challang.account.oauth2.userinfo.impl.KakaoOAuth2UserInfo;
 
 import java.util.Map;
 

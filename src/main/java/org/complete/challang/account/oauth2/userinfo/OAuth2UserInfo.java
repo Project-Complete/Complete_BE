@@ -1,5 +1,6 @@
-package org.complete.challang.account.user.oauth2.userinfo;
+package org.complete.challang.account.oauth2.userinfo;
 
+import org.complete.challang.account.user.domain.entity.RoleType;
 import org.complete.challang.account.user.domain.entity.SocialType;
 import org.complete.challang.account.user.domain.entity.User;
 
@@ -31,6 +32,7 @@ public abstract class OAuth2UserInfo {
                 .email(getEmail())
                 .profileImageUrl(getImageUrl())
                 .socialType(socialType)
+                .roleType(RoleType.GUEST)
                 .build();
     }
 }

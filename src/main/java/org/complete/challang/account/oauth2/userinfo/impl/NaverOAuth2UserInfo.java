@@ -1,6 +1,6 @@
-package org.complete.challang.account.user.oauth2.userinfo.impl;
+package org.complete.challang.account.oauth2.userinfo.impl;
 
-import org.complete.challang.account.user.oauth2.userinfo.OAuth2UserInfo;
+import org.complete.challang.account.oauth2.userinfo.OAuth2UserInfo;
 
 import java.util.Map;
 
