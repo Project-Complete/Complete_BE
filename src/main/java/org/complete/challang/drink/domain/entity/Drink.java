@@ -25,13 +25,13 @@ public class Drink extends BaseEntity {
 
     private String description;
 
-    private float abv;
+    private double abv;
 
     private String imageUrl;
 
     private long reviewCount;
 
-    private float reviewSumRating;
+    private double reviewSumRating;
 
     @Embedded
     private FoodStatistic foodStatistic;
