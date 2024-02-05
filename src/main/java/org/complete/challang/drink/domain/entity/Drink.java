@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.complete.challang.account.user.domain.entity.DrinkBookmark;
 import org.complete.challang.account.user.domain.entity.DrinkLike;
 import org.complete.challang.common.domain.entity.BaseEntity;
+import org.complete.challang.drink.repository.DrinkFindResponse;
 import org.complete.challang.review.domain.entity.Review;
 
 import java.util.ArrayList;
@@ -65,4 +66,22 @@ public class Drink extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
+
+    public DrinkFindResponse toDto() {
+        return DrinkFindResponse.builder()
+                .drinkId(getId())
+                .name(name)
+                .summary(summary)
+                .description(description)
+                .abv(abv)
+                .reviewSumRating(reviewSumRating)
+                .foodStatistic(foodStatistic)
+                .situationStatistic(situationStatistic)
+                .tasteStatistic(tasteStatistic)
+                .manufacturers(new ArrayList<>())
+                .tags(new ArrayList<>())
+                .foods(new ArrayList<>())
+                .packages(new ArrayList<>())
+                .build();
+    }
 }
