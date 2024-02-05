@@ -3,6 +3,7 @@ package org.complete.challang.drink.service;
 import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.common.exception.ErrorCode;
 import org.complete.challang.drink.domain.entity.Drink;
+import org.complete.challang.drink.repository.DrinkFindResponse;
 import org.complete.challang.drink.repository.DrinkRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,11 +48,11 @@ public class DrinkServiceTest {
         doReturn(Optional.of(drink())).when(drinkRepository).findById(anyLong());
 
         //when
-        final Drink result = drinkService.findDetailDrink(anyLong());
+        final DrinkFindResponse drinkFindResponse = drinkService.findDetailDrink(anyLong());
 
         //then
-        assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getName()).isEqualTo("트롤브루 레몬 라들러");
+        assertThat(drinkFindResponse.getDrinkId()).isEqualTo(1L);
+        assertThat(drinkFindResponse.getName()).isEqualTo("트롤브루 레몬 라들러");
     }
 
     private Drink drink() {
