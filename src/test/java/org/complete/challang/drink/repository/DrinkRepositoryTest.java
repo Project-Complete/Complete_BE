@@ -15,7 +15,7 @@ public class DrinkRepositoryTest {
 
     @Test
     @DisplayName("Drink Repository가 존재")
-    public void existDrinkRepository(){
+    public void existDrinkRepository() {
         assertThat(drinkRepository).isNotNull();
     }
 }
