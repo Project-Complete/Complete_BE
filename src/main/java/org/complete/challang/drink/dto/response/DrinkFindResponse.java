@@ -1,11 +1,14 @@
-package org.complete.challang.drink.repository;
+package org.complete.challang.drink.dto.response;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import org.complete.challang.drink.domain.entity.*;
 import org.complete.challang.drink.domain.entity.Package;
 
 import java.util.List;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @AllArgsConstructor
@@ -18,25 +21,27 @@ public class DrinkFindResponse {
 
     private String summary;
 
-    private String description;
+    private DrinkManufacturer manufacturer;
 
-    private double abv;
+    private double reviewRating;
 
-    private String imageUrl;
+    private List<Tag> tags;
 
     private long reviewCount;
-
-    private double reviewSumRating;
 
     private FoodStatistic foodStatistic;
 
     private SituationStatistic situationStatistic;
 
+//    private flavorStatistic flavorStatistic;
+
     private TasteStatistic tasteStatistic;
 
-    private List<DrinkManufacturer> manufacturers;
+    private String description;
 
-    private List<Tag> tags;
+    private double abv;
+
+    private String imageUrl;
 
     private List<Food> foods;
 

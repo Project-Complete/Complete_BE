@@ -3,7 +3,7 @@ package org.complete.challang.drink.service;
 import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.common.exception.ErrorCode;
 import org.complete.challang.drink.domain.entity.Drink;
-import org.complete.challang.drink.repository.DrinkFindResponse;
+import org.complete.challang.drink.dto.response.DrinkFindResponse;
 import org.complete.challang.drink.repository.DrinkRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

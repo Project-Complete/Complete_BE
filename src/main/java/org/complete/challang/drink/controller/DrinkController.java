@@ -1,7 +1,7 @@
 package org.complete.challang.drink.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.complete.challang.drink.repository.DrinkFindResponse;
+import org.complete.challang.drink.dto.response.DrinkFindResponse;
 import org.complete.challang.drink.service.DrinkService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
