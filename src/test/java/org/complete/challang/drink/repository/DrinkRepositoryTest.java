@@ -16,13 +16,13 @@ public class DrinkRepositoryTest {
 
     @Test
     @DisplayName("Drink Repository가 존재")
-    public void existDrinkRepository() {
+    public void Repository존재() {
         assertThat(drinkRepository).isNotNull();
     }
 
     @Test
     @DisplayName("Drink 상세 조회")
-    public void findDetailDrink() {
+    public void findById성공() {
         //given
         final Drink drink = Drink.builder()
                 .name("트롤브루 레몬 라들러")

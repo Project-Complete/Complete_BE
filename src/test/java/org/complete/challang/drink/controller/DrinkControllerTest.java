@@ -10,7 +10,6 @@ import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.repository.DrinkFindResponse;
 import org.complete.challang.drink.service.DrinkService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,15 +51,13 @@ public class DrinkControllerTest {
     }
 
     @Test
-    @DisplayName("MockMvc가 존재")
-    public void existMockMvc() throws Exception {
+    public void mockMvc존재() throws Exception {
         assertThat(drinkController).isNotNull();
         assertThat(mockMvc).isNotNull();
     }
 
     @Test
-    @DisplayName("주류 상세조회시 Drink가 존재하지 않음")
-    public void notExistDrink() throws Exception {
+    public void 주류상세조회실패_존재하지않는주류() throws Exception {
         // given
         final String url = "/drink/detail/-1";
         doThrow(new ApiException(ErrorCode.DRINK_NOT_FOUND))
@@ -77,8 +74,7 @@ public class DrinkControllerTest {
     }
 
     @Test
-    @DisplayName("주류 상세조회 성공")
-    public void 멤버십상세조회성공() throws Exception {
+    public void 주류상세조회성공() throws Exception {
         // given
         final String url = "/drink/detail/1";
         doReturn(drinkFindResponse())

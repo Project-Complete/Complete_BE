@@ -5,7 +5,6 @@ import org.complete.challang.common.exception.ErrorCode;
 import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.repository.DrinkFindResponse;
 import org.complete.challang.drink.repository.DrinkRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,8 +28,7 @@ public class DrinkServiceTest {
     private DrinkRepository drinkRepository;
 
     @Test
-    @DisplayName("존재하지 않은 Drink")
-    public void notExistDrink() {
+    public void 주류상세조회실패_존재하지않는주류() {
         //given
         doReturn(Optional.empty()).when(drinkRepository).findById(anyLong());
 
@@ -42,8 +40,7 @@ public class DrinkServiceTest {
     }
 
     @Test
-    @DisplayName("Drink 상세조회")
-    public void findDetailDrink() {
+    public void 주류상세조회성공() {
         //given
         doReturn(Optional.of(drink())).when(drinkRepository).findById(anyLong());
 
