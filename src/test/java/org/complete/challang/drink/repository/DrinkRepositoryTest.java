@@ -1,10 +1,19 @@
 package org.complete.challang.drink.repository;
 
+import org.complete.challang.account.user.domain.entity.User;
+import org.complete.challang.account.user.domain.repository.UserRepository;
 import org.complete.challang.drink.domain.entity.Drink;
-import org.junit.jupiter.api.DisplayName;
+import org.complete.challang.drink.domain.entity.Food;
+import org.complete.challang.drink.dto.response.FoodStatisticFindResponse;
+import org.complete.challang.review.domain.entity.Review;
+import org.complete.challang.review.domain.entity.ReviewFood;
+import org.complete.challang.review.domain.repository.ReviewFoodRepository;
+import org.complete.challang.review.domain.repository.ReviewRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,14 +23,24 @@ public class DrinkRepositoryTest {
     @Autowired
     private DrinkRepository drinkRepository;
 
+    @Autowired
+    private FoodRepository foodRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ReviewFoodRepository reviewFoodRepository;
+
     @Test
-    @DisplayName("Drink Repository가 존재")
     public void Repository존재() {
         assertThat(drinkRepository).isNotNull();
     }
 
     @Test
-    @DisplayName("Drink 상세 조회")
     public void findById성공() {
         //given
         final Drink drink = Drink.builder()
@@ -48,5 +67,50 @@ public class DrinkRepositoryTest {
         assertThat(findResult.getImageUrl()).isEqualTo("http://localhost");
         assertThat(findResult.getReviewCount()).isEqualTo(0L);
         assertThat(findResult.getReviewSumRating()).isEqualTo(0L);
+    }
+
+    @Test
+    public void findFoodStatisticById성공() {
+        //given
+        final Drink drink = Drink.builder().build();
+        final Food foodMeat = Food.builder()
+                .category("육류")
+                .build();
+        final Food foodProMeat = Food.builder()
+                .category("가공육")
+                .build();
+        final User user = User.builder().build();
+        final Review review = Review.builder()
+                .user(user)
+                .drink(drink)
+                .build();
+        ReviewFood reviewFood1 = ReviewFood.builder()
+                .food(foodMeat)
+                .review(review)
+                .build();
+        ReviewFood reviewFood2 = ReviewFood.builder()
+                .food(foodProMeat)
+                .review(review)
+                .build();
+        ReviewFood reviewFood3 = ReviewFood.builder()
+                .food(foodMeat)
+                .review(review)
+                .build();
+
+        //when
+        drinkRepository.save(drink);
+        foodRepository.save(foodMeat);
+        foodRepository.save(foodProMeat);
+        userRepository.save(user);
+        reviewRepository.save(review);
+        reviewFoodRepository.save(reviewFood1);
+        reviewFoodRepository.save(reviewFood2);
+        reviewFoodRepository.save(reviewFood3);
+        final List<FoodStatisticFindResponse> findResult = drinkRepository.findFoodStatisticById(1L);
+
+        //then
+        assertThat(findResult).isNotNull();
+        assertThat(findResult.get(0).getCategory()).isEqualTo("육류");
+        assertThat(findResult.get(0).getCount()).isEqualTo(2L);
     }
 }
