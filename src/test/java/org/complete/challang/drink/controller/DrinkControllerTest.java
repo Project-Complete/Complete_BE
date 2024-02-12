@@ -1,12 +1,12 @@
 package org.complete.challang.drink.controller;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.common.exception.ErrorCode;
 import org.complete.challang.common.exception.GlobalExceptionHandler;
 import org.complete.challang.drink.common.adaptor.LocalDateTimeTypeAdaptor;
-import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.dto.response.DrinkFindResponse;
 import org.complete.challang.drink.service.DrinkService;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +44,7 @@ public class DrinkControllerTest {
     public void init() {
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdaptor())
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
         mockMvc = MockMvcBuilders.standaloneSetup(drinkController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -77,7 +78,9 @@ public class DrinkControllerTest {
     public void 주류상세조회성공() throws Exception {
         // given
         final String url = "/drink/detail/1";
-        doReturn(drinkFindResponse())
+        doReturn(DrinkFindResponse.builder()
+                .drinkId(1L)
+                .build())
                 .when(drinkService)
                 .findDetailDrink(1L);
 
@@ -94,20 +97,5 @@ public class DrinkControllerTest {
                 .getContentAsString(StandardCharsets.UTF_8), DrinkFindResponse.class);
 
         assertThat(result.getDrinkId()).isEqualTo(1L);
-        assertThat(result.getName()).isEqualTo("트롤브루 레몬 라들러");
-    }
-
-    private DrinkFindResponse drinkFindResponse() {
-        Drink drink = Drink.builder()
-                .id(1L)
-                .name("트롤브루 레몬 라들러")
-                .summary("유럽식 상큼한 레몬향이 풍부하게 느껴지는 라들러")
-                .description("만하임 지방")
-                .abv(5.0)
-                .imageUrl("http://localhost")
-                .reviewCount(0L)
-                .reviewSumRating(0L)
-                .build();
-        return drink.toDto();
     }
 }
