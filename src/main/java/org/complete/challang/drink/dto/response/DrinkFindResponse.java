@@ -3,8 +3,7 @@ package org.complete.challang.drink.dto.response;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
-import org.complete.challang.drink.domain.entity.*;
-import org.complete.challang.drink.domain.entity.Package;
+import org.complete.challang.drink.domain.entity.SituationStatistic;
 
 import java.util.List;
 
@@ -19,31 +18,39 @@ public class DrinkFindResponse {
 
     private String name;
 
+    private String imageUrl;
+
     private String summary;
 
-    private DrinkManufacturer manufacturer;
+    private ManufacturerFindResponse manufacturer;
 
     private double reviewRating;
 
-    private List<Tag> tags;
+    private List<TagFindResponse> tags;
 
     private long reviewCount;
 
-    private FoodStatistic foodStatistic;
+    private List<FoodStatisticFindResponse> foodStatistics;
+
+    private TasteAverageStatistic tasteStatistic;
 
     private SituationStatistic situationStatistic;
 
-//    private flavorStatistic flavorStatistic;
+    private List<FlavorStatisticFindResponse> flavorStatistics;
 
-    private TasteStatistic tasteStatistic;
+    private String title;
 
     private String description;
 
+    private List<PackageFindResponse> packages;
+
     private double abv;
 
-    private String imageUrl;
+    private DrinkTypeFindResponse type;
 
-    private List<Food> foods;
-
-    private List<Package> packages;
+    public void updateStatistic(List<FoodStatisticFindResponse> foodStatisticFindResponses,
+                                List<FlavorStatisticFindResponse> flavorStatisticFindResponses) {
+        foodStatistics = foodStatisticFindResponses;
+        flavorStatistics = flavorStatisticFindResponses;
+    }
 }
