@@ -16,6 +16,9 @@ public class DrinkService {
 
     public DrinkFindResponse findDetailDrink(Long drinkId) {
         Drink drink = drinkRepository.findById(drinkId).orElseThrow(() -> new ApiException(ErrorCode.DRINK_NOT_FOUND));
-        return drink.toDto();
+        DrinkFindResponse drinkFindResponse = drink.toDto();
+        drinkFindResponse.updateStatistic(drinkRepository.findFoodStatisticById(drinkId), drinkRepository.findFlavorStatisticById(drinkId));
+
+        return drinkFindResponse;
     }
 }
