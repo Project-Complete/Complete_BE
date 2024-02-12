@@ -1,12 +1,18 @@
 package org.complete.challang.drink.repository;
 
+import jakarta.transaction.Transactional;
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.account.user.domain.repository.UserRepository;
 import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.domain.entity.Food;
+import org.complete.challang.drink.dto.response.FlavorStatisticFindResponse;
 import org.complete.challang.drink.dto.response.FoodStatisticFindResponse;
+import org.complete.challang.review.domain.entity.Flavor;
 import org.complete.challang.review.domain.entity.Review;
+import org.complete.challang.review.domain.entity.ReviewFlavor;
 import org.complete.challang.review.domain.entity.ReviewFood;
+import org.complete.challang.review.domain.repository.FlavorRepository;
+import org.complete.challang.review.domain.repository.ReviewFlavorRepository;
 import org.complete.challang.review.domain.repository.ReviewFoodRepository;
 import org.complete.challang.review.domain.repository.ReviewRepository;
 import org.junit.jupiter.api.Test;
@@ -34,6 +40,12 @@ public class DrinkRepositoryTest {
 
     @Autowired
     private ReviewFoodRepository reviewFoodRepository;
+
+    @Autowired
+    private FlavorRepository flavorRepository;
+
+    @Autowired
+    private ReviewFlavorRepository reviewFlavorRepository;
 
     @Test
     public void Repository존재() {
@@ -84,20 +96,21 @@ public class DrinkRepositoryTest {
                 .user(user)
                 .drink(drink)
                 .build();
-        ReviewFood reviewFood1 = ReviewFood.builder()
+        final ReviewFood reviewFood1 = ReviewFood.builder()
                 .food(foodMeat)
                 .review(review)
                 .build();
-        ReviewFood reviewFood2 = ReviewFood.builder()
+        final ReviewFood reviewFood2 = ReviewFood.builder()
                 .food(foodProMeat)
                 .review(review)
                 .build();
-        ReviewFood reviewFood3 = ReviewFood.builder()
+        final ReviewFood reviewFood3 = ReviewFood.builder()
                 .food(foodMeat)
                 .review(review)
                 .build();
 
         //when
+        //todo: Entity 로직 제공시 리팩토링
         drinkRepository.save(drink);
         foodRepository.save(foodMeat);
         foodRepository.save(foodProMeat);
@@ -106,11 +119,57 @@ public class DrinkRepositoryTest {
         reviewFoodRepository.save(reviewFood1);
         reviewFoodRepository.save(reviewFood2);
         reviewFoodRepository.save(reviewFood3);
-        final List<FoodStatisticFindResponse> findResult = drinkRepository.findFoodStatisticById(1L);
+        final List<FoodStatisticFindResponse> findResult = drinkRepository.findFoodStatisticById(drink.getId());//todo: autoincrement로 인해 getId 사용
 
         //then
         assertThat(findResult).isNotNull();
         assertThat(findResult.get(0).getCategory()).isEqualTo("육류");
+        assertThat(findResult.get(0).getCount()).isEqualTo(2L);
+    }
+
+    @Test
+    public void findFlavorStatisticById성공() {
+        //given
+        final Drink drink = Drink.builder().build();
+        final Flavor flavorMandarine = Flavor.builder()
+                .flavor("만다린")
+                .build();
+        final Flavor flavorBerry = Flavor.builder()
+                .flavor("베리")
+                .build();
+        final User user = User.builder().build();
+        final Review review = Review.builder()
+                .user(user)
+                .drink(drink)
+                .build();
+        final ReviewFlavor reviewFlavor1 = ReviewFlavor.builder()
+                .flavor(flavorMandarine)
+                .review(review)
+                .build();
+        final ReviewFlavor reviewFlavor2 = ReviewFlavor.builder()
+                .flavor(flavorMandarine)
+                .review(review)
+                .build();
+        final ReviewFlavor reviewFlavor3 = ReviewFlavor.builder()
+                .flavor(flavorBerry)
+                .review(review)
+                .build();
+
+        //when
+        //todo: Entity 로직 제공시 리팩토링
+        drinkRepository.save(drink);
+        flavorRepository.save(flavorMandarine);
+        flavorRepository.save(flavorBerry);
+        userRepository.save(user);
+        reviewRepository.save(review);
+        reviewFlavorRepository.save(reviewFlavor1);
+        reviewFlavorRepository.save(reviewFlavor2);
+        reviewFlavorRepository.save(reviewFlavor3);
+        final List<FlavorStatisticFindResponse> findResult = drinkRepository.findFlavorStatisticById(drink.getId());//todo: autoincrement로 인해 getId 사용
+
+        //then
+        assertThat(findResult).isNotNull();
+        assertThat(findResult.get(0).getFlavor()).isEqualTo("만다린");
         assertThat(findResult.get(0).getCount()).isEqualTo(2L);
     }
 }
