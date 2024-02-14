@@ -1,6 +1,9 @@
 package org.complete.challang.review.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.complete.challang.account.user.domain.entity.User;
@@ -18,10 +21,16 @@ import java.util.List;
 @Entity
 public class Review extends BaseEntity {
 
+    @Column(nullable = false)
     private String imageUrl;
 
+    @Min(0)
+    @Max(5)
+    @Column(nullable = false)
     private float rating;
 
+    @Size(min = 20, max = 255)
+    @Column(nullable = false)
     private String content;
 
     @OneToOne(orphanRemoval = true)

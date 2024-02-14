@@ -31,7 +31,7 @@ public class Drink extends BaseEntity {
 
     private long reviewCount;
 
-    private float reviewSumRating;
+    private double reviewSumRating;
 
     @Embedded
     private FoodStatistic foodStatistic;
@@ -65,4 +65,12 @@ public class Drink extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
+
+    public void updateReviewCount() {
+        reviewCount++;
+    }
+
+    public void updateReviewSumRating(double rating) {
+        reviewSumRating += rating;
+    }
 }
