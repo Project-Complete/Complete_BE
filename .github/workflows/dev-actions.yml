@@ -33,9 +33,7 @@ jobs:
 
     # gradle build
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2.6.0
-      with:
-        arguments: build
+      run: ./gradlew clean build -x test
 
     # jar 파일 actions의 artifact에 업로드
     - name: Upload build artifact
