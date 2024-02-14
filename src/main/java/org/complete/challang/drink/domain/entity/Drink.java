@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.complete.challang.account.user.domain.entity.DrinkBookmark;
 import org.complete.challang.account.user.domain.entity.DrinkLike;
 import org.complete.challang.common.domain.entity.BaseEntity;
-import org.complete.challang.drink.dto.response.*;
+import org.complete.challang.drink.controller.dto.response.*;
 import org.complete.challang.review.domain.entity.Review;
 
 import java.util.ArrayList;

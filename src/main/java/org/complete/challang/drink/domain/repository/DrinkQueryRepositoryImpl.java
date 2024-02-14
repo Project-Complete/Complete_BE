@@ -1,9 +1,9 @@
-package org.complete.challang.drink.repository;
+package org.complete.challang.drink.domain.repository;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.complete.challang.drink.dto.response.FlavorStatisticFindResponse;
-import org.complete.challang.drink.dto.response.FoodStatisticFindResponse;
+import org.complete.challang.drink.controller.dto.response.FlavorStatisticFindResponse;
+import org.complete.challang.drink.controller.dto.response.FoodStatisticFindResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

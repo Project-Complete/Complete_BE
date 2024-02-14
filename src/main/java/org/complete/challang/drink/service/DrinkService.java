@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.common.exception.ErrorCode;
 import org.complete.challang.drink.domain.entity.Drink;
-import org.complete.challang.drink.dto.response.DrinkFindResponse;
-import org.complete.challang.drink.repository.DrinkRepository;
+import org.complete.challang.drink.controller.dto.response.DrinkFindResponse;
+import org.complete.challang.drink.domain.repository.DrinkRepository;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor

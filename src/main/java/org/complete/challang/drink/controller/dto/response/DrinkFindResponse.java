@@ -1,4 +1,4 @@
-package org.complete.challang.drink.dto.response;
+package org.complete.challang.drink.controller.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

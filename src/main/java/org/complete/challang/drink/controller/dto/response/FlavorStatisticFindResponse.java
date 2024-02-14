@@ -1,4 +1,4 @@
-package org.complete.challang.drink.dto.response;
+package org.complete.challang.drink.controller.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

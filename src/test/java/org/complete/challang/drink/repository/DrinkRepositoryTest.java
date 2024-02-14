@@ -1,12 +1,13 @@
 package org.complete.challang.drink.repository;
 
-import jakarta.transaction.Transactional;
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.account.user.domain.repository.UserRepository;
 import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.domain.entity.Food;
-import org.complete.challang.drink.dto.response.FlavorStatisticFindResponse;
-import org.complete.challang.drink.dto.response.FoodStatisticFindResponse;
+import org.complete.challang.drink.domain.repository.DrinkRepository;
+import org.complete.challang.drink.domain.repository.FoodRepository;
+import org.complete.challang.drink.controller.dto.response.FlavorStatisticFindResponse;
+import org.complete.challang.drink.controller.dto.response.FoodStatisticFindResponse;
 import org.complete.challang.review.domain.entity.Flavor;
 import org.complete.challang.review.domain.entity.Review;
 import org.complete.challang.review.domain.entity.ReviewFlavor;
