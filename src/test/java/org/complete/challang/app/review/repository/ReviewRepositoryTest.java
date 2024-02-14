@@ -1,4 +1,4 @@
-package org.complete.challang.review.repository;
+package org.complete.challang.app.review.repository;
 
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.drink.domain.entity.Drink;
