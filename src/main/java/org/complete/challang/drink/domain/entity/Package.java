@@ -18,7 +18,7 @@ public class Package extends BaseEntity {
 
     private String type;
 
-    private int volume;
+    private String volume;
 
     @Builder.Default
     @OneToMany(mappedBy = "packages", cascade = CascadeType.ALL)

@@ -19,6 +19,8 @@ public class Food extends BaseEntity {
 
     private String category;
 
+    private String imageUrl;
+
     @Builder.Default
     @OneToMany(mappedBy = "food", cascade = CascadeType.ALL)
     private List<DrinkFood> drinkFoods = new ArrayList<>();
