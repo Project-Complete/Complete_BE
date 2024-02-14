@@ -30,6 +30,7 @@ public abstract class OAuth2UserInfo {
         return User.builder()
                 .socialId(getSocialId())
                 .email(getEmail())
+                .nickname(getNickname())
                 .profileImageUrl(getImageUrl())
                 .socialType(socialType)
                 .roleType(RoleType.GUEST)

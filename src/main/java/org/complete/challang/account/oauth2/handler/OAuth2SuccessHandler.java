@@ -10,10 +10,10 @@ import org.complete.challang.account.jwt.util.TokenUtil;
 import org.complete.challang.account.oauth2.CustomOAuth2User;
 import org.complete.challang.account.oauth2.userinfo.OAuth2UserInfo;
 import org.complete.challang.account.oauth2.userinfo.OAuth2UserInfoFactory;
-import org.complete.challang.account.user.domain.entity.RoleType;
 import org.complete.challang.account.user.domain.entity.SocialType;
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.account.user.domain.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -28,7 +28,8 @@ import java.io.IOException;
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private String frontRedirectUri = "/";
+    @Value("${front.redirect-uri}")
+    private String frontRedirectUri;
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
@@ -37,36 +38,41 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        String redirectUrl = makeRedirectUrl();
         try {
             CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
             User user = findUserByAuthentication(authentication);
-            if (customOAuth2User.getRoleType().equals(RoleType.GUEST)) {
+            /*if (customOAuth2User.getRoleType().equals(RoleType.GUEST)) {
                 Token token = tokenProvider.createAccessToken(user);
                 TokenUtil.setAccessTokenHeader(response, token.getToken());
             } else {
                 loginSuccess(response, user);
-            }
+            }*/
+
+            String redirectUrl = loginSuccess(response, user);
             response.setStatus(HttpServletResponse.SC_OK);
-//            getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+            getRedirectStrategy().sendRedirect(request, response, redirectUrl);
         } catch (Exception e) {
             throw e;
         }
     }
 
-    private String makeRedirectUrl() {
+    private String makeRedirectUrl(String accessToken, String refreshToken) {
         return UriComponentsBuilder.fromUriString(frontRedirectUri)
+                .queryParam("access_token", accessToken)
+                .queryParam("refresh_token", refreshToken)
                 .build()
                 .toUriString();
     }
 
-    private void loginSuccess(HttpServletResponse response, User user) {
+    private String loginSuccess(HttpServletResponse response, User user) {
         Token accessToken = tokenProvider.createAccessToken(user);
         Token refreshToken = tokenProvider.createRefreshToken(user);
         TokenUtil.setAccessTokenHeader(response, accessToken.getToken());
         TokenUtil.setRefreshTokenHeader(response, refreshToken.getToken());
         user.updateRefreshToken(refreshToken.getToken());
         userRepository.saveAndFlush(user);
+
+        return makeRedirectUrl(accessToken.getToken(), refreshToken.getToken());
     }
 
     private User findUserByAuthentication(Authentication authentication) {
