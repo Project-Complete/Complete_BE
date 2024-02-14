@@ -40,7 +40,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: completeServer
-        path: build/libs/domain-0.0.1-SNAPSHOT.jar
+        path: build/libs/challang-0.0.1-SNAPSHOT.jar
 
   deploy:
     needs: build
@@ -62,6 +62,6 @@ jobs:
       run: |
         echo "${{ secrets.EC2_DEV_SSH_KEY }}" > private_key.pem
         chmod 600 private_key.pem
-        scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/domain-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_DEV_USERNAME }}@${{ secrets.EC2_DEV_HOST }}:/home/${{ secrets.EC2_DEV_USERNAME }}/domain.jar
+        scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/challang-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_DEV_USERNAME }}@${{ secrets.EC2_DEV_HOST }}:/home/${{ secrets.EC2_DEV_USERNAME }}/challang.jar
         ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_DEV_USERNAME }}@${{ secrets.EC2_DEV_HOST }} "pgrep java | xargs kill -9; nohup java -jar /home/${{ secrets.EC2_DEV_USERNAME }}/domain.jar > app.log 2>&1 &"
         rm -f private_key.pem
