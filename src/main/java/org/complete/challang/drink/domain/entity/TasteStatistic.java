@@ -19,4 +19,16 @@ public class TasteStatistic {
     private double bodySumRating;
 
     private double refreshSumRating;
+
+    public void updateTasteRating(final double sweetRating,
+                                  final double sourRating,
+                                  final double bitterRating,
+                                  final double bodyRating,
+                                  double refreshRating) {
+        sweetSumRating += sweetRating;
+        sourSumRating += sourRating;
+        bitterSumRating += bitterRating;
+        bodySumRating += bodyRating;
+        refreshSumRating += refreshRating;
+    }
 }

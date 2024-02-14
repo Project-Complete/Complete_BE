@@ -76,6 +76,14 @@ public class Drink extends BaseEntity {
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
+    public void updateReviewCount() {
+        reviewCount++;
+    }
+
+    public void updateReviewSumRating(double rating) {
+        reviewSumRating += rating;
+    }
+
     public DrinkFindResponse toDto() {
         return DrinkFindResponse.builder()
                 .drinkId(getId())
