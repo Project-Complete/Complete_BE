@@ -33,7 +33,7 @@ public abstract class OAuth2UserInfo {
                 .nickname(getNickname())
                 .profileImageUrl(getImageUrl())
                 .socialType(socialType)
-                .roleType(RoleType.GUEST)
+                .roleType(RoleType.USER)
                 .build();
     }
 }
