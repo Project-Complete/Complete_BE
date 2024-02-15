@@ -54,6 +54,8 @@ jobs:
         platforms: linux/amd64
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/challang-api
+
+    - name: echo Test
       run: echo ${{ secrets.SPRING_PROFILE }}
 
   deploy:
