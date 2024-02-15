@@ -17,12 +17,12 @@ public class DrinkQueryRepositoryImpl implements DrinkQueryRepository {
     @Override
     public List<FoodStatisticFindResponse> findFoodStatisticById(Long drinkId) {
         return em.createQuery(
-                        "select new org.complete.challang.drink.dto.response.FoodStatisticFindResponse(f.id, f.category, f.imageUrl, count(f.category))"
+                        "select new org.complete.challang.drink.controller.dto.response.FoodStatisticFindResponse(f.id, f.category, f.imageUrl, count(f.category))"
                                 + "from Review r "
                                 + "left join r.reviewFoods rf "
                                 + "left join rf.food f "
                                 + "where r.drink.id = :drinkId "
-                                + "group by f.category "
+                                + "group by f.category, f.id "
                                 + "order by count(f.category) desc "
                                 + "limit 4"
                         , FoodStatisticFindResponse.class
@@ -34,12 +34,12 @@ public class DrinkQueryRepositoryImpl implements DrinkQueryRepository {
     @Override
     public List<FlavorStatisticFindResponse> findFlavorStatisticById(Long drinkId) {
         return em.createQuery(
-                        "select new org.complete.challang.drink.dto.response.FlavorStatisticFindResponse(f.id, f.flavor, count(f.flavor))"
+                        "select new org.complete.challang.drink.controller.dto.response.FlavorStatisticFindResponse(f.id, f.flavor, count(f.flavor))"
                                 + "from Review r "
                                 + "left join r.reviewFlavors rf "
                                 + "left join rf.flavor f "
                                 + "where r.drink.id = :drinkId "
-                                + "group by f.flavor "
+                                + "group by f.flavor, f.id "
                                 + "order by count(f.flavor) desc "
                                 + "limit 3"
                         , FlavorStatisticFindResponse.class
