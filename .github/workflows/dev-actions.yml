@@ -98,6 +98,7 @@ jobs:
           for key in ${!env[@]}; do
             echo "key=$key" >> dev.env
           done
+          echo "${env[JWT_SECRET]}"
 
       # 받아온 이미지 컨테이너 실행
       - name: docker run new container
