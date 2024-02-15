@@ -93,7 +93,7 @@ jobs:
       - name: docker run new container
         run: |
           echo "${{ secrets.APP_ENVIRONMENT }}" > dev.env
-          sudo docker run --name challang-api --env-file=dev.env --restart=always -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/challang-api
+          sudo docker run --name challang-api --network=challang-network --env-file=dev.env --restart=always -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/challang-api
 
       # 미사용 이미지 정리
       - name: delete old docker image
