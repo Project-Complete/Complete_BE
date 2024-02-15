@@ -5,13 +5,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.review.controller.dto.request.ReviewCreateRequest;
 import org.complete.challang.review.controller.dto.response.ReviewCreateResponse;
+import org.complete.challang.review.controller.dto.response.ReviewListFindResponse;
 import org.complete.challang.review.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
@@ -27,5 +25,14 @@ public class ReviewController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(reviewCreateResponse);
+    }
+
+    @GetMapping("?page={page_index}&sort={sort}")
+    public ResponseEntity<ReviewListFindResponse> findReviewList(@PathVariable("page_index") final int page,
+                                                                 @PathVariable("sort") final String sort) {
+        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(page, sort);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(reviewListFindResponse);
     }
 }
