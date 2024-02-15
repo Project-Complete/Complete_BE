@@ -85,7 +85,9 @@ jobs:
 
       # 존재하는 컨테이너 stop
       - name: docker stop container
-        run: sudo docker stop $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true
+        run: | 
+          sudo docker stop $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true
+          sudo docker rm $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true 
 
       # 받아온 이미지 컨테이너 실행
       - name: docker run new container
