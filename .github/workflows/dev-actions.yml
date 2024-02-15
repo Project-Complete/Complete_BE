@@ -48,7 +48,7 @@ jobs:
     - name: Docker Build and push
       uses: docker/build-push-action@v5.0.0
       with:
-        build-args: ${{ secrets.SPRING_PROFILE }} # Dockerfile의 ARG로 넘어감
+        build-args: ${{ vars.SPRING_PROFILE }} # Dockerfile의 ARG로 넘어감
         context: .
         file: ./Dockerfile
         platforms: linux/amd64
@@ -56,7 +56,7 @@ jobs:
         tags: ${{ secrets.DOCKER_USERNAME }}/challang-api
 
     - name: echo Test
-      run: echo ${{ secrets.SPRING_PROFILE }}
+      run: echo ${{ vars.SPRING_PROFILE }}
 
   deploy:
     needs: build
