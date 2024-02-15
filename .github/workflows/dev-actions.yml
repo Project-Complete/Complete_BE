@@ -92,9 +92,16 @@ jobs:
           sudo docker stop $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true
           sudo docker rm $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true 
 
+      # env 파일 이동
+      - name: docker env
+        run: |
+          for key in ${!env[@]}; do
+            echo "key=$key" >> dev.env
+          done
+
       # 받아온 이미지 컨테이너 실행
       - name: docker run new container
-        run: sudo docker run --name challang-api --restart=always -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/challang-api
+        run: sudo docker run --name challang-api --env-file=dev.env --restart=always -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/challang-api
 
       # 미사용 이미지 정리
       - name: delete old docker image
