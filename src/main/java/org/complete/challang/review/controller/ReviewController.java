@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.review.controller.dto.request.ReviewCreateRequest;
 import org.complete.challang.review.controller.dto.response.ReviewCreateResponse;
+import org.complete.challang.review.controller.dto.response.ReviewDetailResponse;
 import org.complete.challang.review.controller.dto.response.ReviewListFindResponse;
 import org.complete.challang.review.service.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -34,5 +35,13 @@ public class ReviewController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(reviewListFindResponse);
+    }
+
+    @GetMapping("/{review_id}")
+    public ResponseEntity<ReviewDetailResponse> findReviewDetail(@PathVariable("review_id") final Long reviewId) {
+        final ReviewDetailResponse reviewDetailResponse = reviewService.findReviewDetail(reviewId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(reviewDetailResponse);
     }
 }
