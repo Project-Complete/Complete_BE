@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    properties:
+      show_sql: false
+      format_sql: true
+      highlight_sql: true # 색 추가
+      use_sql_comments: true # jpql 추가
+      default_batch_fetch_size: 100
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
