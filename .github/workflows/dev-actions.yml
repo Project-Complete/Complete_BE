@@ -55,31 +55,12 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/challang-api
 
-    - name: echo Test
-      run: echo ${{ vars.SPRING_PROFILE }}
-
   deploy:
     needs: build
     runs-on: self-hosted
     environment: Develop
     env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      FRONT_REDIRECT: ${{ secrets.FRONT_REDIRECT }}
-      GOOGLE_CLIENT: ${{ secrets.GOOGLE_CLIENT }}
-      GOOGLE_REDIRECT: ${{ secrets.GOOGLE_REDIRECT }}
-      GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      KAKAO_CLIENT: ${{ secrets.KAKAO_CLIENT }}
-      KAKAO_REDIRECT: ${{ secrets.KAKAO_REDIRECT }}
-      KAKAO_SECRET: ${{ secrets.KAKAO_SECRET }}
-      NAVER_CLIENT: ${{ secrets.NAVER_CLIENT }}
-      NAVER_REDIRECT: ${{ secrets.NAVER_REDIRECT }}
-      NAVER_SECRET: ${{ secrets.NAVER_SECRET }}
-      REFRESH_EXP: ${{ secrets.REFRESH_EXP }}
+      APP_ENVIRONMENT: ${{ secrets.APP_ENVIRONMENT }}
 
     steps:
       # 커스텀 image pull
@@ -92,17 +73,11 @@ jobs:
           sudo docker stop $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true
           sudo docker rm $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true 
 
-      # env 파일 이동
-      - name: docker env
-        run: |
-          for key in ${!env[@]}; do
-            echo "key=$key" >> dev.env
-          done
-          echo "${env[JWT_SECRET]}"
-
       # 받아온 이미지 컨테이너 실행
       - name: docker run new container
-        run: sudo docker run --name challang-api --env-file=dev.env --restart=always -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/challang-api
+        run: |
+          echo "$APP_ENVIRONMENT" >> dev.env
+          sudo docker run --name challang-api --env-file=dev.env --restart=always -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/challang-api
 
       # 미사용 이미지 정리
       - name: delete old docker image
