@@ -3,19 +3,25 @@ package org.complete.challang.review.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.account.user.domain.entity.User;
+import org.complete.challang.common.dto.PageInfoDto;
 import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.domain.repository.DrinkRepository;
 import org.complete.challang.drink.domain.repository.FoodRepository;
+import org.complete.challang.review.controller.dto.item.ReviewDto;
 import org.complete.challang.review.controller.dto.item.SituationDto;
 import org.complete.challang.review.controller.dto.item.TasteDto;
 import org.complete.challang.review.controller.dto.request.ReviewCreateRequest;
 import org.complete.challang.review.controller.dto.response.ReviewCreateResponse;
+import org.complete.challang.review.controller.dto.response.ReviewListFindResponse;
 import org.complete.challang.review.domain.entity.Review;
 import org.complete.challang.review.domain.entity.ReviewFlavor;
 import org.complete.challang.review.domain.entity.ReviewFood;
+import org.complete.challang.review.domain.entity.ReviewSortCriteria;
 import org.complete.challang.review.domain.repository.FlavorRepository;
 import org.complete.challang.review.domain.repository.ReviewRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +32,8 @@ import static org.complete.challang.common.exception.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
+
+    private final int REVIEW_LIST_SIZE = 6;
 
     private final DrinkRepository drinkRepository;
     private final FlavorRepository flavorRepository;
@@ -50,6 +58,24 @@ public class ReviewService {
         final Review savedReview = reviewRepository.save(review);
 
         return ReviewCreateResponse.toDto(savedReview);
+    }
+
+    @Transactional
+    public ReviewListFindResponse findReviewList(final int page, final String sort) {
+        PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
+        Page<Review> reviews = reviewRepository.findAll(pageRequest);
+
+        List<ReviewDto> reviewDtos = reviews.stream()
+                .map(review -> ReviewDto.toDto(review))
+                .collect(Collectors.toList());
+
+        return ReviewListFindResponse.builder()
+                .reviews(reviewDtos)
+                .pageInfo(PageInfoDto.toDto(page,
+                        REVIEW_LIST_SIZE,
+                        reviews.getTotalElements(),
+                        sort))
+                .build();
     }
 
     private Drink updateDrinkReviewSum(final Drink drink,
