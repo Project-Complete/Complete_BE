@@ -13,6 +13,7 @@ import org.complete.challang.review.controller.dto.item.SituationDto;
 import org.complete.challang.review.controller.dto.item.TasteDto;
 import org.complete.challang.review.controller.dto.request.ReviewCreateRequest;
 import org.complete.challang.review.controller.dto.response.ReviewCreateResponse;
+import org.complete.challang.review.controller.dto.response.ReviewDetailResponse;
 import org.complete.challang.review.controller.dto.response.ReviewListFindResponse;
 import org.complete.challang.review.domain.entity.Review;
 import org.complete.challang.review.domain.entity.ReviewFlavor;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.complete.challang.common.exception.ErrorCode.*;
 
 @Service
@@ -60,14 +62,13 @@ public class ReviewService {
         return ReviewCreateResponse.toDto(savedReview);
     }
 
-    @Transactional
     public ReviewListFindResponse findReviewList(final int page, final String sort) {
-        PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
-        Page<Review> reviews = reviewRepository.findAll(pageRequest);
+        final PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
+        final Page<Review> reviews = reviewRepository.findAll(pageRequest);
 
-        List<ReviewDto> reviewDtos = reviews.stream()
+        final List<ReviewDto> reviewDtos = reviews.stream()
                 .map(review -> ReviewDto.toDto(review))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return ReviewListFindResponse.builder()
                 .reviews(reviewDtos)
@@ -78,6 +79,26 @@ public class ReviewService {
                 .build();
     }
 
+    public ReviewDetailResponse findReviewDetail(final Long reviewId) {
+        final Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
+
+        final SituationDto situationDto = SituationDto.toDto(review.getSituation());
+        final TasteDto tasteDto = TasteDto.toDto(review.getTaste());
+
+        return ReviewDetailResponse.toEntity(review,
+                situationDto,
+                tasteDto,
+                review.getReviewFoods()
+                        .stream()
+                        .map(reviewFood -> reviewFood.getFood().getCategory())
+                        .collect(toList()),
+                review.getReviewFlavors()
+                        .stream()
+                        .map(reviewFlavor -> reviewFlavor.getFlavor().getFlavor())
+                        .collect(toList()));
+    }
+
     private Drink updateDrinkReviewSum(final Drink drink,
                                        final float rating,
                                        final SituationDto situationDto,
@@ -86,6 +107,7 @@ public class ReviewService {
         drink.updateReviewSumRating(rating);
         updateDrinkSituationStatistic(drink, situationDto);
         updateDrinkTasteStatistic(drink, tasteDto);
+
         return drinkRepository.save(drink);
     }
 
