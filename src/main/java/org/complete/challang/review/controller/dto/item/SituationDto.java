@@ -32,4 +32,14 @@ public class SituationDto {
                 .partner(partner)
                 .build();
     }
+
+    public static SituationDto toDto(Situation situation) {
+        return SituationDto.builder()
+                .adult(situation.isAdult())
+                .alone(situation.isAlone())
+                .business(situation.isBusiness())
+                .friend(situation.isFriend())
+                .partner(situation.isPartner())
+                .build();
+    }
 }

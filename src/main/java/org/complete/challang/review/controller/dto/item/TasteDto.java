@@ -32,4 +32,14 @@ public class TasteDto {
                 .refresh(refresh)
                 .build();
     }
+
+    public static TasteDto toDto(Taste taste) {
+        return TasteDto.builder()
+                .sweet(taste.getSweet())
+                .sour(taste.getSour())
+                .bitter(taste.getBitter())
+                .body(taste.getBody())
+                .refresh(taste.getRefresh())
+                .build();
+    }
 }
