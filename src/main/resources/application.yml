@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    include: jwt, oauth
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+
+logging:
+  level:
+    root: info
+
+springdoc:
+  swagger-ui:
+    path: /api-test  # swagger-ui 접근 경로에 대한 별칭
+    groups-order: DESC # path, query, body, response 순으로 출력
+    tags-sorter: alpha # 태그를 알파벳 순으로 정렬
+    operations-sorter: method  # delete - get - patch - post - put 순으로 정렬

@@ -1,0 +1,8 @@
+jwt:
+  secret-key: ${JWT_SECRET}
+  access-token:
+    expiration: 1800000
+    header: Authorization
+  refresh-token:
+    expiration: ${REFRESH_EXP}
+    header: Authorization-refresh
