@@ -1,5 +1,7 @@
 package org.complete.challang.drink.domain.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 
@@ -8,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Embeddable
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SituationStatistic {
 
     private long adultSum;
