@@ -25,7 +25,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -90,7 +89,6 @@ public class ReviewControllerTest {
                 .build();
     }
 
-    @WithUserDetails
     @ParameterizedTest
     @MethodSource("invalidReviewCreateParameter")
     public void 주류리뷰등록실패_잘못된파라미터(final Long drinkId,
