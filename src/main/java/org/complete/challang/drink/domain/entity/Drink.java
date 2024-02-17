@@ -80,8 +80,16 @@ public class Drink extends BaseEntity {
         reviewCount++;
     }
 
+    public void downgradeReviewCount() {
+        reviewCount--;
+    }
+
     public void updateReviewSumRating(double rating) {
         reviewSumRating += rating;
+    }
+
+    public void downgradeReviewSumRating(double rating) {
+        reviewSumRating -= rating;
     }
 
     public DrinkFindResponse toDto() {
