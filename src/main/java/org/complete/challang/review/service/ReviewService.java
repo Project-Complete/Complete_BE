@@ -67,10 +67,17 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewListFindResponse findReviewList(final int page,
+    public ReviewListFindResponse findReviewList(final Long drinkId,
+                                                 final int page,
                                                  final String sort) {
         final PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
-        final Page<Review> reviews = reviewRepository.findAllByIsActiveTrue(pageRequest);
+
+        Page<Review> reviews;
+        if (drinkId == null) {
+            reviews = reviewRepository.findAllByIsActiveTrue(pageRequest);
+        } else {
+            reviews = reviewRepository.findAllByDrinkIdAndIsActiveTrue(drinkId, pageRequest);
+        }
 
         final List<ReviewDto> reviewDtos = reviews.stream()
                 .map(review -> ReviewDto.toDto(review))
