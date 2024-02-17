@@ -31,10 +31,11 @@ public class ReviewController {
                 .body(reviewCreateResponse);
     }
 
-    @GetMapping("?page={page_index}&sort={sort}")
-    public ResponseEntity<ReviewListFindResponse> findReviewList(@PathVariable("page_index") final int page,
-                                                                 @PathVariable("sort") final String sort) {
-        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(page, sort);
+    @GetMapping()
+    public ResponseEntity<ReviewListFindResponse> findReviewList(@RequestParam(required = false, name = "drink-id") final Long drinkId,
+                                                                 @RequestParam(required = false, name = "page", defaultValue = "0") final int page,
+                                                                 @RequestParam(required = false, name = "sort", defaultValue = "latest") final String sort) {
+        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(drinkId, page, sort);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(reviewListFindResponse);
