@@ -9,7 +9,9 @@ import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    Page<Review> findAllByIsActiveTrue(Pageable pageable);
+    Page<Review> findAllByIsActiveTrue(final Pageable pageable);
+
+    Page<Review> findAllByDrinkIdAndIsActiveTrue(final Long drinkId, final Pageable pageable);
 
     Optional<Review> findByIdAndIsActiveTrue(final Long reviewId);
 
