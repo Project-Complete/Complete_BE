@@ -21,7 +21,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,14 +38,17 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.complete.challang.common.exception.ErrorCode.DRINK_NOT_FOUND;
+import static org.complete.challang.common.exception.ErrorCode.USER_NOT_FOUND;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class ReviewControllerTest {
+
+    public static final String ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MDgwNjA1OTgsImV4cCI6MTcwODA2MjM5OH0.R3PYWVXy88IpRS7rAArGPy6H4raUejK2oUFJmBt86gY";
 
     @InjectMocks
     private ReviewController target;
@@ -53,11 +60,12 @@ public class ReviewControllerTest {
     private Gson gson;
     private final Long drinkId = 1L;
     private final Long reviewId = 1L;
+    private final Long userId = 1L;
     private final String imageUrl = "imageUrl";
     private final String content = "content content content content content";
     private final float rating = 3;
-    private List<Long> flavorIds = Arrays.asList(1L, 2L, 3L);
-    private List<Long> foodIds = Arrays.asList(1L, 2L, 3L);
+    private final List<Long> flavorIds = Arrays.asList(1L, 2L, 3L);
+    private final List<Long> foodIds = Arrays.asList(1L, 2L, 3L);
     private final SituationDto situationDto = createSituationDto(true, false, true, false, true);
     private final TasteDto tasteDto = createTasteDto(1, 2, 3, 4, 5);
     private final ReviewCreateRequest reviewCreateRequest = createReviewCreateRequest(drinkId,
@@ -68,6 +76,8 @@ public class ReviewControllerTest {
             tasteDto,
             flavorIds,
             foodIds);
+
+    private final Authentication authentication = new TestingAuthenticationToken("test1@gmail.com", null, "USER");
 
     @BeforeEach
     public void init() {
@@ -80,6 +90,7 @@ public class ReviewControllerTest {
                 .build();
     }
 
+    @WithUserDetails
     @ParameterizedTest
     @MethodSource("invalidReviewCreateParameter")
     public void 주류리뷰등록실패_잘못된파라미터(final Long drinkId,
@@ -91,6 +102,7 @@ public class ReviewControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post(url)
+                .header(HttpHeaders.AUTHORIZATION, "1234")
                 .content(gson.toJson(createReviewCreateRequest(drinkId,
                         imageUrl,
                         content,
@@ -110,8 +122,8 @@ public class ReviewControllerTest {
         // given
         final String url = "/reviews";
 
-        doThrow(new ApiException(DRINK_NOT_FOUND)).when(reviewService)
-                .createReview(any(ReviewCreateRequest.class));
+        doThrow(new ApiException(USER_NOT_FOUND)).when(reviewService)
+                .createReview(any(ReviewCreateRequest.class), eq(userId));
 
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post(url)
@@ -135,7 +147,7 @@ public class ReviewControllerTest {
                 .build();
 
         doReturn(reviewCreateResponse).when(reviewService)
-                .createReview(any(ReviewCreateRequest.class));
+                .createReview(any(ReviewCreateRequest.class), userId);
 
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post(url)
