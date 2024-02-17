@@ -3,6 +3,7 @@ package org.complete.challang.review.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.account.user.domain.entity.User;
+import org.complete.challang.account.user.domain.repository.UserRepository;
 import org.complete.challang.common.dto.PageInfoDto;
 import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.drink.domain.entity.Drink;
@@ -41,11 +42,13 @@ public class ReviewService {
     private final FlavorRepository flavorRepository;
     private final FoodRepository foodRepository;
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public ReviewCreateResponse createReview(final ReviewCreateRequest reviewCreateRequest) {
-        // 사용자 검증 로직 필요
-        final User user = null;
+    public ReviewCreateResponse createReview(final ReviewCreateRequest reviewCreateRequest,
+                                             final Long userId) {
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         final Drink drink = drinkRepository.findById(reviewCreateRequest.getDrinkId())
                 .orElseThrow(() -> new ApiException(DRINK_NOT_FOUND));
 
@@ -98,6 +101,7 @@ public class ReviewService {
                         .map(reviewFlavor -> reviewFlavor.getFlavor().getFlavor())
                         .collect(toList()));
     }
+
 
     private Drink updateDrinkReviewSum(final Drink drink,
                                        final float rating,
