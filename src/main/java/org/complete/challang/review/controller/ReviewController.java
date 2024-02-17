@@ -10,6 +10,8 @@ import org.complete.challang.review.controller.dto.response.ReviewListFindRespon
 import org.complete.challang.review.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -20,9 +22,10 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping()
-    public ResponseEntity<ReviewCreateResponse> createReview(@RequestBody @Valid final ReviewCreateRequest reviewCreateRequest) {
-        // 사용자 정보 필요
-        final ReviewCreateResponse reviewCreateResponse = reviewService.createReview(reviewCreateRequest);
+    public ResponseEntity<ReviewCreateResponse> createReview(@AuthenticationPrincipal UserDetails user,
+                                                             @RequestBody @Valid final ReviewCreateRequest reviewCreateRequest) {
+        final Long userId = Long.parseLong(user.getUsername());
+        final ReviewCreateResponse reviewCreateResponse = reviewService.createReview(reviewCreateRequest, userId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(reviewCreateResponse);
