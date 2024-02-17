@@ -73,25 +73,18 @@ public class ReviewService {
                 .map(review -> ReviewDto.toDto(review))
                 .collect(toList());
 
-        return ReviewListFindResponse.builder()
-                .reviews(reviewDtos)
-                .pageInfo(PageInfoDto.toDto(page,
+        return ReviewListFindResponse.toDto(reviewDtos,
+                PageInfoDto.toDto(page,
                         REVIEW_LIST_SIZE,
                         reviews.getTotalElements(),
-                        sort))
-                .build();
+                        sort));
     }
 
     public ReviewDetailResponse findReviewDetail(final Long reviewId) {
         final Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
 
-        final SituationDto situationDto = SituationDto.toDto(review.getSituation());
-        final TasteDto tasteDto = TasteDto.toDto(review.getTaste());
-
-        return ReviewDetailResponse.toEntity(review,
-                situationDto,
-                tasteDto,
+        return ReviewDetailResponse.toDto(review,
                 review.getReviewFoods()
                         .stream()
                         .map(reviewFood -> reviewFood.getFood().getCategory())
@@ -101,7 +94,6 @@ public class ReviewService {
                         .map(reviewFlavor -> reviewFlavor.getFlavor().getFlavor())
                         .collect(toList()));
     }
-
 
     private Drink updateDrinkReviewSum(final Drink drink,
                                        final float rating,
