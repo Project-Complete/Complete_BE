@@ -20,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -32,7 +35,10 @@ public class DrinkService {
     public DrinkFindResponse findDetailDrink(Long drinkId) {
         Drink drink = findDrink(drinkId);
         DrinkFindResponse drinkFindResponse = drink.toDto();
-        drinkFindResponse.updateStatistic(drinkRepository.findFoodStatisticById(drinkId), drinkRepository.findFlavorStatisticById(drinkId));
+        drinkFindResponse.updateStatistic(
+                drinkRepository.findFoodStatisticById(drinkId),
+                drinkRepository.findFlavorStatisticById(drinkId)
+        );
 
         return drinkFindResponse;
     }
@@ -42,24 +48,52 @@ public class DrinkService {
                                                                    final String rate) {
         final Drink drink = findDrink(drinkId);
 
+        // todo: refactor 예정
         String maxField = null;
-        if (rate.equals("taste")) {
+        if (rate.equals("taste")) { // 맛
             final TasteStatistic tasteStatistic = drink.getTasteStatistic();
             final Field[] tasteFields = TasteStatistic.class.getDeclaredFields();
             maxField = extractMaxRateField(tasteStatistic, tasteFields);
-        } else if (rate.equals("situation")) {
+        } else if (rate.equals("situation")) { // 상황
             final SituationStatistic situationStatistic = drink.getSituationStatistic();
             final Field[] situationFields = SituationStatistic.class.getDeclaredFields();
             maxField = extractMaxRateField(situationStatistic, situationFields);
+        } else { // 향
+            final Optional<Map.Entry<String, Long>> flavorMaxEntry = drink.getReviews().stream()
+                    .flatMap(review -> review.getReviewFlavors().stream())
+                    .collect(Collectors.groupingBy(reviewFlavor ->
+                            reviewFlavor.getFlavor().getFlavor(), Collectors.counting())
+                    )
+                    .entrySet()
+                    .stream()
+                    .max(Map.Entry.comparingByValue());
+
+            final String flavorMaxField = flavorMaxEntry.orElseThrow(() -> new ApiException(ErrorCode.FLAVOR_NOT_FOUND)).getKey();
+
+            final Page<DrinkListFindResponse> drinkListFindResponses = drinkRepository.findDrinksOrderByMaxFlavor(
+                    flavorMaxField,
+                    drinkId,
+                    PageRequest.of(0, 4)
+            );
+            return DrinkPageResponse.toDto(
+                    drinkListFindResponses.getContent(),
+                    drinkListFindResponses,
+                    DrinkSortCriteria.getDrinkSortCriteria(flavorMaxField).getDescription()
+            );
         }
 
         if (maxField == null) throw new ApiException(ErrorCode.DRINK_RATE_PARAM_INCORRECT);
 
         DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria(maxField);
-        final Page<Drink> drinks = drinkRepository.findAll(DrinkSpec.orderByRate(drinkSortCriteria), PageRequest.of(0, 4));
-        final List<DrinkListFindResponse> drinkListFindResponses = drinks.getContent().stream().map(DrinkListFindResponse::toDto).toList();
+        final Page<Drink> drinks = drinkRepository.findAll(
+                DrinkSpec.orderByRate(drinkSortCriteria, drinkId),
+                PageRequest.of(0, 4)
+        );
+        final List<DrinkListFindResponse> drinkListFindResponses = drinks.getContent().stream().
+                map(DrinkListFindResponse::toDto)
+                .toList();
 
-        return DrinkPageResponse.toDto(drinkListFindResponses, drinks, maxField);
+        return DrinkPageResponse.toDto(drinkListFindResponses, drinks, drinkSortCriteria.getDescription());
     }
 
     private Drink findDrink(final Long drinkId) {
