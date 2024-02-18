@@ -79,14 +79,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         Token accessToken = tokenProvider.convertToken(TokenUtil.extractAccessToken(request)
                 .orElse(null));
 
-        if(accessToken.validateToken()) {
-            Map<String, String> tokenPayload = accessToken.getPayload();
-            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                    .username(tokenPayload.get(TokenUtil.ID_CLAIM))
-                    .roles(tokenPayload.get(TokenUtil.ROLE_CLAIM))
-                    .build();
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+        Map<String, Object> tokenPayload = accessToken.getPayload();
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .username(Integer.toString((Integer) tokenPayload.get(TokenUtil.ID_CLAIM)))
+                .password("")
+                .roles((String) tokenPayload.get(TokenUtil.ROLE_CLAIM))
+                .build();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        filterChain.doFilter(request, response);
     }
 }

@@ -1,5 +1,7 @@
 package org.complete.challang.app.review.service;
 
+import org.complete.challang.account.user.domain.entity.User;
+import org.complete.challang.account.user.domain.repository.UserRepository;
 import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.domain.entity.Food;
@@ -52,8 +54,12 @@ public class ReviewServiceTest {
     @Mock
     private ReviewRepository reviewRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     private final Long drinkId = 1L;
     private final Long reviewId = 1L;
+    private final Long userId = 1L;
     private final String imageUrl = "imageUrl";
     private final String content = "content content content content content";
     private final float rating = 3;
@@ -71,13 +77,29 @@ public class ReviewServiceTest {
             foodIds);
 
     @Test
+    public void 주류리뷰등록실패_존재하는사용자가없음() {
+        // given
+        doReturn(Optional.empty()).when(userRepository)
+                .findById(userId);
+
+        // when
+        final ApiException result = assertThrows(ApiException.class, () -> target.createReview(reviewCreateRequest, userId));
+
+        // then
+        assertThat(result.getErrorCode()).isEqualTo(USER_NOT_FOUND);
+
+    }
+
+    @Test
     public void 주류리뷰등록실패_존재하는주류가없음() {
         // given
+        doReturn(Optional.of(user())).when(userRepository)
+                .findById(userId);
         doReturn(Optional.empty()).when(drinkRepository)
                 .findById(drinkId);
 
         // when
-        final ApiException result = assertThrows(ApiException.class, () -> target.createReview(reviewCreateRequest));
+        final ApiException result = assertThrows(ApiException.class, () -> target.createReview(reviewCreateRequest, userId));
 
         // then
         assertThat(result.getErrorCode()).isEqualTo(DRINK_NOT_FOUND);
@@ -89,13 +111,15 @@ public class ReviewServiceTest {
         final SituationStatistic situationStatistic = situationStatistic(0, 0, 0, 0, 0);
         final TasteStatistic tasteStatistic = tasteStatistic(0, 0, 0, 0, 0);
 
+        doReturn(Optional.of(user())).when(userRepository)
+                .findById(userId);
         doReturn(Optional.of(drink(drinkId, 0, 0, situationStatistic, tasteStatistic))).when(drinkRepository)
                 .findById(drinkId);
         doReturn(Optional.empty()).when(flavorRepository)
                 .findById(anyLong());
 
         // when
-        final ApiException result = assertThrows(ApiException.class, () -> target.createReview(reviewCreateRequest));
+        final ApiException result = assertThrows(ApiException.class, () -> target.createReview(reviewCreateRequest, userId));
 
         // then
         assertThat(result.getErrorCode()).isEqualTo(FLAVOR_NOT_FOUND);
@@ -107,6 +131,8 @@ public class ReviewServiceTest {
         final SituationStatistic situationStatistic = situationStatistic(0, 0, 0, 0, 0);
         final TasteStatistic tasteStatistic = tasteStatistic(0, 0, 0, 0, 0);
 
+        doReturn(Optional.of(user())).when(userRepository)
+                .findById(userId);
         doReturn(Optional.of(drink(drinkId, 0, 0, situationStatistic, tasteStatistic))).when(drinkRepository)
                 .findById(drinkId);
         doAnswer(invocation -> {
@@ -122,7 +148,7 @@ public class ReviewServiceTest {
                 .findById(anyLong());
 
         // when
-        final ApiException result = assertThrows(ApiException.class, () -> target.createReview(reviewCreateRequest));
+        final ApiException result = assertThrows(ApiException.class, () -> target.createReview(reviewCreateRequest, userId));
 
         // then
         assertThat(result.getErrorCode()).isEqualTo(FOOD_NOT_FOUND);
@@ -134,6 +160,8 @@ public class ReviewServiceTest {
         final SituationStatistic situationStatistic = situationStatistic(0, 0, 0, 0, 0);
         final TasteStatistic tasteStatistic = tasteStatistic(0, 0, 0, 0, 0);
 
+        doReturn(Optional.of(user())).when(userRepository)
+                .findById(userId);
         doReturn(Optional.of(drink(drinkId, 0, 0, situationStatistic, tasteStatistic))).when(drinkRepository)
                 .findById(drinkId);
         doAnswer(invocation -> {
@@ -158,7 +186,7 @@ public class ReviewServiceTest {
                 .save(any(Review.class));
 
         // when
-        final ReviewCreateResponse result = target.createReview(reviewCreateRequest);
+        final ReviewCreateResponse result = target.createReview(reviewCreateRequest, userId);
 
         // then
         assertThat(result.getReviewId()).isEqualTo(reviewId);
@@ -167,9 +195,15 @@ public class ReviewServiceTest {
         assertThat(result.getRating()).isEqualTo(rating);
     }
 
+    private User user() {
+        return User.builder()
+                .id(userId)
+                .build();
+    }
+
     private Review review() {
         return Review.builder()
-                .id(1L)
+                .id(reviewId)
                 .imageUrl(imageUrl)
                 .content(content)
                 .rating(rating)

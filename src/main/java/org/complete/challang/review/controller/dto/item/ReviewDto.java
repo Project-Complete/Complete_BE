@@ -15,7 +15,7 @@ public class ReviewDto {
     private Long id;
     private String imageUrl;
     private double reviewRating;
-    private String writerNickname;
+    private WriterDto writer;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDate;
@@ -25,7 +25,7 @@ public class ReviewDto {
                 .id(review.getId())
                 .imageUrl(review.getImageUrl())
                 .reviewRating(review.getRating())
-                .writerNickname(review.getUser().getNickname())
+                .writer(WriterDto.toDto(review.getUser()))
                 .createdDate(review.getCreatedDate())
                 .build();
     }

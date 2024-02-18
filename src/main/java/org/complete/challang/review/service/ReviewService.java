@@ -1,11 +1,14 @@
 package org.complete.challang.review.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.account.user.domain.entity.User;
+import org.complete.challang.account.user.domain.repository.UserRepository;
 import org.complete.challang.common.dto.PageInfoDto;
 import org.complete.challang.common.exception.ApiException;
+import org.complete.challang.common.exception.SuccessCode;
 import org.complete.challang.drink.domain.entity.Drink;
+import org.complete.challang.drink.domain.entity.SituationStatistic;
+import org.complete.challang.drink.domain.entity.TasteStatistic;
 import org.complete.challang.drink.domain.repository.DrinkRepository;
 import org.complete.challang.drink.domain.repository.FoodRepository;
 import org.complete.challang.review.controller.dto.item.ReviewDto;
@@ -15,15 +18,13 @@ import org.complete.challang.review.controller.dto.request.ReviewCreateRequest;
 import org.complete.challang.review.controller.dto.response.ReviewCreateResponse;
 import org.complete.challang.review.controller.dto.response.ReviewDetailResponse;
 import org.complete.challang.review.controller.dto.response.ReviewListFindResponse;
-import org.complete.challang.review.domain.entity.Review;
-import org.complete.challang.review.domain.entity.ReviewFlavor;
-import org.complete.challang.review.domain.entity.ReviewFood;
-import org.complete.challang.review.domain.entity.ReviewSortCriteria;
+import org.complete.challang.review.domain.entity.*;
 import org.complete.challang.review.domain.repository.FlavorRepository;
 import org.complete.challang.review.domain.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,8 +32,9 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static org.complete.challang.common.exception.ErrorCode.*;
 
-@Service
+
 @RequiredArgsConstructor
+@Service
 public class ReviewService {
 
     private final int REVIEW_LIST_SIZE = 6;
@@ -41,15 +43,17 @@ public class ReviewService {
     private final FlavorRepository flavorRepository;
     private final FoodRepository foodRepository;
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public ReviewCreateResponse createReview(final ReviewCreateRequest reviewCreateRequest) {
-        // 사용자 검증 로직 필요
-        final User user = null;
-        final Drink drink = drinkRepository.findById(reviewCreateRequest.getDrinkId())
+    public ReviewCreateResponse createReview(final ReviewCreateRequest reviewCreateRequest,
+                                             final Long userId) {
+        final User user = userRepository.findByIdAndIsActiveTrue(userId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        final Drink drink = drinkRepository.findByIdAndIsActiveTrue(reviewCreateRequest.getDrinkId())
                 .orElseThrow(() -> new ApiException(DRINK_NOT_FOUND));
 
-        final Drink savedDrink = updateDrinkReviewSum(drink,
+        final Drink savedDrink = updateDrink(drink,
                 reviewCreateRequest.getRating(),
                 reviewCreateRequest.getSituationDto(),
                 reviewCreateRequest.getTasteDto());
@@ -62,33 +66,36 @@ public class ReviewService {
         return ReviewCreateResponse.toDto(savedReview);
     }
 
-    public ReviewListFindResponse findReviewList(final int page, final String sort) {
+    @Transactional(readOnly = true)
+    public ReviewListFindResponse findReviewList(final Long drinkId,
+                                                 final int page,
+                                                 final String sort) {
         final PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
-        final Page<Review> reviews = reviewRepository.findAll(pageRequest);
+
+        Page<Review> reviews;
+        if (drinkId == null) {
+            reviews = reviewRepository.findAllByIsActiveTrue(pageRequest);
+        } else {
+            reviews = reviewRepository.findAllByDrinkIdAndIsActiveTrue(drinkId, pageRequest);
+        }
 
         final List<ReviewDto> reviewDtos = reviews.stream()
                 .map(review -> ReviewDto.toDto(review))
                 .collect(toList());
 
-        return ReviewListFindResponse.builder()
-                .reviews(reviewDtos)
-                .pageInfo(PageInfoDto.toDto(page,
+        return ReviewListFindResponse.toDto(reviewDtos,
+                PageInfoDto.toDto(page,
                         REVIEW_LIST_SIZE,
                         reviews.getTotalElements(),
-                        sort))
-                .build();
+                        sort));
     }
 
+    @Transactional(readOnly = true)
     public ReviewDetailResponse findReviewDetail(final Long reviewId) {
-        final Review review = reviewRepository.findById(reviewId)
+        final Review review = reviewRepository.findByIdAndIsActiveTrue(reviewId)
                 .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
 
-        final SituationDto situationDto = SituationDto.toDto(review.getSituation());
-        final TasteDto tasteDto = TasteDto.toDto(review.getTaste());
-
-        return ReviewDetailResponse.toEntity(review,
-                situationDto,
-                tasteDto,
+        return ReviewDetailResponse.toDto(review,
                 review.getReviewFoods()
                         .stream()
                         .map(reviewFood -> reviewFood.getFood().getCategory())
@@ -99,16 +106,42 @@ public class ReviewService {
                         .collect(toList()));
     }
 
-    private Drink updateDrinkReviewSum(final Drink drink,
-                                       final float rating,
-                                       final SituationDto situationDto,
-                                       final TasteDto tasteDto) {
+    @Transactional
+    public SuccessCode deleteReview(final Long userId,
+                                    final Long reviewId) {
+        final Review review = reviewRepository.findByIdAndUserIdAndIsActiveTrue(reviewId, userId)
+                .orElseThrow(() -> new ApiException(REVIEW_REMOVE_FORBIDDEN));
+        final Drink drink = review.getDrink();
+
+        downgradeDrink(drink,
+                review.getRating(),
+                review.getSituation(),
+                review.getTaste());
+        review.deleteReview();
+
+        return SuccessCode.REVIEW_DELETE_SUCCESS;
+    }
+
+    private Drink updateDrink(final Drink drink,
+                              final float rating,
+                              final SituationDto situationDto,
+                              final TasteDto tasteDto) {
         drink.updateReviewCount();
         drink.updateReviewSumRating(rating);
-        updateDrinkSituationStatistic(drink, situationDto);
-        updateDrinkTasteStatistic(drink, tasteDto);
+        updateDrinkSituationStatistic(drink.getSituationStatistic(), situationDto);
+        updateDrinkTasteStatistic(drink.getTasteStatistic(), tasteDto);
 
-        return drinkRepository.save(drink);
+        return drink;
+    }
+
+    private void downgradeDrink(final Drink drink,
+                                final float rating,
+                                final Situation situation,
+                                final Taste taste) {
+        drink.downgradeReviewCount();
+        drink.downgradeReviewSumRating(rating);
+        downgradeDrinkSituationStatistic(drink.getSituationStatistic(), situation);
+        downgradeDrinkTasteStatistic(drink.getTasteStatistic(), taste);
     }
 
     private List<ReviewFlavor> createReviewFlavors(final List<Long> flavors) {
@@ -129,21 +162,23 @@ public class ReviewService {
                 ).collect(Collectors.toList());
     }
 
-    private void updateDrinkTasteStatistic(final Drink drink, final TasteDto tasteDto) {
-        drink.getTasteStatistic()
-                .updateTasteRating(tasteDto.getSweet(),
-                        tasteDto.getSour(),
-                        tasteDto.getBitter(),
-                        tasteDto.getBody(),
-                        tasteDto.getRefresh());
+    private void updateDrinkSituationStatistic(final SituationStatistic situationStatistic,
+                                               final SituationDto situationDto) {
+        situationStatistic.updateSituationStatistic(situationDto);
     }
 
-    private void updateDrinkSituationStatistic(final Drink drink, final SituationDto situationDto) {
-        drink.getSituationStatistic()
-                .updateSituationStatistic(situationDto.isAdult(),
-                        situationDto.isPartner(),
-                        situationDto.isFriend(),
-                        situationDto.isBusiness(),
-                        situationDto.isAlone());
+    private void updateDrinkTasteStatistic(final TasteStatistic tasteStatistic,
+                                           final TasteDto tasteDto) {
+        tasteStatistic.updateTasteRating(tasteDto);
+    }
+
+    private void downgradeDrinkSituationStatistic(final SituationStatistic situationStatistic,
+                                                  final Situation situation) {
+        situationStatistic.downgradeSituationStatistic(situation);
+    }
+
+    private void downgradeDrinkTasteStatistic(final TasteStatistic tasteStatistic,
+                                              final Taste taste) {
+        tasteStatistic.downgradeTasteRating(taste);
     }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.Embeddable;
 import lombok.*;
+import org.complete.challang.review.controller.dto.item.SituationDto;
+import org.complete.challang.review.domain.entity.Situation;
 
 @Getter
 @Builder
@@ -23,25 +25,39 @@ public class SituationStatistic {
 
     private long aloneSum;
 
-    public void updateSituationStatistic(final boolean adult,
-                                         final boolean partner,
-                                         final boolean friend,
-                                         final boolean business,
-                                         final boolean alone) {
-        if (adult) {
+    public void updateSituationStatistic(final SituationDto situationDto) {
+        if (situationDto.isAdult()) {
             adultSum++;
         }
-        if (partner) {
+        if (situationDto.isPartner()) {
             partnerSum++;
         }
-        if (friend) {
+        if (situationDto.isFriend()) {
             friendSum++;
         }
-        if (business) {
+        if (situationDto.isBusiness()) {
             businessSum++;
         }
-        if (alone) {
+        if (situationDto.isAlone()) {
             aloneSum++;
+        }
+    }
+
+    public void downgradeSituationStatistic(final Situation situation) {
+        if (situation.isAdult()) {
+            adultSum--;
+        }
+        if (situation.isPartner()) {
+            partnerSum--;
+        }
+        if (situation.isFriend()) {
+            friendSum--;
+        }
+        if (situation.isBusiness()) {
+            businessSum--;
+        }
+        if (situation.isAlone()) {
+            aloneSum--;
         }
     }
 }
