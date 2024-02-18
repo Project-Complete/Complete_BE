@@ -29,6 +29,7 @@ public class Drink extends BaseEntity {
 
     private double abv;
 
+    @Column(length = 400)
     private String imageUrl;
 
     private long reviewCount;
