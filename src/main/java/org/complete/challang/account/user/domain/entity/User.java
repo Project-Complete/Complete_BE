@@ -33,6 +33,12 @@ public class User extends BaseEntity {
 
     private String profileImageUrl;
 
+    @Builder.Default
+    private Long followers = 0L;
+
+    @Builder.Default
+    private Long followings = 0L;
+
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 

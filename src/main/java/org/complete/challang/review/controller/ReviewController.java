@@ -33,9 +33,10 @@ public class ReviewController {
 
     @GetMapping()
     public ResponseEntity<ReviewListFindResponse> findReviewList(@RequestParam(required = false, name = "drink-id") final Long drinkId,
+                                                                 @RequestParam(required = false, name = "writer-id") final Long writerId,
                                                                  @RequestParam(required = false, name = "page", defaultValue = "0") final int page,
                                                                  @RequestParam(required = false, name = "sort", defaultValue = "latest") final String sort) {
-        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(drinkId, page, sort);
+        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(drinkId, writerId, page, sort);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(reviewListFindResponse);

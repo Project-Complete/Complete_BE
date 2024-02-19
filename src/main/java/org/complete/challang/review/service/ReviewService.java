@@ -20,6 +20,7 @@ import org.complete.challang.review.controller.dto.response.ReviewDetailResponse
 import org.complete.challang.review.controller.dto.response.ReviewListFindResponse;
 import org.complete.challang.review.domain.entity.*;
 import org.complete.challang.review.domain.repository.FlavorRepository;
+import org.complete.challang.review.domain.repository.ReviewCustomRepositoryImpl;
 import org.complete.challang.review.domain.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +44,7 @@ public class ReviewService {
     private final FlavorRepository flavorRepository;
     private final FoodRepository foodRepository;
     private final ReviewRepository reviewRepository;
+    private final ReviewCustomRepositoryImpl reviewCustomRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -68,16 +70,13 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public ReviewListFindResponse findReviewList(final Long drinkId,
+                                                 final Long writerId,
                                                  final int page,
                                                  final String sort) {
         final PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
 
         Page<Review> reviews;
-        if (drinkId == null) {
-            reviews = reviewRepository.findAllByIsActiveTrue(pageRequest);
-        } else {
-            reviews = reviewRepository.findAllByDrinkIdAndIsActiveTrue(drinkId, pageRequest);
-        }
+        reviews = reviewCustomRepository.findAllWithOption(pageRequest, drinkId, writerId);
 
         final List<ReviewDto> reviewDtos = reviews.stream()
                 .map(review -> ReviewDto.toDto(review))
