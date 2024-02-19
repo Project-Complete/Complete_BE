@@ -41,7 +41,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             if (refreshToken.getToken() != null) {
                 checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             } else {
-                checkAccessToken(request, response, filterChain);
+                checkAccessToken(request);
             }
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
@@ -73,21 +73,19 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         return reIssueRefreshToken;
     }
 
-    private void checkAccessToken(HttpServletRequest request,
-                                  HttpServletResponse response,
-                                  FilterChain filterChain) throws ServletException, IOException {
+    private void checkAccessToken(HttpServletRequest request) {
         Token accessToken = tokenProvider.convertToken(TokenUtil.extractAccessToken(request)
                 .orElse(null));
 
-        Map<String, Object> tokenPayload = accessToken.getPayload();
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                .username(Integer.toString((Integer) tokenPayload.get(TokenUtil.ID_CLAIM)))
-                .password("")
-                .roles((String) tokenPayload.get(TokenUtil.ROLE_CLAIM))
-                .build();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        filterChain.doFilter(request, response);
+        if (accessToken.validateToken()) {
+            Map<String, Object> tokenPayload = accessToken.getPayload();
+            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                    .username(Integer.toString((Integer) tokenPayload.get(TokenUtil.ID_CLAIM)))
+                    .password("")
+                    .roles((String) tokenPayload.get(TokenUtil.ROLE_CLAIM))
+                    .build();
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
     }
 }
