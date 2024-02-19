@@ -30,7 +30,8 @@ public enum DrinkSortCriteria {
     DRINK_NUTTY_RATING_DESC("견과류", null, "견과류순으로 정렬", null),
     DRINK_FERMENTED_RATING_DESC("발효", null, "발효순으로 정렬", null),
     DRINK_SWEET_FLAVOR_RATING_DESC("달콤", null, "달콤순으로 정렬", null),
-    DRINK_ETC_RATING_DESC("기타", null, "기타순으로 정렬", null);
+    DRINK_ETC_RATING_DESC("기타", null, "기타순으로 정렬", null),
+    DRINK_POPULARITY_DESC("popularity_order", null, "인기순으로 정렬", null);
 
 
     private final String value;
