@@ -26,4 +26,11 @@ public class DrinkController {
                                                                                    @RequestParam("rate") String rate) {
         return new ResponseEntity<>(drinkService.findRateDrinks(drinkId, rate), HttpStatus.OK);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findDrinks(@RequestParam("drink_type") String drinkType,
+                                                                               @RequestParam("sorted") String sorted,
+                                                                               @RequestParam(value = "page", defaultValue = "1") int page) {
+        return new ResponseEntity<>(drinkService.findDrinks(drinkType, sorted, page), HttpStatus.OK);
+    }
 }
