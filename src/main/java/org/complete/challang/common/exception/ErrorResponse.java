@@ -17,4 +17,11 @@ public class ErrorResponse {
                 .httpStatus(ex.getErrorCode().getHttpStatus())
                 .build();
     }
+
+    public static ErrorResponse toErrorResponse(Exception e) {
+        return ErrorResponse.builder()
+                .message(e.getMessage())
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .build();
+    }
 }
