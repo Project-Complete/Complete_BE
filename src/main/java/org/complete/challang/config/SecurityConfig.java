@@ -47,15 +47,16 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(configurer ->
-                                configurer
-                                        .authorizationEndpoint(config ->
-                                                config
-                                                        .baseUri("/oauth2/authorization"))
-//                                                .authorizationRequestRepository(authorizationRequestRepository()))
-                                        .redirectionEndpoint(config -> config.baseUri("/*/oauth2/code/*"))
-                                        .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
-                                        .successHandler(oAuth2SuccessHandler)
-                                        .failureHandler(oAuth2FailureHandler)
+                        configurer
+                                .authorizationEndpoint(config ->
+                                        config
+                                                .baseUri("/oauth2/authorization")
+                                                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                                )
+                                .redirectionEndpoint(config -> config.baseUri("/*/oauth2/code/*"))
+                                .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
+                                .successHandler(oAuth2SuccessHandler)
+                                .failureHandler(oAuth2FailureHandler)
                 );
 
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
