@@ -30,4 +30,10 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>, DrinkQueryR
                                                            final Pageable pageable);
 
     Optional<Drink> findByIdAndIsActiveTrue(Long drinkId);
+
+    @Query("SELECT d FROM Drink d WHERE "
+            + "(:drinkType = '전체' OR d.drinkDetailType.drinkType.drinkType = :drinkType) "
+            + "ORDER BY SIZE(d.drinkLikes) DESC")
+    Page<Drink> findDrinksByTypeOrderByLikes(@Param("drinkType") String drinkType,
+                                             Pageable pageable);
 }
