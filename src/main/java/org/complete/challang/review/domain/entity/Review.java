@@ -52,4 +52,8 @@ public class Review extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewFood> reviewFoods = new ArrayList<>();
+
+    public void deleteReview() {
+        super.delete();
+    }
 }

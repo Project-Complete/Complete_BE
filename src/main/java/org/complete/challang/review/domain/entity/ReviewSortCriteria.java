@@ -11,7 +11,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public enum ReviewSortCriteria {
 
-    REVIEW_CREATED_DATE_DESC("latest", "최신순으로 정렬", Sort.by("created_date").descending()),
+    REVIEW_CREATED_DATE_DESC("latest", "최신순으로 정렬", Sort.by("createdDate").descending()),
     ;
 
     private final String value;

@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface DrinkRepository extends JpaRepository<Drink, Long>, DrinkQueryRepository, JpaSpecificationExecutor<Drink> {
 
     Page<Drink> findAll(Specification<Drink> spec, Pageable pageable);
@@ -26,4 +28,6 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>, DrinkQueryR
     Page<DrinkListFindResponse> findDrinksOrderByMaxFlavor(@Param("flavor") final String flavor,
                                                            @Param("drinkId") final Long drinkId,
                                                            final Pageable pageable);
+
+    Optional<Drink> findByIdAndIsActiveTrue(Long drinkId);
 }

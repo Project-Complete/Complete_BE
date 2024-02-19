@@ -65,11 +65,11 @@ public class Token {
         }
     }
 
-    public Map<String, String> getPayload() {
+    public Map<String, Object> getPayload() {
         final Claims body = extractBody();
         return body.entrySet()
                 .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue()));
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()));
     }
 
     private Date createExpireDate(Long tokenExpirationDate) {

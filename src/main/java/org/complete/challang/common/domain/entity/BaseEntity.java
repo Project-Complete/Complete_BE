@@ -34,4 +34,9 @@ public abstract class BaseEntity {
     @Nonnull
     @Builder.Default
     private boolean isActive = true;
+
+    protected void delete() {
+        isActive = false;
+        deletedDate = LocalDateTime.now();
+    }
 }
