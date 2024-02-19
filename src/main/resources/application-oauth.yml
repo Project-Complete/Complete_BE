@@ -48,4 +48,4 @@ spring:
             user-name-attribute: id
 
 front:
-  redirect-uri: ${FRONT_REDIRECT}
+  callback-uri: ${FRONT_CALLBACK}

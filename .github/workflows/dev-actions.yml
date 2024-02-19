@@ -65,7 +65,7 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_PORT: ${{ secrets.DB_PORT }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      FRONT_REDIRECT: ${{ secrets.FRONT_REDIRECT }}
+      FRONT_CALLBACK: ${{ secrets.FRONT_CALLBACK }}
       GOOGLE_CLIENT: ${{ secrets.GOOGLE_CLIENT }}
       GOOGLE_REDIRECT: ${{ secrets.GOOGLE_REDIRECT }}
       GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
@@ -77,6 +77,7 @@ jobs:
       NAVER_REDIRECT: ${{ secrets.NAVER_REDIRECT }}
       NAVER_SECRET: ${{ secrets.NAVER_SECRET }}
       REFRESH_EXP: ${{ secrets.REFRESH_EXP }}
+      CORS_PERMIT_URL: ${{ secrets.CORS_PERMIT_URL }}
 
     steps:
       # 커스텀 image pull
