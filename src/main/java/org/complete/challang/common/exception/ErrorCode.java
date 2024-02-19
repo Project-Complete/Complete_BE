@@ -15,7 +15,9 @@ public enum ErrorCode {
     FOOD_NOT_FOUND("음식 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     REVIEW_NOT_FOUND("리뷰 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     USER_NOT_FOUND("유저 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
-    DRINK_RATE_PARAM_INCORRECT("평가 조회 파라미터가 잘못되었습니다", HttpStatus.BAD_REQUEST);
+    DRINK_RATE_PARAM_INCORRECT("평가 조회 파라미터가 잘못되었습니다", HttpStatus.BAD_REQUEST),
+    UNAUTHORIZED("인증되지 않은 사용자입니다", HttpStatus.UNAUTHORIZED),
+    FORBIDDEN("권한이 없는 사용자입니다", HttpStatus.FORBIDDEN)
     ;
 
     private final String message;

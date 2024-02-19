@@ -24,3 +24,6 @@ springdoc:
     groups-order: DESC # path, query, body, response 순으로 출력
     tags-sorter: alpha # 태그를 알파벳 순으로 정렬
     operations-sorter: method  # delete - get - patch - post - put 순으로 정렬
+
+cors:
+  permit_url: ${CORS_PERMIT_URL}
