@@ -10,6 +10,7 @@ import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.domain.entity.SituationStatistic;
 import org.complete.challang.drink.domain.entity.TasteStatistic;
 import org.complete.challang.drink.domain.entity.criteria.DrinkSortCriteria;
+import org.complete.challang.drink.domain.entity.criteria.DrinkTypeCriteria;
 import org.complete.challang.drink.domain.entity.spec.DrinkSpec;
 import org.complete.challang.drink.domain.repository.DrinkRepository;
 import org.springframework.data.domain.Page;
@@ -91,6 +92,24 @@ public class DrinkService {
         );
         final List<DrinkListFindResponse> drinkListFindResponses = drinks.getContent().stream().
                 map(DrinkListFindResponse::toDto)
+                .toList();
+
+        return DrinkPageResponse.toDto(drinkListFindResponses, drinks, drinkSortCriteria.getDescription());
+    }
+
+    @Transactional(readOnly = true)
+    public DrinkPageResponse<DrinkListFindResponse> findDrinks(final String drinkType,
+                                                               final String sorted,
+                                                               final int page) {
+        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria(sorted);
+        final String type = DrinkTypeCriteria.getPhysicalType(drinkType);
+        final Page<Drink> drinks = drinkRepository.findDrinksByTypeOrderByLikes(
+                type,
+                PageRequest.of(page - 1, 8)
+        );
+
+        final List<DrinkListFindResponse> drinkListFindResponses = drinks.getContent().stream()
+                .map(DrinkListFindResponse::toDto)
                 .toList();
 
         return DrinkPageResponse.toDto(drinkListFindResponses, drinks, drinkSortCriteria.getDescription());
