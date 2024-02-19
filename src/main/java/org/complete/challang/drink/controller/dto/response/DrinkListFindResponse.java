@@ -18,7 +18,7 @@ public class DrinkListFindResponse {
 
     private String manufacturerName;
 
-    private String name;
+    private String drinkName;
 
     private double reviewRating;
 
@@ -29,7 +29,7 @@ public class DrinkListFindResponse {
                 .drinkId(drink.getId())
                 .imageUrl(drink.getImageUrl())
                 .manufacturerName(drink.getDrinkManufacturer().getManufacturerName())
-                .name(drink.getName())
+                .drinkName(drink.getName())
                 .reviewRating(drink.getReviewSumRating()/drink.getReviewCount())
                 .build();
     }
