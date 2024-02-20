@@ -11,6 +11,7 @@ import org.complete.challang.account.user.domain.entity.User;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserProfileFindResponse {
 
+    private Long userId;
     private String profileImageUrl;
     private String nickname;
     private String email;
@@ -20,6 +21,7 @@ public class UserProfileFindResponse {
     public static UserProfileFindResponse toDto(final User user,
                                                 final String email) {
         return UserProfileFindResponse.builder()
+                .userId(user.getId())
                 .profileImageUrl(user.getProfileImageUrl())
                 .nickname(user.getNickname())
                 .email(email)
