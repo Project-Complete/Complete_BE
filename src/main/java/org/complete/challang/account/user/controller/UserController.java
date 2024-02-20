@@ -1,17 +1,17 @@
 package org.complete.challang.account.user.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.complete.challang.account.user.controller.dto.request.ProfileUpdateRequest;
+import org.complete.challang.account.user.controller.dto.response.ProfileUpdateResponse;
 import org.complete.challang.account.user.controller.dto.response.UserProfileFindResponse;
 import org.complete.challang.account.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -28,5 +28,15 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userProfileFindResponse);
+    }
+
+    @PatchMapping("/profile_image")
+    public ResponseEntity<ProfileUpdateResponse> updateProfile(@AuthenticationPrincipal final UserDetails user,
+                                                               @RequestBody @Valid ProfileUpdateRequest profileUpdateRequest) {
+        final Long userId = Long.parseLong(user.getUsername());
+        final ProfileUpdateResponse profileUpdateResponse = userService.updateProfile(userId, profileUpdateRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(profileUpdateResponse);
     }
 }
