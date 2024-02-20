@@ -13,6 +13,9 @@ spring:
       ddl-auto: update
     show-sql: false
     open-in-view: false
+  web:
+    resources:
+      add-mappings: false
 
 logging:
   level:
