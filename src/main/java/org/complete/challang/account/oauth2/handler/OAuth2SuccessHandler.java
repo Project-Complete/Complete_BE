@@ -15,6 +15,7 @@ import org.complete.challang.account.oauth2.util.CookieUtils;
 import org.complete.challang.account.user.domain.entity.SocialType;
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.account.user.domain.repository.UserRepository;
+import org.complete.challang.common.exception.ErrorCode;
 import org.complete.challang.common.exception.FilterErrorResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -61,7 +62,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             clearAuthenticationAttributes(request, response);
             getRedirectStrategy().sendRedirect(request, response, redirectUri);
         } catch (Exception e) {
-            filterErrorResponse.toJson(response, e);
+            filterErrorResponse.toJson(response, e, ErrorCode.OAUTH2_LOGIN_FAILURE);
         }
     }
 
