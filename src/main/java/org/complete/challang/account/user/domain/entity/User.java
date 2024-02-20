@@ -66,7 +66,19 @@ public class User extends BaseEntity {
                 .build();
     }
 
-    public void updateRefreshToken(String refreshToken) {
+    public void updateEmail(final String email) {
+        this.email = email;
+    }
+
+    public void updateNickname(final String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImageUrl(final String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updateRefreshToken(final String refreshToken) {
         this.refreshToken = refreshToken;
     }
 }
