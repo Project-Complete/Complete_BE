@@ -16,12 +16,12 @@ import java.io.IOException;
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
-    private final FilterErrorResponse errorResponse;
+    private final FilterErrorResponse filterErrorResponse;
 
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        errorResponse.toJson(response, ErrorCode.UNAUTHORIZED);
+        filterErrorResponse.toJson(response, accessDeniedException, ErrorCode.FORBIDDEN);
     }
 }

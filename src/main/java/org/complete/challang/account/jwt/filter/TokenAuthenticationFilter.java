@@ -1,7 +1,7 @@
 package org.complete.challang.account.jwt.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +12,8 @@ import org.complete.challang.account.jwt.TokenProvider;
 import org.complete.challang.account.jwt.util.TokenUtil;
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.account.user.domain.repository.UserRepository;
-import org.springframework.http.HttpStatus;
+import org.complete.challang.common.exception.ErrorCode;
+import org.complete.challang.common.exception.FilterErrorResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +30,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
+    private final FilterErrorResponse filterErrorResponse;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -45,10 +47,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(new ObjectMapper().writeValueAsString("Access Token is expired"));
-            response.getWriter().flush();
+            filterErrorResponse.toJson(response, e, ErrorCode.ACCESS_TOKEN_EXPIRED);
+        } catch (JwtException e) {
+            filterErrorResponse.toJson(response, e, ErrorCode.INVALID_TOKEN);
         }
     }
 
@@ -84,7 +85,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     .password("")
                     .roles((String) tokenPayload.get(TokenUtil.ROLE_CLAIM))
                     .build();
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
     }

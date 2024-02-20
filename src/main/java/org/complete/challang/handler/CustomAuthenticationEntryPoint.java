@@ -22,6 +22,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-        filterErrorResponse.toJson(response, ErrorCode.UNAUTHORIZED);
+        filterErrorResponse.toJson(response, authException, ErrorCode.UNAUTHORIZED);
     }
 }

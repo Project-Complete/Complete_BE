@@ -1,6 +1,8 @@
 package org.complete.challang.account.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 
@@ -47,22 +49,13 @@ public class Token {
         if (token == null) {
             return false;
         }
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-//            log.error("Invalid JWT signature");
-            return false;
-        } catch (UnsupportedJwtException e) {
-//            log.error("Unsupported JWT token");
-            return false;
-        } catch (IllegalArgumentException e) {
-//            log.error("JWT token is invalid");
-            return false;
-        }
+
+        Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+
+        return true;
     }
 
     public Map<String, Object> getPayload() {
