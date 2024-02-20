@@ -9,24 +9,17 @@ import org.complete.challang.account.user.domain.entity.User;
 @Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UserProfileFindResponse {
+public class ProfileUpdateResponse {
 
-    private Long userId;
     private String profileImageUrl;
     private String nickname;
     private String email;
-    private Long followers;
-    private Long followings;
 
-    public static UserProfileFindResponse toDto(final User user,
-                                                final String email) {
-        return UserProfileFindResponse.builder()
-                .userId(user.getId())
+    public static ProfileUpdateResponse toDto(final User user) {
+        return ProfileUpdateResponse.builder()
                 .profileImageUrl(user.getProfileImageUrl())
                 .nickname(user.getNickname())
-                .email(email)
-                .followers(user.getFollowers())
-                .followings(user.getFollowings())
+                .email(user.getEmail())
                 .build();
     }
 }
