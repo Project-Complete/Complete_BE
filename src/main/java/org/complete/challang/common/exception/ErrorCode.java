@@ -10,6 +10,9 @@ public enum ErrorCode {
 
     DRINK_RATE_PARAM_INCORRECT("평가 조회 파라미터가 잘못되었습니다", HttpStatus.BAD_REQUEST),
     UNHANDLED_EXCEPTION("API exception에 처리되지 않은 예외입니다", HttpStatus.BAD_REQUEST),
+    UNSUPPORTED_EXTENSION("지원하지 않는 확장자입니다", HttpStatus.BAD_REQUEST),
+    INVALID_FILENAME("파일 이름이 잘못되었습니다", HttpStatus.BAD_REQUEST),
+    INVALID_EXTENSION("파일 확장자가 잘못되었습니다", HttpStatus.BAD_REQUEST),
 
     UNAUTHORIZED("인증되지 않은 사용자입니다", HttpStatus.UNAUTHORIZED),
     ACCESS_TOKEN_EXPIRED("액세스 토큰이 만료되었습니다", HttpStatus.UNAUTHORIZED),
