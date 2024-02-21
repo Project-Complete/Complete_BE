@@ -34,7 +34,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${cors.permit_url}")
+    @Value("${cors.permit-url}")
     private List<String> corsPermitUrl;
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
