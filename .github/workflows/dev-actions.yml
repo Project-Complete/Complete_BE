@@ -78,6 +78,9 @@ jobs:
       NAVER_SECRET: ${{ secrets.NAVER_SECRET }}
       REFRESH_EXP: ${{ secrets.REFRESH_EXP }}
       CORS_PERMIT_URL: ${{ secrets.CORS_PERMIT_URL }}
+      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+      S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
 
     steps:
       # 커스텀 image pull
