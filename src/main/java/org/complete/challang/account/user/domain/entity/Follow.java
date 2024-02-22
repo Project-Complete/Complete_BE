@@ -17,8 +17,8 @@ import org.complete.challang.common.domain.entity.BaseEntity;
 public class Follow extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User toUser;
+    private User fromUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User fromUser;
+    private User toUser;
 }
