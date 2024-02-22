@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     DRINK_RATE_PARAM_INCORRECT("평가 조회 파라미터가 잘못되었습니다", HttpStatus.BAD_REQUEST),
+    INVALID_FOLLOW_REQUEST("사용자 자신을 팔로우 할 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     UNAUTHORIZED("인증되지 않은 사용자입니다", HttpStatus.UNAUTHORIZED),
 
@@ -23,6 +24,7 @@ public enum ErrorCode {
 
     NICKNAME_CONFLICT("해당 닉네임이 이미 존재합니다.", HttpStatus.CONFLICT),
     EMAIL_CONFLICT("해당 이메일이 이미 존재합니다.", HttpStatus.CONFLICT),
+    FOLLOW_CONFLICT("해당 팔로우가 이미 존재합니다.", HttpStatus.CONFLICT),
     ;
 
     private final String message;
