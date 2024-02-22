@@ -33,10 +33,10 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @OneToOne(orphanRemoval = true)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     private Situation situation;
 
-    @OneToOne(orphanRemoval = true)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
     private Taste taste;
 
     @ManyToOne(fetch = FetchType.LAZY)
