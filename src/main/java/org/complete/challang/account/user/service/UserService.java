@@ -64,7 +64,7 @@ public class UserService {
         if (fromUser == toUSer) {
             throw new ApiException(INVALID_FOLLOW_REQUEST);
         }
-        if (followRepository.existsByFromUserIdAndToUserId(fromUser.getId(), toUSer.getId())) {
+        if (followRepository.existsByFromUserAndToUser(fromUser, toUSer)) {
             throw new ApiException(FOLLOW_CONFLICT);
         }
 
@@ -92,8 +92,11 @@ public class UserService {
     @Transactional
     public SuccessCode deleteFollow(final Long requestUserId,
                                     final Long targetUserId) {
+        final User requestUser = findUserById(requestUserId);
+        final User targetUser = findUserById(targetUserId);
 
-        followRepository.deleteByFromUserIdAndToUserID(requestUserId, targetUserId);
+        followRepository.deleteByFromUserAndToUser(requestUser, targetUser);
+
         return FOLLOW_DELETE_SUCCESS;
     }
 
@@ -152,6 +155,9 @@ public class UserService {
 
     private boolean checkFollow(final Long fromUserId,
                                 final Long toUserId) {
-        return followRepository.existsByFromUserIdAndToUserId(fromUserId, toUserId);
+        User fromUser = findUserById(fromUserId);
+        User toUser = findUserById(toUserId);
+
+        return followRepository.existsByFromUserAndToUser(fromUser, toUser);
     }
 }
