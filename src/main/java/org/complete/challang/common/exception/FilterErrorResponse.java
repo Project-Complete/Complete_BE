@@ -15,23 +15,13 @@ public class FilterErrorResponse {
     private final ObjectMapper objectMapper;
 
     public void toJson(HttpServletResponse response,
+                       Exception e,
                        ErrorCode errorCode) throws IOException {
-        ErrorResponse errorResponse = ErrorResponse.toErrorResponse(new ApiException(errorCode));
+        ErrorResponse errorResponse = ErrorResponse.toErrorResponse(new ApiException(errorCode), e);
         String responseBody = objectMapper.writeValueAsString(errorResponse);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(errorCode.getHttpStatus().value());
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(responseBody);
-    }
-
-    public void toJson(HttpServletResponse response,
-                       Exception e) throws IOException {
-        ErrorResponse errorResponse = ErrorResponse.toErrorResponse(e);
-        String responseBody = objectMapper.writeValueAsString(errorResponse);
-
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(errorResponse.getHttpStatus().value());
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(responseBody);
     }

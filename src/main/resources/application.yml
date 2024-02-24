@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    include: jwt, oauth
+    include: jwt, oauth, cloud
 
   jpa:
     properties:
@@ -13,6 +13,9 @@ spring:
       ddl-auto: update
     show-sql: false
     open-in-view: false
+  web:
+    resources:
+      add-mappings: false
 
 logging:
   level:
@@ -26,4 +29,4 @@ springdoc:
     operations-sorter: method  # delete - get - patch - post - put 순으로 정렬
 
 cors:
-  permit_url: ${CORS_PERMIT_URL}
+  permit-url: ${CORS_PERMIT_URL}

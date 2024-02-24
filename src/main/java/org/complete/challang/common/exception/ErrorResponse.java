@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public class ErrorResponse {
 
     private String message;
+    private String rawMessage;
     private HttpStatus httpStatus;
 
     public static ErrorResponse toErrorResponse(ApiException ex) {
@@ -18,10 +19,12 @@ public class ErrorResponse {
                 .build();
     }
 
-    public static ErrorResponse toErrorResponse(Exception e) {
+    public static ErrorResponse toErrorResponse(ApiException ex,
+                                                Exception e) {
         return ErrorResponse.builder()
-                .message(e.getMessage())
-                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .message(ex.getErrorCode().getMessage())
+                .rawMessage(e.getMessage())
+                .httpStatus(ex.getErrorCode().getHttpStatus())
                 .build();
     }
 }

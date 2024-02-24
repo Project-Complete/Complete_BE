@@ -34,7 +34,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${cors.permit_url}")
+    @Value("${cors.permit-url}")
     private List<String> corsPermitUrl;
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
@@ -53,7 +53,8 @@ public class SecurityConfig {
                 .formLogin(FormLoginConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/drink/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(
