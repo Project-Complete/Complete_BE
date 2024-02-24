@@ -96,7 +96,6 @@ public class SecurityConfig {
         return corsConfigSource;
     }
 
-    @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
