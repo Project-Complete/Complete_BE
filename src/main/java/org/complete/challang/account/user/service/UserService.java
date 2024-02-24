@@ -1,7 +1,9 @@
 package org.complete.challang.account.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.complete.challang.account.user.controller.dto.common.FollowDto;
 import org.complete.challang.account.user.controller.dto.request.ProfileUpdateRequest;
+import org.complete.challang.account.user.controller.dto.response.FollowsFindResponse;
 import org.complete.challang.account.user.controller.dto.response.ProfileUpdateResponse;
 import org.complete.challang.account.user.controller.dto.response.UserProfileFindResponse;
 import org.complete.challang.account.user.domain.entity.Follow;
@@ -12,6 +14,9 @@ import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.common.exception.SuccessCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.complete.challang.common.exception.ErrorCode.*;
 import static org.complete.challang.common.exception.SuccessCode.FOLLOW_CREATE_SUCCESS;
@@ -40,7 +45,7 @@ public class UserService {
     @Transactional
     public ProfileUpdateResponse updateProfile(final Long userId,
                                                final ProfileUpdateRequest profileUpdateRequest) {
-        User user = findUserById(userId);
+        final User user = findUserById(userId);
 
         user.updateProfileImageUrl(profileUpdateRequest.getProfileImageUrl());
         updateEmail(user, profileUpdateRequest.getEmail());
@@ -52,8 +57,8 @@ public class UserService {
     @Transactional
     public SuccessCode createFollow(final Long userId,
                                     final Long followId) {
-        User fromUser = findUserById(userId);
-        User toUSer = findUserById(followId);
+        final User fromUser = findUserById(userId);
+        final User toUSer = findUserById(followId);
         if (fromUser == toUSer) {
             throw new ApiException(INVALID_FOLLOW_REQUEST);
         }
@@ -61,13 +66,25 @@ public class UserService {
             throw new ApiException(FOLLOW_CONFLICT);
         }
 
-        Follow follow = Follow.builder()
+        final Follow follow = Follow.builder()
                 .fromUser(fromUser)
                 .toUser(toUSer)
                 .build();
         followRepository.save(follow);
 
         return FOLLOW_CREATE_SUCCESS;
+    }
+
+    @Transactional(readOnly = true)
+    public FollowsFindResponse findFollows(final Long requestUserId,
+                                           final Long userId) {
+        final User requestUser = findUserById(requestUserId);
+        final User targetUser = findUserById(userId);
+
+        final List<FollowDto> followers = findFollowers(requestUser, targetUser);
+        final List<FollowDto> followings = findFollowings(requestUser, targetUser);
+
+        return FollowsFindResponse.toDto(followers, followings);
     }
 
     private User findUserById(final Long userId) {
@@ -95,5 +112,36 @@ public class UserService {
             throw new ApiException(NICKNAME_CONFLICT);
         }
         user.updateNickname(newNickname);
+    }
+
+    private List<FollowDto> findFollowers(final User requestUser,
+                                          final User targetUser) {
+        return targetUser.getFollowers()
+                .stream()
+                .map(follow -> {
+                            final User followUser = follow.getFromUser();
+                            final boolean isFollow = checkFollow(requestUser.getId(), followUser.getId());
+
+                            return FollowDto.toDto(followUser, isFollow);
+                        }
+                ).collect(Collectors.toList());
+    }
+
+    private List<FollowDto> findFollowings(final User requestUser,
+                                           final User targetUser) {
+        return targetUser.getFollowings()
+                .stream()
+                .map(follow -> {
+                            final User followUser = follow.getToUser();
+                            final boolean isFollow = checkFollow(requestUser.getId(), followUser.getId());
+
+                            return FollowDto.toDto(followUser, isFollow);
+                        }
+                ).collect(Collectors.toList());
+    }
+
+    private boolean checkFollow(final Long fromUserId,
+                                final Long toUserId) {
+        return followRepository.existsByFromUserIdAndToUserId(fromUserId, toUserId);
     }
 }
