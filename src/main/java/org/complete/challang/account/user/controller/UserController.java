@@ -24,9 +24,9 @@ public class UserController {
 
     @GetMapping("/{user_id}")
     public ResponseEntity<UserProfileFindResponse> findUserProfile(@AuthenticationPrincipal final UserDetails user,
-                                                                   @PathVariable(name = "user_id", required = false) final Long userId) {
-        final Long myId = Long.parseLong(user.getUsername());
-        final UserProfileFindResponse userProfileFindResponse = userService.findUserProfile(myId, userId);
+                                                                   @PathVariable(name = "user_id", required = false) final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final UserProfileFindResponse userProfileFindResponse = userService.findUserProfile(requestUserId, targetUserId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userProfileFindResponse);
@@ -44,9 +44,9 @@ public class UserController {
 
     @PostMapping("/{user_id}")
     public ResponseEntity<SuccessCode> createFollow(@AuthenticationPrincipal final UserDetails user,
-                                                    @PathVariable("user_id") final Long followId) {
-        final Long userId = Long.parseLong(user.getUsername());
-        final SuccessCode successCode = userService.createFollow(userId, followId);
+                                                    @PathVariable("user_id") final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final SuccessCode successCode = userService.createFollow(requestUserId, targetUserId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(successCode);
@@ -54,11 +54,21 @@ public class UserController {
 
     @GetMapping("/follows/{user_id}")
     public ResponseEntity<FollowsFindResponse> findFollows(@AuthenticationPrincipal final UserDetails user,
-                                                           @PathVariable("user_id") final Long userId) {
+                                                           @PathVariable("user_id") final Long targetUserId) {
         final Long requestUserId = Long.parseLong(user.getUsername());
-        final FollowsFindResponse followsFindResponse = userService.findFollows(requestUserId, userId);
+        final FollowsFindResponse followsFindResponse = userService.findFollows(requestUserId, targetUserId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(followsFindResponse);
+    }
+
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<SuccessCode> deleteFollow(@AuthenticationPrincipal final UserDetails user,
+                                                    @PathVariable("user_id") final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final SuccessCode successCode = userService.deleteFollow(requestUserId, targetUserId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(successCode);
     }
 }
