@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.complete.challang.common.exception.ErrorCode.*;
 import static org.complete.challang.common.exception.SuccessCode.FOLLOW_CREATE_SUCCESS;
+import static org.complete.challang.common.exception.SuccessCode.FOLLOW_DELETE_SUCCESS;
 
 @RequiredArgsConstructor
 @Service
@@ -28,15 +29,15 @@ public class UserService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
-    public UserProfileFindResponse findUserProfile(final Long myId,
-                                                   final Long userId) {
+    public UserProfileFindResponse findUserProfile(final Long requestUserId,
+                                                   final Long targetUserId) {
         User user;
-        if (userId == null) {
-            user = findUserById(myId);
+        if (targetUserId == null) {
+            user = findUserById(requestUserId);
 
             return UserProfileFindResponse.toDto(user, user.getEmail());
         } else {
-            user = findUserById(userId);
+            user = findUserById(targetUserId);
 
             return UserProfileFindResponse.toDto(user, null);
         }
@@ -55,10 +56,11 @@ public class UserService {
     }
 
     @Transactional
-    public SuccessCode createFollow(final Long userId,
-                                    final Long followId) {
-        final User fromUser = findUserById(userId);
-        final User toUSer = findUserById(followId);
+    public SuccessCode createFollow(final Long requestUserId,
+                                    final Long targetUserId) {
+        final User fromUser = findUserById(requestUserId);
+        final User toUSer = findUserById(targetUserId);
+
         if (fromUser == toUSer) {
             throw new ApiException(INVALID_FOLLOW_REQUEST);
         }
@@ -77,14 +79,22 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public FollowsFindResponse findFollows(final Long requestUserId,
-                                           final Long userId) {
+                                           final Long targetUserId) {
         final User requestUser = findUserById(requestUserId);
-        final User targetUser = findUserById(userId);
+        final User targetUser = findUserById(targetUserId);
 
         final List<FollowDto> followers = findFollowers(requestUser, targetUser);
         final List<FollowDto> followings = findFollowings(requestUser, targetUser);
 
         return FollowsFindResponse.toDto(followers, followings);
+    }
+
+    @Transactional
+    public SuccessCode deleteFollow(final Long requestUserId,
+                                    final Long targetUserId) {
+
+        followRepository.deleteByFromUserIdAndToUserID(requestUserId, targetUserId);
+        return FOLLOW_DELETE_SUCCESS;
     }
 
     private User findUserById(final Long userId) {
