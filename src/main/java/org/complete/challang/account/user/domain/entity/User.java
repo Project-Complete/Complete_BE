@@ -34,10 +34,10 @@ public class User extends BaseEntity {
     private String profileImageUrl;
 
     @Builder.Default
-    private Long followers = 0L;
+    private Long followerCount = 0L;
 
     @Builder.Default
-    private Long followings = 0L;
+    private Long followingCount = 0L;
 
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
@@ -55,6 +55,14 @@ public class User extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL)
+    private List<Follow> followers = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
+    private List<Follow> followings = new ArrayList<>();
 
     public CustomOAuth2User toOAuth2User(Map<String, Object> attributes, String nameAttributeKey) {
         return CustomOAuth2User.builder()

@@ -15,8 +15,8 @@ public class UserProfileFindResponse {
     private String profileImageUrl;
     private String nickname;
     private String email;
-    private Long followers;
-    private Long followings;
+    private Long followerCount;
+    private Long followingCount;
 
     public static UserProfileFindResponse toDto(final User user,
                                                 final String email) {
@@ -25,8 +25,8 @@ public class UserProfileFindResponse {
                 .profileImageUrl(user.getProfileImageUrl())
                 .nickname(user.getNickname())
                 .email(email)
-                .followers(user.getFollowers())
-                .followings(user.getFollowings())
+                .followerCount(user.getFollowerCount())
+                .followingCount(user.getFollowingCount())
                 .build();
     }
 }

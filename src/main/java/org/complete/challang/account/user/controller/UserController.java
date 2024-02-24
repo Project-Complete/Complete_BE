@@ -4,9 +4,11 @@ package org.complete.challang.account.user.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.account.user.controller.dto.request.ProfileUpdateRequest;
+import org.complete.challang.account.user.controller.dto.response.FollowsFindResponse;
 import org.complete.challang.account.user.controller.dto.response.ProfileUpdateResponse;
 import org.complete.challang.account.user.controller.dto.response.UserProfileFindResponse;
 import org.complete.challang.account.user.service.UserService;
+import org.complete.challang.common.exception.SuccessCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,15 +24,15 @@ public class UserController {
 
     @GetMapping("/{user_id}")
     public ResponseEntity<UserProfileFindResponse> findUserProfile(@AuthenticationPrincipal final UserDetails user,
-                                                                   @PathVariable(name = "user_id", required = false) final Long userId) {
-        final Long myId = Long.parseLong(user.getUsername());
-        final UserProfileFindResponse userProfileFindResponse = userService.findUserProfile(myId, userId);
+                                                                   @PathVariable(name = "user_id", required = false) final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final UserProfileFindResponse userProfileFindResponse = userService.findUserProfile(requestUserId, targetUserId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userProfileFindResponse);
     }
 
-    @PatchMapping("/profile_image")
+    @PatchMapping()
     public ResponseEntity<ProfileUpdateResponse> updateProfile(@AuthenticationPrincipal final UserDetails user,
                                                                @RequestBody @Valid ProfileUpdateRequest profileUpdateRequest) {
         final Long userId = Long.parseLong(user.getUsername());
@@ -38,5 +40,35 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(profileUpdateResponse);
+    }
+
+    @PostMapping("/{user_id}")
+    public ResponseEntity<SuccessCode> createFollow(@AuthenticationPrincipal final UserDetails user,
+                                                    @PathVariable("user_id") final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final SuccessCode successCode = userService.createFollow(requestUserId, targetUserId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(successCode);
+    }
+
+    @GetMapping("/follows/{user_id}")
+    public ResponseEntity<FollowsFindResponse> findFollows(@AuthenticationPrincipal final UserDetails user,
+                                                           @PathVariable("user_id") final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final FollowsFindResponse followsFindResponse = userService.findFollows(requestUserId, targetUserId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(followsFindResponse);
+    }
+
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<SuccessCode> deleteFollow(@AuthenticationPrincipal final UserDetails user,
+                                                    @PathVariable("user_id") final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final SuccessCode successCode = userService.deleteFollow(requestUserId, targetUserId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(successCode);
     }
 }
