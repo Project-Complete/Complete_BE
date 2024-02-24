@@ -3,8 +3,8 @@ package org.complete.challang.account.user.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.complete.challang.account.user.controller.dto.request.ProfileUpdateRequest;
+import org.complete.challang.account.user.controller.dto.response.FollowsFindResponse;
 import org.complete.challang.account.user.controller.dto.response.ProfileUpdateResponse;
 import org.complete.challang.account.user.controller.dto.response.UserProfileFindResponse;
 import org.complete.challang.account.user.service.UserService;
@@ -50,5 +50,15 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(successCode);
+    }
+
+    @GetMapping("/follows/{user_id}")
+    public ResponseEntity<FollowsFindResponse> findFollows(@AuthenticationPrincipal final UserDetails user,
+                                                           @PathVariable("user_id") final Long userId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final FollowsFindResponse followsFindResponse = userService.findFollows(requestUserId, userId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(followsFindResponse);
     }
 }
