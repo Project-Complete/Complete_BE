@@ -5,7 +5,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.complete.challang.account.user.domain.entity.DrinkBookmark;
 import org.complete.challang.account.user.domain.entity.DrinkLike;
+import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.common.domain.entity.BaseEntity;
+import org.complete.challang.common.exception.ApiException;
+import org.complete.challang.common.exception.ErrorCode;
 import org.complete.challang.drink.controller.dto.response.*;
 import org.complete.challang.review.domain.entity.Review;
 
@@ -62,7 +65,7 @@ public class Drink extends BaseEntity {
     private List<DrinkFood> drinkFoods = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DrinkLike> drinkLikes = new ArrayList<>();
 
     @Builder.Default
@@ -136,5 +139,31 @@ public class Drink extends BaseEntity {
                         .detailType(drinkDetailType.getDetailType())
                         .build())
                 .build();
+    }
+
+    public void likeDrink(User user) {
+        DrinkLike drinkLike = DrinkLike.builder()
+                .user(user)
+                .drink(this)
+                .build();
+
+        if (drinkLikes.contains(drinkLike)) {
+            throw new ApiException(ErrorCode.DRINK_LIKE_CONFLICT);
+        }
+
+        drinkLikes.add(drinkLike);
+    }
+
+    public void unLikeDrink(User user) {
+        DrinkLike drinkLike = DrinkLike.builder()
+                .user(user)
+                .drink(this)
+                .build();
+
+        if (!drinkLikes.contains(drinkLike)) {
+            throw new ApiException(ErrorCode.DRINK_LIKE_NOT_FOUND);
+        }
+
+        drinkLikes.remove(drinkLike);
     }
 }
