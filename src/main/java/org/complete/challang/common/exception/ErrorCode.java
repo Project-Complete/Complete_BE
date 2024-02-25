@@ -29,10 +29,12 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND("리뷰 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     USER_NOT_FOUND("유저 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     API_NOT_FOUND("해당 API 요청이 존재하지 않습니다", HttpStatus.NOT_FOUND),
+    DRINK_LIKE_NOT_FOUND("해당 주류의 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND),
 
     NICKNAME_CONFLICT("해당 닉네임이 이미 존재합니다", HttpStatus.CONFLICT),
     EMAIL_CONFLICT("해당 이메일이 이미 존재합니다", HttpStatus.CONFLICT),
     FOLLOW_CONFLICT("해당 팔로우가 이미 존재합니다", HttpStatus.CONFLICT),
+    DRINK_LIKE_CONFLICT("해당 주류에 이미 좋아요를 하였습니다", HttpStatus.CONFLICT)
     ;
 
     private final String message;

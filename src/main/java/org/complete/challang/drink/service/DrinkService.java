@@ -1,8 +1,12 @@
 package org.complete.challang.drink.service;
 
 import lombok.RequiredArgsConstructor;
+import org.complete.challang.account.user.domain.entity.User;
+import org.complete.challang.account.user.domain.repository.UserRepository;
 import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.common.exception.ErrorCode;
+import org.complete.challang.common.exception.SuccessCode;
+import org.complete.challang.common.exception.SuccessResponse;
 import org.complete.challang.drink.controller.dto.response.DrinkFindResponse;
 import org.complete.challang.drink.controller.dto.response.DrinkListFindResponse;
 import org.complete.challang.drink.controller.dto.response.DrinkPageResponse;
@@ -15,6 +19,7 @@ import org.complete.challang.drink.domain.entity.spec.DrinkSpec;
 import org.complete.challang.drink.domain.repository.DrinkRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +36,7 @@ import java.util.stream.Collectors;
 public class DrinkService {
 
     private final DrinkRepository drinkRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public DrinkFindResponse findDetailDrink(Long drinkId) {
@@ -132,6 +138,28 @@ public class DrinkService {
         final Page<DrinkListFindResponse> drinks = drinkRepository.findAllByType(type, sorted, PageRequest.of(page - 1, 8));
 
         return DrinkPageResponse.toDto(drinks.getContent(), drinks, drinkSortCriteria.getDescription());
+    }
+
+    public SuccessResponse likeDrink(final Long drinkId,
+                                     final UserDetails userDetails) {
+        Drink drink = findDrink(drinkId);
+        Long userId = Long.valueOf(userDetails.getUsername());
+        User user = userRepository.getReferenceById(userId);
+
+        drink.likeDrink(user);
+
+        return SuccessResponse.toSuccessResponse(SuccessCode.DRINK_LIKE_SUCCESS);
+    }
+
+    public SuccessResponse unLikeDrink(final Long drinkId,
+                                       final UserDetails userDetails) {
+        Drink drink = findDrink(drinkId);
+        Long userId = Long.valueOf(userDetails.getUsername());
+        User user = userRepository.getReferenceById(userId);
+
+        drink.unLikeDrink(user);
+
+        return SuccessResponse.toSuccessResponse(SuccessCode.DRINK_LIKE_DELETE_SUCCESS);
     }
 
     private Drink findDrink(final Long drinkId) {
