@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .formLogin(FormLoginConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                        .requestMatchers("/api-test", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/drink/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll()
                         .anyRequest().authenticated()
