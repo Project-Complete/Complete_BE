@@ -9,6 +9,7 @@ import org.complete.challang.account.oauth2.service.CustomOAuth2UserService;
 import org.complete.challang.handler.CustomAccessDeniedHandler;
 import org.complete.challang.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -49,6 +51,7 @@ public class SecurityConfig {
         http.httpBasic(HttpBasicConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .csrf(CsrfConfigurer::disable)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(FormLoginConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -56,6 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("/api-test", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/drink/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll()
+                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
+import lombok.Getter;
 import org.complete.challang.review.controller.dto.item.SituationDto;
 import org.complete.challang.review.controller.dto.item.TasteDto;
 import org.complete.challang.review.controller.dto.item.WriterDto;
@@ -12,6 +13,7 @@ import org.complete.challang.review.domain.entity.Review;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReviewDetailResponse {
