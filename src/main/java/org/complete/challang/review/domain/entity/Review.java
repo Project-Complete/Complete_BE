@@ -46,14 +46,24 @@ public class Review extends BaseEntity {
     private User user;
 
     @Builder.Default
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewFlavor> reviewFlavors = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewFood> reviewFoods = new ArrayList<>();
 
     public void deleteReview() {
         super.delete();
+    }
+
+    public void addReviewFlavor(ReviewFlavor reviewFlavor) {
+        reviewFlavors.add(reviewFlavor);
+        reviewFlavor.updateReview(this);
+    }
+
+    public void addReviewFood(ReviewFood reviewFood) {
+        reviewFoods.add(reviewFood);
+        reviewFood.updateReview(this);
     }
 }
