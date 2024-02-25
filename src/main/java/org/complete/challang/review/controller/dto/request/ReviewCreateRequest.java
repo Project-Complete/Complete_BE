@@ -42,9 +42,7 @@ public class ReviewCreateRequest {
     private List<Long> foods;
 
     public Review toEntity(final Drink drink,
-                           final User user,
-                           final List<ReviewFlavor> reviewFlavors,
-                           final List<ReviewFood> reviewFoods) {
+                           final User user) {
         return Review.builder()
                 .imageUrl(imageUrl)
                 .rating(rating)
@@ -53,8 +51,6 @@ public class ReviewCreateRequest {
                 .taste(tasteDto.toEntity())
                 .drink(drink)
                 .user(user)
-                .reviewFlavors(reviewFlavors)
-                .reviewFoods(reviewFoods)
                 .build();
     }
 }

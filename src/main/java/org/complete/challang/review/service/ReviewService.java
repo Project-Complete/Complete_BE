@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.complete.challang.common.exception.ErrorCode.*;
@@ -60,9 +59,10 @@ public class ReviewService {
                 reviewCreateRequest.getSituationDto(),
                 reviewCreateRequest.getTasteDto());
 
-        final List<ReviewFlavor> reviewFlavors = createReviewFlavors(reviewCreateRequest.getFlavors());
-        final List<ReviewFood> reviewFoods = createReviewFoods(reviewCreateRequest.getFoods());
-        final Review review = reviewCreateRequest.toEntity(savedDrink, user, reviewFlavors, reviewFoods);
+        final Review review = reviewCreateRequest.toEntity(savedDrink, user);
+        createReviewFlavors(reviewCreateRequest.getFlavors(), review);
+        createReviewFoods(reviewCreateRequest.getFoods(), review);
+
         final Review savedReview = reviewRepository.save(review);
 
         return ReviewCreateResponse.toDto(savedReview);
@@ -95,14 +95,15 @@ public class ReviewService {
                 .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
 
         return ReviewDetailResponse.toDto(review,
-                review.getReviewFoods()
-                        .stream()
-                        .map(reviewFood -> reviewFood.getFood().getCategory())
-                        .collect(toList()),
                 review.getReviewFlavors()
                         .stream()
                         .map(reviewFlavor -> reviewFlavor.getFlavor().getFlavor())
-                        .collect(toList()));
+                        .collect(toList()),
+                review.getReviewFoods()
+                        .stream()
+                        .map(reviewFood -> reviewFood.getFood().getCategory())
+                        .collect(toList())
+        );
     }
 
     @Transactional
@@ -143,22 +144,30 @@ public class ReviewService {
         downgradeDrinkTasteStatistic(drink.getTasteStatistic(), taste);
     }
 
-    private List<ReviewFlavor> createReviewFlavors(final List<Long> flavors) {
-        return flavors.stream()
-                .map(flavorId -> ReviewFlavor.builder()
-                        .flavor(flavorRepository.findById(flavorId)
-                                .orElseThrow(() -> new ApiException(FLAVOR_NOT_FOUND)))
-                        .build()
-                ).collect(Collectors.toList());
+    private void createReviewFlavors(final List<Long> flavors,
+                                     final Review review) {
+        flavors.stream()
+                .forEach(flavorId -> {
+                            ReviewFlavor reviewFlavor = ReviewFlavor.builder()
+                                    .flavor(flavorRepository.findById(flavorId)
+                                            .orElseThrow(() -> new ApiException(FLAVOR_NOT_FOUND)))
+                                    .build();
+                            review.addReviewFlavor(reviewFlavor);
+                        }
+                );
     }
 
-    private List<ReviewFood> createReviewFoods(final List<Long> foods) {
-        return foods.stream()
-                .map(foodId -> ReviewFood.builder()
-                        .food(foodRepository.findById(foodId)
-                                .orElseThrow(() -> new ApiException(FOOD_NOT_FOUND)))
-                        .build()
-                ).collect(Collectors.toList());
+    private void createReviewFoods(final List<Long> foods,
+                                   final Review review) {
+        foods.stream()
+                .forEach(foodId -> {
+                            ReviewFood reviewFood = ReviewFood.builder()
+                                    .food(foodRepository.findById(foodId)
+                                            .orElseThrow(() -> new ApiException(FOOD_NOT_FOUND)))
+                                    .build();
+                            review.addReviewFood(reviewFood);
+                        }
+                );
     }
 
     private void updateDrinkSituationStatistic(final SituationStatistic situationStatistic,
