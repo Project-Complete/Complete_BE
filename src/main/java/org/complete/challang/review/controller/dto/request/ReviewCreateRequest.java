@@ -3,8 +3,7 @@ package org.complete.challang.review.controller.dto.request;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.review.controller.dto.item.SituationDto;
@@ -17,6 +16,8 @@ import java.util.List;
 
 @Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReviewCreateRequest {
 
@@ -41,9 +42,7 @@ public class ReviewCreateRequest {
     private List<Long> foods;
 
     public Review toEntity(final Drink drink,
-                           final User user,
-                           final List<ReviewFlavor> reviewFlavors,
-                           final List<ReviewFood> reviewFoods) {
+                           final User user) {
         return Review.builder()
                 .imageUrl(imageUrl)
                 .rating(rating)
@@ -52,8 +51,6 @@ public class ReviewCreateRequest {
                 .taste(tasteDto.toEntity())
                 .drink(drink)
                 .user(user)
-                .reviewFlavors(reviewFlavors)
-                .reviewFoods(reviewFoods)
                 .build();
     }
 }

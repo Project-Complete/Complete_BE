@@ -1,11 +1,12 @@
 package org.complete.challang.review.controller.dto.item;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.complete.challang.review.domain.entity.Situation;
 
 @Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class SituationDto {
 
     @Builder.Default

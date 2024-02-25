@@ -22,4 +22,8 @@ public class ReviewFood extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Review review;
+
+    public void updateReview(Review review) {
+        this.review = review;
+    }
 }
