@@ -3,11 +3,13 @@ package org.complete.challang.review.controller.dto.response;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
+import lombok.Getter;
 import org.complete.challang.common.dto.PageInfoDto;
 import org.complete.challang.review.controller.dto.item.ReviewDto;
 
 import java.util.List;
 
+@Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReviewListFindResponse {
