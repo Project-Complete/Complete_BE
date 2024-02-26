@@ -24,15 +24,16 @@ public class DrinkListFindResponse {
 
     private double reviewRating;
 
-    // private boolean drniklike;
-
-    public static DrinkListFindResponse toDto(Drink drink){
+    public static DrinkListFindResponse toDto(Drink drink,
+                                              Long userId) {
         return DrinkListFindResponse.builder()
                 .drinkId(drink.getId())
                 .imageUrl(drink.getImageUrl())
                 .manufacturerName(drink.getDrinkManufacturer().getManufacturerName())
+                .drinkLike(drink.getDrinkLikes().stream()
+                        .anyMatch(drinkLike -> drinkLike.getUser().getId().equals(userId)))
                 .drinkName(drink.getName())
-                .reviewRating(drink.getReviewSumRating()/drink.getReviewCount())
+                .reviewRating(drink.getReviewSumRating() / drink.getReviewCount())
                 .build();
     }
 }
