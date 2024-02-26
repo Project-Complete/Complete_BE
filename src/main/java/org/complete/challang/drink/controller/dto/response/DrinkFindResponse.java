@@ -22,6 +22,8 @@ public class DrinkFindResponse {
 
     private String summary;
 
+    private boolean drinkLike;
+
     private ManufacturerFindResponse manufacturer;
 
     private double reviewRating;
@@ -52,5 +54,9 @@ public class DrinkFindResponse {
                                 List<FlavorStatisticFindResponse> flavorStatisticFindResponses) {
         foodStatistics = foodStatisticFindResponses;
         flavorStatistics = flavorStatisticFindResponses;
+    }
+
+    public void updateDrinkLike(boolean likeStatus) {
+        drinkLike = likeStatus;
     }
 }
