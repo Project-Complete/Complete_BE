@@ -56,8 +56,10 @@ public class DrinkService {
 
     @Transactional(readOnly = true)
     public DrinkPageResponse<DrinkListFindResponse> findRateDrinks(final Long drinkId,
-                                                                   final String rate) {
+                                                                   final String rate,
+                                                                   final UserDetails userDetails) {
         final Drink drink = findDrink(drinkId);
+        Long userId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L;
 
         // todo: refactor 예정
         String maxField = null;
@@ -84,7 +86,8 @@ public class DrinkService {
             final Page<DrinkListFindResponse> drinkListFindResponses = drinkRepository.findDrinksOrderByMaxFlavor(
                     flavorMaxField,
                     drinkId,
-                    PageRequest.of(0, 4)
+                    PageRequest.of(0, 4),
+                    userId
             );
             return DrinkPageResponse.toDto(
                     drinkListFindResponses.getContent(),
