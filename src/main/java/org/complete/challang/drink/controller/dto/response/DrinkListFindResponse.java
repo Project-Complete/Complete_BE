@@ -18,6 +18,8 @@ public class DrinkListFindResponse {
 
     private String manufacturerName;
 
+    private boolean drinkLike;
+
     private String drinkName;
 
     private double reviewRating;
