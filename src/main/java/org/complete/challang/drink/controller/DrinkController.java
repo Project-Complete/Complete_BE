@@ -27,15 +27,17 @@ public class DrinkController {
 
     @GetMapping("/{drink_id}/search")
     public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findRateDrinks(@PathVariable("drink_id") Long drinkId,
-                                                                                   @RequestParam("rate") String rate) {
-        return new ResponseEntity<>(drinkService.findRateDrinks(drinkId, rate), HttpStatus.OK);
+                                                                                   @RequestParam("rate") String rate,
+                                                                                   @AuthenticationPrincipal UserDetails userDetails) {
+        return new ResponseEntity<>(drinkService.findRateDrinks(drinkId, rate, userDetails), HttpStatus.OK);
     }
 
     @GetMapping("/search")
     public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findDrinks(@RequestParam("drink_type") String drinkType,
                                                                                @RequestParam("sorted") String sorted,
-                                                                               @RequestParam(value = "page", defaultValue = "1") int page) {
-        return new ResponseEntity<>(drinkService.findDrinks(drinkType, sorted, page), HttpStatus.OK);
+                                                                               @RequestParam(value = "page", defaultValue = "1") int page,
+                                                                               @AuthenticationPrincipal UserDetails userDetails) {
+        return new ResponseEntity<>(drinkService.findDrinks(drinkType, sorted, page, userDetails), HttpStatus.OK);
     }
 
     @PostMapping("/{drink_id}/like")
