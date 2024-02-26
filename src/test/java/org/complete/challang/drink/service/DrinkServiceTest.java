@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 
@@ -37,7 +38,7 @@ public class DrinkServiceTest {
         doReturn(Optional.empty()).when(drinkRepository).findById(anyLong());
 
         //when
-        final ApiException result = assertThrows(ApiException.class, () -> drinkService.findDetailDrink(anyLong()));
+        final ApiException result = assertThrows(ApiException.class, () -> drinkService.findDetailDrink(anyLong(), any()));
 
         //then
         assertThat(result.getErrorCode()).isEqualTo(ErrorCode.DRINK_NOT_FOUND);
@@ -51,7 +52,7 @@ public class DrinkServiceTest {
         doReturn(flavorStatisticFindResponses()).when(drinkRepository).findFlavorStatisticById(anyLong());
 
         //when
-        final DrinkFindResponse drinkFindResponse = drinkService.findDetailDrink(anyLong());
+        final DrinkFindResponse drinkFindResponse = drinkService.findDetailDrink(anyLong(), any());
 
         //then
         assertThat(drinkFindResponse.getDrinkId()).isEqualTo(1L);

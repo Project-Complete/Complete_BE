@@ -8,5 +8,6 @@ public interface DrinkCustomRepository {
 
     Page<DrinkListFindResponse> findAllByType(String type,
                                               String sorted,
-                                              Pageable pageable);
+                                              Pageable pageable,
+                                              Long userId);
 }

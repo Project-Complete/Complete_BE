@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,7 +64,7 @@ public class DrinkControllerTest {
         final String url = "/drink/detail/-1";
         doThrow(new ApiException(ErrorCode.DRINK_NOT_FOUND))
                 .when(drinkService)
-                .findDetailDrink(-1L);
+                .findDetailDrink(-1L, any());
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -82,7 +83,7 @@ public class DrinkControllerTest {
                 .drinkId(1L)
                 .build())
                 .when(drinkService)
-                .findDetailDrink(1L);
+                .findDetailDrink(1L, any());
 
         // when
         final ResultActions resultActions = mockMvc.perform(
