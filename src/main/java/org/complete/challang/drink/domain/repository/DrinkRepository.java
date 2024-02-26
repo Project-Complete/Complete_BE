@@ -36,4 +36,11 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>, DrinkQueryR
             + "ORDER BY SIZE(d.drinkLikes) DESC")
     Page<Drink> findDrinksByTypeOrderByLikes(@Param("drinkType") String drinkType,
                                              Pageable pageable);
+
+    @Query("SELECT count(d) > 0 FROM Drink d "
+            + "JOIN d.drinkLikes dl "
+            + "JOIN dl.user u "
+            + "WHERE u.id = :userId AND d.id = :drinkId")
+    boolean existByDrinkLike(@Param("userId") Long userId,
+                             @Param("drinkId") Long drinkId);
 }
