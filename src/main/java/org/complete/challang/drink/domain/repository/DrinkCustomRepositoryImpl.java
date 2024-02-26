@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static org.complete.challang.account.user.domain.entity.QDrinkLike.drinkLike;
 import static org.complete.challang.drink.domain.entity.QDrink.drink;
 import static org.complete.challang.drink.domain.entity.QDrinkType.drinkType1;
 
@@ -26,19 +27,23 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
     @Override
     public Page<DrinkListFindResponse> findAllByType(final String type,
                                                      final String sorted,
-                                                     final Pageable pageable) {
+                                                     final Pageable pageable,
+                                                     final Long userId) {
         List<DrinkListFindResponse> drinks = jpaQueryFactory.select(Projections.constructor(
                         DrinkListFindResponse.class,
                         drink.id,
                         drink.imageUrl,
                         drink.drinkManufacturer.manufacturerName,
+                        drinkLike.count().eq(1L),
                         drink.name,
                         drink.reviewSumRating.divide(drink.reviewCount)
                 ))
                 .from(drink)
                 .join(drink.drinkDetailType.drinkType, drinkType1)//.fetchJoin()
+                .leftJoin(drink.drinkLikes, drinkLike).on(drinkLike.user.id.eq(userId))
                 .where(whereType(type))
                 .orderBy(orderBySort(sorted))
+                .groupBy(drink.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
