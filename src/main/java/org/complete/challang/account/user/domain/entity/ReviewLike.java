@@ -1,9 +1,6 @@
 package org.complete.challang.account.user.domain.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +14,7 @@ import org.complete.challang.review.domain.entity.Review;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @AttributeOverride(name = "id", column = @Column(name = "review_like_id"))
+@Entity
 public class ReviewLike extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
