@@ -16,18 +16,22 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>, DrinkQueryR
 
     Page<Drink> findAll(Specification<Drink> spec, Pageable pageable);
 
-    @Query(value = "select new org.complete.challang.drink.controller.dto.response.DrinkListFindResponse(d.id, d.imageUrl, d.drinkManufacturer.manufacturerName, d.name, d.reviewSumRating/d.reviewCount) "
+    @Query(value = "select new org.complete.challang.drink.controller.dto.response.DrinkListFindResponse(d.id, d.imageUrl, d.drinkManufacturer.manufacturerName, count(u.id) > 0, d.name, d.reviewSumRating/d.reviewCount) "
             + "from Drink d "
             + "left join d.reviews r "
             + "left join r.reviewFlavors rf "
             + "left join rf.flavor f "
             + "on f.flavor = :flavor "
+            + "left join d.drinkLikes dl "
+            + "left join dl.user u "
+            + "on u.id = :userId "
             + "where d.id != :drinkId "
             + "group by d.id "
             + "order by count(f.flavor) desc")
     Page<DrinkListFindResponse> findDrinksOrderByMaxFlavor(@Param("flavor") final String flavor,
                                                            @Param("drinkId") final Long drinkId,
-                                                           final Pageable pageable);
+                                                           final Pageable pageable,
+                                                           @Param("userId") final Long userId);
 
     Optional<Drink> findByIdAndIsActiveTrue(Long drinkId);
 
