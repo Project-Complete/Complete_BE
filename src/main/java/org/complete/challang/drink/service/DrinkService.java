@@ -103,8 +103,8 @@ public class DrinkService {
                 DrinkSpec.orderByRate(drinkSortCriteria, drinkId),
                 PageRequest.of(0, 4)
         );
-        final List<DrinkListFindResponse> drinkListFindResponses = drinks.getContent().stream().
-                map(DrinkListFindResponse::toDto)
+        final List<DrinkListFindResponse> drinkListFindResponses = drinks.getContent().stream()
+                .map(e -> DrinkListFindResponse.toDto(e, userId))
                 .toList();
 
         return DrinkPageResponse.toDto(drinkListFindResponses, drinks, drinkSortCriteria.getDescription());
