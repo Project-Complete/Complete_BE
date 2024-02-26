@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.complete.challang.account.user.domain.entity.ReviewLike;
 import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.common.domain.entity.BaseEntity;
 import org.complete.challang.drink.domain.entity.Drink;
@@ -52,6 +53,10 @@ public class Review extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewFood> reviewFoods = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewLike> reviewLikes = new ArrayList<>();
 
     public void deleteReview() {
         super.delete();
