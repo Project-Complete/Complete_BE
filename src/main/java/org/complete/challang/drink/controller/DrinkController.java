@@ -20,8 +20,9 @@ public class DrinkController {
     private final DrinkService drinkService;
 
     @GetMapping("/detail/{drink_id}")
-    public ResponseEntity<DrinkFindResponse> findDetailDrink(@PathVariable("drink_id") Long drinkId) {
-        return new ResponseEntity<>(drinkService.findDetailDrink(drinkId), HttpStatus.OK);
+    public ResponseEntity<DrinkFindResponse> findDetailDrink(@PathVariable("drink_id") Long drinkId,
+                                                             @AuthenticationPrincipal UserDetails userDetails) {
+        return new ResponseEntity<>(drinkService.findDetailDrink(drinkId, userDetails), HttpStatus.OK);
     }
 
     @GetMapping("/{drink_id}/search")
