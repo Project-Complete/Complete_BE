@@ -110,39 +110,19 @@ public class DrinkService {
         return DrinkPageResponse.toDto(drinkListFindResponses, drinks, drinkSortCriteria.getDescription());
     }
 
-    /**
-     * 이전 버전 백업 (삭제예정)
-     *
-     * @param drinkType
-     * @param sorted
-     * @param page
-     * @return
-     */
-    @Transactional(readOnly = true)
-    public DrinkPageResponse<DrinkListFindResponse> prevFindDrinks(final String drinkType,
-                                                                   final String sorted,
-                                                                   final int page) {
-        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria(sorted);
-        final String type = DrinkTypeCriteria.getPhysicalType(drinkType);
-        final Page<Drink> drinks = drinkRepository.findDrinksByTypeOrderByLikes(
-                type,
-                PageRequest.of(page - 1, 8)
-        );
-
-        final List<DrinkListFindResponse> drinkListFindResponses = drinks.getContent().stream()
-                .map(DrinkListFindResponse::toDto)
-                .toList();
-
-        return DrinkPageResponse.toDto(drinkListFindResponses, drinks, drinkSortCriteria.getDescription());
-    }
-
     @Transactional(readOnly = true)
     public DrinkPageResponse<DrinkListFindResponse> findDrinks(final String drinkType,
                                                                final String sorted,
-                                                               final int page) {
+                                                               final int page,
+                                                               final UserDetails userDetails) {
         final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria(sorted);
         final String type = DrinkTypeCriteria.getPhysicalType(drinkType);
-        final Page<DrinkListFindResponse> drinks = drinkRepository.findAllByType(type, sorted, PageRequest.of(page - 1, 8));
+        final Page<DrinkListFindResponse> drinks = drinkRepository.findAllByType(
+                type,
+                sorted,
+                PageRequest.of(page - 1, 8),
+                userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L
+        );
 
         return DrinkPageResponse.toDto(drinks.getContent(), drinks, drinkSortCriteria.getDescription());
     }
