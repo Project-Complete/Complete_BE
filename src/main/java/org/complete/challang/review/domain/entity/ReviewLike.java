@@ -1,4 +1,4 @@
-package org.complete.challang.account.user.domain.entity;
+package org.complete.challang.review.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.complete.challang.account.user.domain.entity.User;
 import org.complete.challang.common.domain.entity.BaseEntity;
-import org.complete.challang.review.domain.entity.Review;
 
 @Getter
 @SuperBuilder

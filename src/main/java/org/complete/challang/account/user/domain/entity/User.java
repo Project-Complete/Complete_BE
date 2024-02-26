@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.complete.challang.account.oauth2.CustomOAuth2User;
 import org.complete.challang.common.domain.entity.BaseEntity;
 import org.complete.challang.review.domain.entity.Review;
+import org.complete.challang.review.domain.entity.ReviewLike;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
