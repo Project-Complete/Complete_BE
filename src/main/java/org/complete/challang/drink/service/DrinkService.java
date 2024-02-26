@@ -39,13 +39,17 @@ public class DrinkService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public DrinkFindResponse findDetailDrink(Long drinkId) {
-        Drink drink = findDrink(drinkId);
-        DrinkFindResponse drinkFindResponse = drink.toDto();
+    public DrinkFindResponse findDetailDrink(final Long drinkId,
+                                             final UserDetails userDetails) {
+        final Drink drink = findDrink(drinkId);
+        final DrinkFindResponse drinkFindResponse = drink.toDto();
         drinkFindResponse.updateStatistic(
                 drinkRepository.findFoodStatisticById(drinkId),
                 drinkRepository.findFlavorStatisticById(drinkId)
         );
+
+        Long userId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L;
+        drinkFindResponse.updateDrinkLike(drinkRepository.existByDrinkLike(userId, drinkId));
 
         return drinkFindResponse;
     }
