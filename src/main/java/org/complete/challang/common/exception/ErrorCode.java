@@ -27,6 +27,7 @@ public enum ErrorCode {
     DRINK_LIKE_NOT_FOUND("해당 주류의 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     DRINK_NOT_FOUND("음료 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     FLAVOR_NOT_FOUND("향 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
+    FOLLOW_NOT_FOUND("팔로우 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     FOOD_NOT_FOUND("음식 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     REVIEW_LIKE_NOT_FOUND("해당 리뷰의 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     REVIEW_NOT_FOUND("리뷰 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
