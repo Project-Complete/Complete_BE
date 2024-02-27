@@ -32,7 +32,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.complete.challang.common.exception.ErrorCode.*;
-import static org.complete.challang.common.exception.SuccessCode.REVIEW_LIKE_SUCCESS;
+import static org.complete.challang.common.exception.SuccessCode.*;
 
 
 @RequiredArgsConstructor
@@ -120,7 +120,7 @@ public class ReviewService {
                 review.getTaste());
         review.deleteReview();
 
-        return SuccessCode.REVIEW_DELETE_SUCCESS;
+        return REVIEW_DELETE_SUCCESS;
     }
 
     @Transactional
@@ -140,6 +140,20 @@ public class ReviewService {
         reviewLikeRepository.save(reviewLike);
 
         return REVIEW_LIKE_SUCCESS;
+    }
+
+    @Transactional
+    public SuccessCode deleteReviewLike(final Long userId,
+                                        final Long reviewId) {
+        final User user = findUserById(userId);
+        final Review review = findReviewById(reviewId);
+
+        if (!reviewLikeRepository.existsByUserAndReview(user, review)) {
+            throw new ApiException(REVIEW_LIKE_NOT_FOUND);
+        }
+        reviewLikeRepository.deleteByUserAndReview(user, review);
+
+        return REVIEW_LIKE_DELETE_SUCCESS;
     }
 
     private User findUserById(final Long userId) {
