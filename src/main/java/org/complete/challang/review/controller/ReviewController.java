@@ -65,7 +65,18 @@ public class ReviewController {
                                                         @PathVariable("review_id") final Long reviewId) {
         final Long userId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = reviewService.createReviewLike(userId, reviewId);
+
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(successCode);
+    }
+
+    @DeleteMapping("/like/{review_id}")
+    public ResponseEntity<SuccessCode> deleteReviewLike(@AuthenticationPrincipal final UserDetails user,
+                                                        @PathVariable("review_id") final Long reviewId) {
+        final Long userId = Long.parseLong(user.getUsername());
+        final SuccessCode successCode = reviewService.deleteReviewLike(userId, reviewId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(successCode);
     }
 }
