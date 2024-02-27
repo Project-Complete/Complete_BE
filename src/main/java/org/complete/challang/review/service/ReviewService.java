@@ -21,6 +21,7 @@ import org.complete.challang.review.controller.dto.response.ReviewListFindRespon
 import org.complete.challang.review.domain.entity.*;
 import org.complete.challang.review.domain.repository.FlavorRepository;
 import org.complete.challang.review.domain.repository.ReviewCustomRepositoryImpl;
+import org.complete.challang.review.domain.repository.ReviewLikeRepository;
 import org.complete.challang.review.domain.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.complete.challang.common.exception.ErrorCode.*;
+import static org.complete.challang.common.exception.SuccessCode.REVIEW_LIKE_SUCCESS;
 
 
 @RequiredArgsConstructor
@@ -44,6 +46,7 @@ public class ReviewService {
     private final FoodRepository foodRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewCustomRepositoryImpl reviewCustomRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -118,6 +121,25 @@ public class ReviewService {
         review.deleteReview();
 
         return SuccessCode.REVIEW_DELETE_SUCCESS;
+    }
+
+    @Transactional
+    public SuccessCode createReviewLike(final Long userId,
+                                        final Long reviewId) {
+        final User user = findUserById(userId);
+        final Review review = findReviewById(reviewId);
+
+        if (reviewLikeRepository.existsByUserAndReview(user, review)) {
+            throw new ApiException(REVIEW_LIKE_CONFLICT);
+        }
+
+        final ReviewLike reviewLike = ReviewLike.builder()
+                .user(user)
+                .review(review)
+                .build();
+        reviewLikeRepository.save(reviewLike);
+
+        return REVIEW_LIKE_SUCCESS;
     }
 
     private User findUserById(final Long userId) {
