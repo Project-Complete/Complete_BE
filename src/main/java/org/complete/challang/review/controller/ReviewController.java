@@ -59,4 +59,13 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(successCode);
     }
+
+    @PostMapping("/like/{review_id}")
+    public ResponseEntity<SuccessCode> createReviewLike(@AuthenticationPrincipal final UserDetails user,
+                                                        @PathVariable("review_id") final Long reviewId) {
+        final Long userId = Long.parseLong(user.getUsername());
+        final SuccessCode successCode = reviewService.createReviewLike(userId, reviewId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(successCode);
+    }
 }
