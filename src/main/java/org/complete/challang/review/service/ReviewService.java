@@ -49,8 +49,7 @@ public class ReviewService {
     @Transactional
     public ReviewCreateResponse createReview(final ReviewCreateRequest reviewCreateRequest,
                                              final Long userId) {
-        final User user = userRepository.findByIdAndIsActiveTrue(userId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        final User user = findUserById(userId);
         final Drink drink = drinkRepository.findByIdAndIsActiveTrue(reviewCreateRequest.getDrinkId())
                 .orElseThrow(() -> new ApiException(DRINK_NOT_FOUND));
 
@@ -91,8 +90,7 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public ReviewDetailResponse findReviewDetail(final Long reviewId) {
-        final Review review = reviewRepository.findByIdAndIsActiveTrue(reviewId)
-                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
+        final Review review = findReviewById(reviewId);
 
         return ReviewDetailResponse.toDto(review,
                 review.getReviewFlavors()
@@ -120,6 +118,16 @@ public class ReviewService {
         review.deleteReview();
 
         return SuccessCode.REVIEW_DELETE_SUCCESS;
+    }
+
+    private User findUserById(final Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+    }
+
+    private Review findReviewById(final Long reviewId) {
+        return reviewRepository.findByIdAndIsActiveTrue(reviewId)
+                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
     }
 
     private Drink updateDrink(final Drink drink,
