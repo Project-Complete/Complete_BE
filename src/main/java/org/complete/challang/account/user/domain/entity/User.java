@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.complete.challang.account.oauth2.CustomOAuth2User;
 import org.complete.challang.common.domain.entity.BaseEntity;
 import org.complete.challang.review.domain.entity.Review;
+import org.complete.challang.review.domain.entity.ReviewLike;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
@@ -63,6 +64,10 @@ public class User extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
     private List<Follow> followings = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ReviewLike> reviewLikes = new ArrayList<>();
 
     public CustomOAuth2User toOAuth2User(Map<String, Object> attributes, String nameAttributeKey) {
         return CustomOAuth2User.builder()
