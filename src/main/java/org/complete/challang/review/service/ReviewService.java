@@ -21,6 +21,7 @@ import org.complete.challang.review.controller.dto.response.ReviewListFindRespon
 import org.complete.challang.review.domain.entity.*;
 import org.complete.challang.review.domain.repository.FlavorRepository;
 import org.complete.challang.review.domain.repository.ReviewCustomRepositoryImpl;
+import org.complete.challang.review.domain.repository.ReviewLikeRepository;
 import org.complete.challang.review.domain.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.complete.challang.common.exception.ErrorCode.*;
+import static org.complete.challang.common.exception.SuccessCode.*;
 
 
 @RequiredArgsConstructor
@@ -44,13 +46,13 @@ public class ReviewService {
     private final FoodRepository foodRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewCustomRepositoryImpl reviewCustomRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
     private final UserRepository userRepository;
 
     @Transactional
     public ReviewCreateResponse createReview(final ReviewCreateRequest reviewCreateRequest,
                                              final Long userId) {
-        final User user = userRepository.findByIdAndIsActiveTrue(userId)
-                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        final User user = findUserById(userId);
         final Drink drink = drinkRepository.findByIdAndIsActiveTrue(reviewCreateRequest.getDrinkId())
                 .orElseThrow(() -> new ApiException(DRINK_NOT_FOUND));
 
@@ -91,8 +93,7 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public ReviewDetailResponse findReviewDetail(final Long reviewId) {
-        final Review review = reviewRepository.findByIdAndIsActiveTrue(reviewId)
-                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
+        final Review review = findReviewById(reviewId);
 
         return ReviewDetailResponse.toDto(review,
                 review.getReviewFlavors()
@@ -119,7 +120,50 @@ public class ReviewService {
                 review.getTaste());
         review.deleteReview();
 
-        return SuccessCode.REVIEW_DELETE_SUCCESS;
+        return REVIEW_DELETE_SUCCESS;
+    }
+
+    @Transactional
+    public SuccessCode createReviewLike(final Long userId,
+                                        final Long reviewId) {
+        final User user = findUserById(userId);
+        final Review review = findReviewById(reviewId);
+
+        if (reviewLikeRepository.existsByUserAndReview(user, review)) {
+            throw new ApiException(REVIEW_LIKE_CONFLICT);
+        }
+
+        final ReviewLike reviewLike = ReviewLike.builder()
+                .user(user)
+                .review(review)
+                .build();
+        reviewLikeRepository.save(reviewLike);
+
+        return REVIEW_LIKE_SUCCESS;
+    }
+
+    @Transactional
+    public SuccessCode deleteReviewLike(final Long userId,
+                                        final Long reviewId) {
+        final User user = findUserById(userId);
+        final Review review = findReviewById(reviewId);
+
+        if (!reviewLikeRepository.existsByUserAndReview(user, review)) {
+            throw new ApiException(REVIEW_LIKE_NOT_FOUND);
+        }
+        reviewLikeRepository.deleteByUserAndReview(user, review);
+
+        return REVIEW_LIKE_DELETE_SUCCESS;
+    }
+
+    private User findUserById(final Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+    }
+
+    private Review findReviewById(final Long reviewId) {
+        return reviewRepository.findByIdAndIsActiveTrue(reviewId)
+                .orElseThrow(() -> new ApiException(REVIEW_NOT_FOUND));
     }
 
     private Drink updateDrink(final Drink drink,

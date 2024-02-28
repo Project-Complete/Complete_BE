@@ -95,6 +95,9 @@ public class UserService {
         final User requestUser = findUserById(requestUserId);
         final User targetUser = findUserById(targetUserId);
 
+        if (!followRepository.existsByFromUserAndToUser(requestUser, targetUser)) {
+            throw new ApiException(FOLLOW_NOT_FOUND);
+        }
         followRepository.deleteByFromUserAndToUser(requestUser, targetUser);
 
         return FOLLOW_DELETE_SUCCESS;
