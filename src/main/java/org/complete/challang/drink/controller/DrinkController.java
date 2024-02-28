@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.common.exception.SuccessResponse;
+import org.complete.challang.drink.controller.dto.response.DrinkBannerListFindResponse;
 import org.complete.challang.drink.controller.dto.response.DrinkFindResponse;
 import org.complete.challang.drink.controller.dto.response.DrinkListFindResponse;
 import org.complete.challang.drink.controller.dto.response.DrinkPageResponse;
@@ -58,5 +59,11 @@ public class DrinkController {
     public ResponseEntity<SuccessResponse> deleteLikeDrink(@PathVariable("drink_id") Long drinkId,
                                                            @AuthenticationPrincipal UserDetails userDetails) {
         return new ResponseEntity<>(drinkService.unLikeDrink(drinkId, userDetails), HttpStatus.OK);
+    }
+
+    @Operation(summary = "메인 페이지 주류 배너", description = "메인 페이지 배너 4가지 조회")
+    @GetMapping("/banner")
+    public ResponseEntity<DrinkPageResponse<DrinkBannerListFindResponse>> findDrinksForBanner() {
+        return new ResponseEntity<>(drinkService.findDrinksForBanner(), HttpStatus.OK);
     }
 }

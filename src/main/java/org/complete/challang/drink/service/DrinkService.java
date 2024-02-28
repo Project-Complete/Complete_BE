@@ -7,9 +7,7 @@ import org.complete.challang.common.exception.ApiException;
 import org.complete.challang.common.exception.ErrorCode;
 import org.complete.challang.common.exception.SuccessCode;
 import org.complete.challang.common.exception.SuccessResponse;
-import org.complete.challang.drink.controller.dto.response.DrinkFindResponse;
-import org.complete.challang.drink.controller.dto.response.DrinkListFindResponse;
-import org.complete.challang.drink.controller.dto.response.DrinkPageResponse;
+import org.complete.challang.drink.controller.dto.response.*;
 import org.complete.challang.drink.domain.entity.Drink;
 import org.complete.challang.drink.domain.entity.SituationStatistic;
 import org.complete.challang.drink.domain.entity.TasteStatistic;
@@ -147,6 +145,13 @@ public class DrinkService {
         drink.unLikeDrink(user);
 
         return SuccessResponse.toSuccessResponse(SuccessCode.DRINK_LIKE_DELETE_SUCCESS);
+    }
+
+    public DrinkPageResponse<DrinkBannerListFindResponse> findDrinksForBanner() {
+        final Page<DrinkBannerListFindResponse> drinkBannerListFindResponses = drinkRepository.findForBanner();
+        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria("random_order");
+
+        return DrinkPageResponse.toDto(drinkBannerListFindResponses.getContent(), drinkBannerListFindResponses, drinkSortCriteria.getDescription());
     }
 
     private Drink findDrink(final Long drinkId) {
