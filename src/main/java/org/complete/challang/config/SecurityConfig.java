@@ -1,15 +1,14 @@
 package org.complete.challang.config;
 
 import lombok.RequiredArgsConstructor;
-import org.complete.challang.account.jwt.filter.TokenAuthenticationFilter;
-import org.complete.challang.account.oauth2.handler.OAuth2FailureHandler;
-import org.complete.challang.account.oauth2.handler.OAuth2SuccessHandler;
-import org.complete.challang.account.oauth2.repository.HttpCookieOAuth2AuthorizationRequestRepository;
-import org.complete.challang.account.oauth2.service.CustomOAuth2UserService;
-import org.complete.challang.handler.CustomAccessDeniedHandler;
-import org.complete.challang.handler.CustomAuthenticationEntryPoint;
+import org.complete.challang.app.account.jwt.filter.TokenAuthenticationFilter;
+import org.complete.challang.app.account.oauth2.handler.OAuth2FailureHandler;
+import org.complete.challang.app.account.oauth2.handler.OAuth2SuccessHandler;
+import org.complete.challang.app.account.oauth2.repository.HttpCookieOAuth2AuthorizationRequestRepository;
+import org.complete.challang.app.account.oauth2.service.CustomOAuth2UserService;
+import org.complete.challang.app.account.jwt.handler.CustomAccessDeniedHandler;
+import org.complete.challang.app.account.jwt.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

@@ -1,13 +1,14 @@
 package org.complete.challang.drink.service;
 
-import org.complete.challang.common.exception.ApiException;
-import org.complete.challang.common.exception.ErrorCode;
-import org.complete.challang.drink.domain.entity.Package;
-import org.complete.challang.drink.domain.entity.*;
-import org.complete.challang.drink.controller.dto.response.DrinkFindResponse;
-import org.complete.challang.drink.controller.dto.response.FlavorStatisticFindResponse;
-import org.complete.challang.drink.controller.dto.response.FoodStatisticFindResponse;
-import org.complete.challang.drink.domain.repository.DrinkRepository;
+import org.complete.challang.app.drink.domain.entity.*;
+import org.complete.challang.app.drink.domain.entity.Package;
+import org.complete.challang.app.drink.service.DrinkService;
+import org.complete.challang.app.common.exception.ApiException;
+import org.complete.challang.app.common.exception.ErrorCode;
+import org.complete.challang.app.drink.controller.dto.response.DrinkFindResponse;
+import org.complete.challang.app.drink.controller.dto.item.FlavorStatisticDto;
+import org.complete.challang.app.drink.controller.dto.item.FoodStatisticDto;
+import org.complete.challang.app.drink.domain.repository.DrinkRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -70,13 +71,13 @@ public class DrinkServiceTest {
     }
 
 
-    private List<FlavorStatisticFindResponse> flavorStatisticFindResponses() {
-        return List.of(FlavorStatisticFindResponse.builder()
+    private List<FlavorStatisticDto> flavorStatisticFindResponses() {
+        return List.of(FlavorStatisticDto.builder()
                         .flavorId(1L)
                         .flavor("만다린")
                         .count(2L)
                         .build(),
-                FlavorStatisticFindResponse.builder()
+                FlavorStatisticDto.builder()
                         .flavorId(2L)
                         .flavor("베리")
                         .count(1L)
@@ -84,14 +85,14 @@ public class DrinkServiceTest {
         );
     }
 
-    private List<FoodStatisticFindResponse> foodStatisticFindResponses() {
-        return List.of(FoodStatisticFindResponse.builder()
+    private List<FoodStatisticDto> foodStatisticFindResponses() {
+        return List.of(FoodStatisticDto.builder()
                         .foodId(1L)
                         .category("육류")
                         .imageUrl("http://localhost")
                         .count(2L)
                         .build(),
-                FoodStatisticFindResponse.builder()
+                FoodStatisticDto.builder()
                         .foodId(2L)
                         .category("가공육")
                         .imageUrl("http://localhost")

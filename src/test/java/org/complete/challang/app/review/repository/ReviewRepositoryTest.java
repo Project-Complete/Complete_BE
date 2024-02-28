@@ -1,9 +1,9 @@
 package org.complete.challang.app.review.repository;
 
-import org.complete.challang.account.user.domain.entity.User;
-import org.complete.challang.drink.domain.entity.Drink;
-import org.complete.challang.review.domain.entity.*;
-import org.complete.challang.review.domain.repository.ReviewRepository;
+import org.complete.challang.app.account.user.domain.entity.User;
+import org.complete.challang.app.drink.domain.entity.Drink;
+import org.complete.challang.app.review.domain.entity.*;
+import org.complete.challang.app.review.domain.repository.ReviewRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
