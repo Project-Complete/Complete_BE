@@ -21,6 +21,7 @@ public enum DrinkSortCriteria {
     DRINK_ALONE_RATING_DESC("aloneSum", "situationStatistic", "혼자순으로 정렬", null),
     DRINK_BUSINESS_RATING_DESC("businessSum", "situationStatistic", "비즈니스순으로 정렬", null),
     DRINK_FRIEND_RATING_DESC("friendSum", "situationStatistic", "친구순으로 정렬", null),
+
     DRINK_FRUITY_RATING_DESC("과일", null, "과일순으로 정렬", null),
     DRINK_PLANT_RATING_DESC("식물", null, "식물순으로 정렬", null),
     DRINK_GRAINY_RATING_DESC("곡물", null, "곡물순으로 정렬", null),
@@ -31,8 +32,10 @@ public enum DrinkSortCriteria {
     DRINK_FERMENTED_RATING_DESC("발효", null, "발효순으로 정렬", null),
     DRINK_SWEET_FLAVOR_RATING_DESC("달콤", null, "달콤순으로 정렬", null),
     DRINK_ETC_RATING_DESC("기타", null, "기타순으로 정렬", null),
+
     DRINK_POPULARITY_DESC("popularity_order", null, "인기순으로 정렬", null),
-    DRINK_LATEST_DESC("latest_order", null, "최신순으로 정렬", null);
+    DRINK_LATEST_DESC("latest_order", null, "최신순으로 정렬", null),
+    DRINK_RANDOM_DESC("random_order", null, "랜덤순으로 정렬", null);
 
     private final String value;
     private final String embeddedValue;
