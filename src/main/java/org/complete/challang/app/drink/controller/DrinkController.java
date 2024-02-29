@@ -70,4 +70,11 @@ public class DrinkController {
 
         return new ResponseEntity<>(drinkService.findDrinksForBanner(), HttpStatus.OK);
     }
+
+    @Operation(summary = "주류 추가", description = "주류 추가 (관리자 기능)")
+    @PostMapping
+    public ResponseEntity<DrinkCreateResponse> createDrink(@RequestBody final DrinkCreateRequest drinkCreateRequest) {
+
+        return new ResponseEntity<>(drinkService.createDrink(drinkCreateRequest), HttpStatus.OK);
+    }
 }

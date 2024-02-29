@@ -2,12 +2,12 @@ package org.complete.challang.config;
 
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.app.account.jwt.filter.TokenAuthenticationFilter;
+import org.complete.challang.app.account.jwt.handler.CustomAccessDeniedHandler;
+import org.complete.challang.app.account.jwt.handler.CustomAuthenticationEntryPoint;
 import org.complete.challang.app.account.oauth2.handler.OAuth2FailureHandler;
 import org.complete.challang.app.account.oauth2.handler.OAuth2SuccessHandler;
 import org.complete.challang.app.account.oauth2.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.complete.challang.app.account.oauth2.service.CustomOAuth2UserService;
-import org.complete.challang.app.account.jwt.handler.CustomAccessDeniedHandler;
-import org.complete.challang.app.account.jwt.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,9 +56,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers("/api-test", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/drink/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/drinks/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/drinks").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(
