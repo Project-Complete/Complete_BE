@@ -160,6 +160,31 @@ public class DrinkService {
         return DrinkPageResponse.toDto(drinkBannerListFindResponses.getContent(), drinkBannerListFindResponses, drinkSortCriteria.getDescription());
     }
 
+    @Transactional
+    public DrinkCreateResponse createDrink(final DrinkCreateRequest drinkCreateRequest) {
+        final Drink drink = drinkCreateRequest.toEntity();
+
+        final DrinkDetailType drinkDetailType = drinkDetailTypeRepository
+                .findByDetailType(drinkCreateRequest.getDrinkType().getDetailType())
+                .orElseThrow(() -> new ApiException(ErrorCode.DRINK_TYPE_NOT_FOUND));
+        final DrinkManufacturer drinkManufacturer = drinkManufacturerRepository
+                .findByManufacturerName(drinkCreateRequest.getManufacturer().getManufacturerName())
+                .orElseThrow(() -> new ApiException(ErrorCode.DRINK_MANUFACTURER_NOT_FOUND));
+
+        drink.updateDrinkManufacturer(drinkManufacturer);
+        drink.updateDrinkDetailType(drinkDetailType);
+        drinkCreateRequest.getPackages().forEach(packages -> {
+            final Package drinkPackage = packageRepository.findByTypeAndVolume(packages.getType(), packages.getVolume())
+                    .orElseThrow(() -> new ApiException(ErrorCode.DRINK_PACKAGE_NOT_FOUND));
+
+            drink.addDrinkPackages(drinkPackage);
+        });
+
+        drinkRepository.save(drink);
+
+        return DrinkCreateResponse.toDto(drink);
+    }
+
     private Drink findDrink(final Long drinkId) {
         return drinkRepository.findById(drinkId).orElseThrow(() -> new ApiException(ErrorCode.DRINK_NOT_FOUND));
     }

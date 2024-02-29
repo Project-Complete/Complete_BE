@@ -32,12 +32,16 @@ public enum ErrorCode {
     REVIEW_LIKE_NOT_FOUND("해당 리뷰의 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     REVIEW_NOT_FOUND("리뷰 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     USER_NOT_FOUND("유저 정보가 존재하지 않습니다", HttpStatus.NOT_FOUND),
+    DRINK_TYPE_NOT_FOUND("세부 주류 타입이 존재하지 않습니다", HttpStatus.NOT_FOUND),
+    DRINK_MANUFACTURER_NOT_FOUND("제조사가 존재하지 않습니다", HttpStatus.NOT_FOUND),
+    DRINK_PACKAGE_NOT_FOUND("주류 패키지가 존재하지 않습니다", HttpStatus.NOT_FOUND),
 
     DRINK_LIKE_CONFLICT("해당 주류에 이미 좋아요를 하였습니다", HttpStatus.CONFLICT),
     EMAIL_CONFLICT("해당 이메일이 이미 존재합니다", HttpStatus.CONFLICT),
     FOLLOW_CONFLICT("해당 팔로우가 이미 존재합니다", HttpStatus.CONFLICT),
     NICKNAME_CONFLICT("해당 닉네임이 이미 존재합니다", HttpStatus.CONFLICT),
     REVIEW_LIKE_CONFLICT("해당 이메일에 이미 좋아요를 하였습니다", HttpStatus.CONFLICT),
+    DRINK_PACKAGE_CONFLICT("해당 주류에 이미 패키지가 등록되었습니다", HttpStatus.CONFLICT)
     ;
 
     private final String message;
