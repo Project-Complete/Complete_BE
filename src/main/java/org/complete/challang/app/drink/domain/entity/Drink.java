@@ -58,24 +58,12 @@ public class Drink extends BaseEntity {
     private DrinkManufacturer drinkManufacturer;
 
     @Builder.Default
-    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
-    private List<DrinkBookmark> drinkBookmarks = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
-    private List<DrinkFood> drinkFoods = new ArrayList<>();
-
-    @Builder.Default
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DrinkLike> drinkLikes = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
     private List<DrinkPackage> drinkPackages = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
-    private List<DrinkTag> drinkTags = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
