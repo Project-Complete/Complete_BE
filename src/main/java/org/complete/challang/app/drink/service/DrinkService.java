@@ -7,17 +7,17 @@ import org.complete.challang.app.common.exception.ApiException;
 import org.complete.challang.app.common.exception.ErrorCode;
 import org.complete.challang.app.common.exception.SuccessCode;
 import org.complete.challang.app.common.exception.SuccessResponse;
-import org.complete.challang.app.drink.controller.dto.response.DrinkBannerListFindResponse;
-import org.complete.challang.app.drink.controller.dto.response.DrinkFindResponse;
-import org.complete.challang.app.drink.controller.dto.response.DrinkListFindResponse;
-import org.complete.challang.app.drink.controller.dto.response.DrinkPageResponse;
-import org.complete.challang.app.drink.domain.entity.Drink;
-import org.complete.challang.app.drink.domain.entity.SituationStatistic;
-import org.complete.challang.app.drink.domain.entity.TasteStatistic;
+import org.complete.challang.app.drink.controller.dto.request.DrinkCreateRequest;
+import org.complete.challang.app.drink.controller.dto.response.*;
+import org.complete.challang.app.drink.domain.entity.*;
+import org.complete.challang.app.drink.domain.entity.Package;
 import org.complete.challang.app.drink.domain.entity.criteria.DrinkSortCriteria;
 import org.complete.challang.app.drink.domain.entity.criteria.DrinkTypeCriteria;
 import org.complete.challang.app.drink.domain.entity.spec.DrinkSpec;
+import org.complete.challang.app.drink.domain.repository.DrinkDetailTypeRepository;
+import org.complete.challang.app.drink.domain.repository.DrinkManufacturerRepository;
 import org.complete.challang.app.drink.domain.repository.DrinkRepository;
+import org.complete.challang.app.drink.domain.repository.PackageRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,35 +32,36 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
-@Transactional
 public class DrinkService {
 
     private final DrinkRepository drinkRepository;
     private final UserRepository userRepository;
+    private final DrinkManufacturerRepository drinkManufacturerRepository;
+    private final DrinkDetailTypeRepository drinkDetailTypeRepository;
+    private final PackageRepository packageRepository;
 
-    @Transactional(readOnly = true)
     public DrinkFindResponse findDetailDrink(final Long drinkId,
                                              final UserDetails userDetails) {
         final Drink drink = findDrink(drinkId);
-        final DrinkFindResponse drinkFindResponse = drink.toDto();
+        final Long userId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L;
+        final DrinkFindResponse drinkFindResponse = DrinkFindResponse.toDto(drink);
         drinkFindResponse.updateStatistic(
                 drinkRepository.findFoodStatisticById(drinkId),
                 drinkRepository.findFlavorStatisticById(drinkId)
         );
 
-        Long userId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L;
         drinkFindResponse.updateDrinkLike(drinkRepository.existByDrinkLike(userId, drinkId));
 
         return drinkFindResponse;
     }
 
-    @Transactional(readOnly = true)
     public DrinkPageResponse<DrinkListFindResponse> findRateDrinks(final Long drinkId,
                                                                    final String rate,
                                                                    final UserDetails userDetails) {
         final Drink drink = findDrink(drinkId);
-        Long userId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L;
+        final Long userId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L;
 
         // todo: refactor 예정
         String maxField = null;
@@ -90,6 +91,7 @@ public class DrinkService {
                     PageRequest.of(0, 4),
                     userId
             );
+
             return DrinkPageResponse.toDto(
                     drinkListFindResponses.getContent(),
                     drinkListFindResponses,
@@ -99,7 +101,7 @@ public class DrinkService {
 
         if (maxField == null) throw new ApiException(ErrorCode.DRINK_RATE_PARAM_INCORRECT);
 
-        DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria(maxField);
+        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria(maxField);
         final Page<Drink> drinks = drinkRepository.findAll(
                 DrinkSpec.orderByRate(drinkSortCriteria, drinkId),
                 PageRequest.of(0, 4)
@@ -111,7 +113,6 @@ public class DrinkService {
         return DrinkPageResponse.toDto(drinkListFindResponses, drinks, drinkSortCriteria.getDescription());
     }
 
-    @Transactional(readOnly = true)
     public DrinkPageResponse<DrinkListFindResponse> findDrinks(final String drinkType,
                                                                final String sorted,
                                                                final int page,
@@ -128,22 +129,24 @@ public class DrinkService {
         return DrinkPageResponse.toDto(drinks.getContent(), drinks, drinkSortCriteria.getDescription());
     }
 
+    @Transactional
     public SuccessResponse likeDrink(final Long drinkId,
                                      final UserDetails userDetails) {
-        Drink drink = findDrink(drinkId);
-        Long userId = Long.valueOf(userDetails.getUsername());
-        User user = userRepository.getReferenceById(userId);
+        final Drink drink = findDrink(drinkId);
+        final Long userId = Long.valueOf(userDetails.getUsername());
+        final User user = userRepository.getReferenceById(userId);
 
         drink.likeDrink(user);
 
         return SuccessResponse.toSuccessResponse(SuccessCode.DRINK_LIKE_SUCCESS);
     }
 
+    @Transactional
     public SuccessResponse unLikeDrink(final Long drinkId,
                                        final UserDetails userDetails) {
-        Drink drink = findDrink(drinkId);
-        Long userId = Long.valueOf(userDetails.getUsername());
-        User user = userRepository.getReferenceById(userId);
+        final Drink drink = findDrink(drinkId);
+        final Long userId = Long.valueOf(userDetails.getUsername());
+        final User user = userRepository.getReferenceById(userId);
 
         drink.unLikeDrink(user);
 

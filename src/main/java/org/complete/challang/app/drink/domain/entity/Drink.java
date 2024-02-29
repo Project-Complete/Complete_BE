@@ -85,53 +85,8 @@ public class Drink extends BaseEntity {
         reviewSumRating -= rating;
     }
 
-    public DrinkFindResponse toDto() {
-        return DrinkFindResponse.builder()
-                .drinkId(getId())
-                .name(name)
-                .imageUrl(imageUrl)
-                .summary(summary)
-                .manufacturer(ManufacturerDto.builder()
-                        .drinkManufacturerId(drinkManufacturer.getId())
-                        .manufacturerName(drinkManufacturer.getManufacturerName())
-                        .location(drinkManufacturer.getLocation().getLocation())
-                        .build())
-                .reviewRating(reviewSumRating / reviewCount)
-                .tags(drinkTags.stream()
-                        .map(drinkTag ->
-                                TagDto.builder()
-                                        .tagId(drinkTag.getTag().getId())
-                                        .tag(drinkTag.getTag().getTag())
-                                        .build())
-                        .collect(Collectors.toList()))
-                .reviewCount(reviewCount)
-                .tasteStatistic(TasteAverageStatisticDto.builder()
-                        .sweetRating(tasteStatistic.getSweetSumRating() / reviewCount)
-                        .sourRating(tasteStatistic.getSourSumRating() / reviewCount)
-                        .bitterRating(tasteStatistic.getBitterSumRating() / reviewCount)
-                        .bodyRating(tasteStatistic.getBodySumRating() / reviewCount)
-                        .refreshRating(tasteStatistic.getRefreshSumRating() / reviewCount)
-                        .build())
-                .situationStatistic(situationStatistic)
-                .title(title)
-                .description(description)
-                .packages(drinkPackages.stream()
-                        .map(drinkPackage ->
-                                PackageDto.builder()
-                                        .type(drinkPackage.getPackages().getType())
-                                        .volume(drinkPackage.getPackages().getVolume())
-                                        .build())
-                        .collect(Collectors.toList()))
-                .abv(abv)
-                .type(DrinkTypeDto.builder()
-                        .type(drinkDetailType.getDrinkType().getDrinkType())
-                        .detailType(drinkDetailType.getDetailType())
-                        .build())
-                .build();
-    }
-
-    public void likeDrink(User user) {
-        DrinkLike drinkLike = DrinkLike.builder()
+    public void likeDrink(final User user) {
+        final DrinkLike drinkLike = DrinkLike.builder()
                 .user(user)
                 .drink(this)
                 .build();
@@ -143,8 +98,8 @@ public class Drink extends BaseEntity {
         drinkLikes.add(drinkLike);
     }
 
-    public void unLikeDrink(User user) {
-        DrinkLike drinkLike = DrinkLike.builder()
+    public void unLikeDrink(final User user) {
+        final DrinkLike drinkLike = DrinkLike.builder()
                 .user(user)
                 .drink(this)
                 .build();
