@@ -1,6 +1,5 @@
-package org.complete.challang.common.domain.entity;
+package org.complete.challang.app.common.domain.entity;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -31,7 +30,6 @@ public abstract class BaseEntity {
 
     private LocalDateTime deletedDate;
 
-    @Nonnull
     @Builder.Default
     private boolean isActive = true;
 
