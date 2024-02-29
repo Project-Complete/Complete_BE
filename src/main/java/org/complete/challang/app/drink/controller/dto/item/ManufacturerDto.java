@@ -13,8 +13,6 @@ import lombok.Getter;
 public class ManufacturerDto {
 
     private Long drinkManufacturerId;
-
     private String manufacturerName;
-
     private String location;
 }

@@ -8,19 +8,19 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Getter
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class DrinkPageResponse<T> {
 
     private List<T> drinks;
     private PageInfoDto pageInfo;
 
-    public static DrinkPageResponse toDto(List contents,
-                                          Page page,
-                                          String sort) {
+    public static DrinkPageResponse toDto(final List contents,
+                                          final Page page,
+                                          final String sort) {
         return DrinkPageResponse.builder()
                 .drinks(contents)
                 .pageInfo(PageInfoDto.toDto(page.getNumber() + 1, page.getSize(), page.getTotalElements(), sort))

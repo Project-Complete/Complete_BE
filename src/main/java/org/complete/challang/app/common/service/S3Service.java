@@ -1,14 +1,15 @@
-package org.complete.challang.common.service;
+package org.complete.challang.app.common.service;
 
 import lombok.RequiredArgsConstructor;
-import org.complete.challang.account.user.domain.repository.UserRepository;
-import org.complete.challang.common.controller.dto.request.PreSignedUrlGetRequest;
-import org.complete.challang.common.controller.dto.response.PreSignedUrlGetResponse;
-import org.complete.challang.common.exception.ApiException;
-import org.complete.challang.common.exception.ErrorCode;
+import org.complete.challang.app.account.user.domain.repository.UserRepository;
+import org.complete.challang.app.common.exception.ApiException;
+import org.complete.challang.app.common.exception.ErrorCode;
+import org.complete.challang.app.common.controller.dto.request.PreSignedUrlFindRequest;
+import org.complete.challang.app.common.controller.dto.response.PreSignedUrlFindResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -20,6 +21,7 @@ import java.time.Duration;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class S3Service {
 
@@ -29,35 +31,33 @@ public class S3Service {
     private final S3Presigner s3Presigner;
     private final UserRepository userRepository;
 
-    public PreSignedUrlGetResponse getPreSignedUrl(final PreSignedUrlGetRequest presignedUrlGetRequest,
-                                  final UserDetails userDetails) {
+    public PreSignedUrlFindResponse findPreSignedUrl(final PreSignedUrlFindRequest presignedUrlFindRequest,
+                                                     final UserDetails userDetails) {
         if (!userRepository.existsById(Long.valueOf(userDetails.getUsername()))) {
             throw new ApiException(ErrorCode.USER_NOT_FOUND);
         }
 
-        final PutObjectRequest putObjectRequest = generatePutObjectRequest(presignedUrlGetRequest, userDetails.getUsername());
-
+        final PutObjectRequest putObjectRequest = generatePutObjectRequest(presignedUrlFindRequest, userDetails.getUsername());
         final PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(10))
                 .putObjectRequest(putObjectRequest)
                 .build();
-
         final PresignedPutObjectRequest presignedPutObjectRequest = s3Presigner.presignPutObject(putObjectPresignRequest);
         final URL presignedUrl = presignedPutObjectRequest.url();
 
-        return PreSignedUrlGetResponse.builder()
+        return PreSignedUrlFindResponse.builder()
                 .preSignedUrl(presignedUrl.toExternalForm())
                 .build();
     }
 
-    private PutObjectRequest generatePutObjectRequest(final PreSignedUrlGetRequest presignedUrlGetRequest,
+    private PutObjectRequest generatePutObjectRequest(final PreSignedUrlFindRequest presignedUrlFindRequest,
                                                       final String userId) {
-        final String fileName = StringUtils.stripFilenameExtension(presignedUrlGetRequest.getFileName());
+        final String fileName = StringUtils.stripFilenameExtension(presignedUrlFindRequest.getFileName());
         if (!fileName.matches("^[^/\\s]+$")) {
             throw new ApiException(ErrorCode.INVALID_FILENAME);
         }
 
-        final String extension = StringUtils.getFilenameExtension(presignedUrlGetRequest.getFileName());
+        final String extension = StringUtils.getFilenameExtension(presignedUrlFindRequest.getFileName());
         if (extension == null) {
             throw new ApiException(ErrorCode.INVALID_EXTENSION);
         }

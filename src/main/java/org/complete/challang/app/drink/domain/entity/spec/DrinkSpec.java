@@ -1,10 +1,13 @@
 package org.complete.challang.app.drink.domain.entity.spec;
 
 import jakarta.persistence.criteria.Expression;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.complete.challang.app.drink.domain.entity.Drink;
 import org.complete.challang.app.drink.domain.entity.criteria.DrinkSortCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DrinkSpec {
 
     public static Specification<Drink> orderByRate(final DrinkSortCriteria drinkSortCriteria,

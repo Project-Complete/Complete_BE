@@ -11,6 +11,5 @@ import lombok.Getter;
 public class DrinkTypeDto {
 
     private String type;
-
     private String detailType;
 }

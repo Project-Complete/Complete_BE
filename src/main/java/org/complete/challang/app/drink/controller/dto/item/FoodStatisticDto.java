@@ -13,10 +13,7 @@ import lombok.Getter;
 public class FoodStatisticDto {
 
     private Long foodId;
-
     private String category;
-
     private String imageUrl;
-
     private long count;
 }

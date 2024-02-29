@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DrinkQueryRepository {
 
-    List<FoodStatisticDto> findFoodStatisticById(Long drinkId);
+    List<FoodStatisticDto> findFoodStatisticById(final Long drinkId);
 
-    List<FlavorStatisticDto> findFlavorStatisticById(Long drinkId);
+    List<FlavorStatisticDto> findFlavorStatisticById(final Long drinkId);
 }

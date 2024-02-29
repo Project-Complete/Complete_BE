@@ -47,10 +47,6 @@ public class User extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<DrinkBookmark> drinkBookmarks = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DrinkLike> drinkLikes = new ArrayList<>();
 
     @Builder.Default

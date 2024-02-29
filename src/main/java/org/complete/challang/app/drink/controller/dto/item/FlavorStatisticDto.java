@@ -11,8 +11,6 @@ import lombok.Getter;
 public class FlavorStatisticDto {
 
     private Long flavorId;
-
     private String flavor;
-
     private long count;
 }

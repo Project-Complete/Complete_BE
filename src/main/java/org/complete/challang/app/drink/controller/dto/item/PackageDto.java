@@ -11,6 +11,5 @@ import lombok.Getter;
 public class PackageDto {
 
     private String type;
-
     private String volume;
 }

@@ -11,12 +11,8 @@ import lombok.Getter;
 public class TasteAverageStatisticDto {
 
     private double sweetRating;
-
     private double sourRating;
-
     private double bitterRating;
-
     private double bodyRating;
-
     private double refreshRating;
 }

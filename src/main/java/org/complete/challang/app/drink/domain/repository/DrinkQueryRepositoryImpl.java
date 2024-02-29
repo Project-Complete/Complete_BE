@@ -1,9 +1,9 @@
-package org.complete.challang.drink.domain.repository;
+package org.complete.challang.app.drink.domain.repository;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.complete.challang.drink.controller.dto.response.FlavorStatisticFindResponse;
-import org.complete.challang.drink.controller.dto.response.FoodStatisticFindResponse;
+import org.complete.challang.app.drink.controller.dto.item.FlavorStatisticDto;
+import org.complete.challang.app.drink.controller.dto.item.FoodStatisticDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,9 +15,9 @@ public class DrinkQueryRepositoryImpl implements DrinkQueryRepository {
     private final EntityManager em;
 
     @Override
-    public List<FoodStatisticFindResponse> findFoodStatisticById(Long drinkId) {
+    public List<FoodStatisticDto> findFoodStatisticById(final Long drinkId) {
         return em.createQuery(
-                        "select new org.complete.challang.drink.controller.dto.response.FoodStatisticFindResponse(f.id, f.category, f.imageUrl, count(f.category))"
+                        "select new org.complete.challang.app.drink.controller.dto.item.FoodStatisticDto(f.id, f.category, f.imageUrl, count(f.category))"
                                 + "from Review r "
                                 + "left join r.reviewFoods rf "
                                 + "left join rf.food f "
@@ -25,16 +25,16 @@ public class DrinkQueryRepositoryImpl implements DrinkQueryRepository {
                                 + "group by f.category, f.id "
                                 + "order by count(f.category) desc "
                                 + "limit 4"
-                        , FoodStatisticFindResponse.class
+                        , FoodStatisticDto.class
                 )
                 .setParameter("drinkId", drinkId)
                 .getResultList();
     }
 
     @Override
-    public List<FlavorStatisticFindResponse> findFlavorStatisticById(Long drinkId) {
+    public List<FlavorStatisticDto> findFlavorStatisticById(final Long drinkId) {
         return em.createQuery(
-                        "select new org.complete.challang.drink.controller.dto.response.FlavorStatisticFindResponse(f.id, f.flavor, count(f.flavor))"
+                        "select new org.complete.challang.app.drink.controller.dto.item.FlavorStatisticDto(f.id, f.flavor, count(f.flavor))"
                                 + "from Review r "
                                 + "left join r.reviewFlavors rf "
                                 + "left join rf.flavor f "
@@ -42,7 +42,7 @@ public class DrinkQueryRepositoryImpl implements DrinkQueryRepository {
                                 + "group by f.flavor, f.id "
                                 + "order by count(f.flavor) desc "
                                 + "limit 3"
-                        , FlavorStatisticFindResponse.class
+                        , FlavorStatisticDto.class
                 )
                 .setParameter("drinkId", drinkId)
                 .getResultList();

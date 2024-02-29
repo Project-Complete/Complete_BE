@@ -5,27 +5,22 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import org.complete.challang.app.drink.domain.entity.Drink;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Getter
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class DrinkListFindResponse {
 
     private Long drinkId;
-
     private String imageUrl;
-
     private String manufacturerName;
-
     private boolean drinkLike;
-
     private String drinkName;
-
     private double reviewRating;
 
-    public static DrinkListFindResponse toDto(Drink drink,
-                                              Long userId) {
+    public static DrinkListFindResponse toDto(final Drink drink,
+                                              final Long userId) {
         return DrinkListFindResponse.builder()
                 .drinkId(drink.getId())
                 .imageUrl(drink.getImageUrl())

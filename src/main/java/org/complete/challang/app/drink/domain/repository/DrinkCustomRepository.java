@@ -7,10 +7,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface DrinkCustomRepository {
 
-    Page<DrinkListFindResponse> findAllByType(String type,
-                                              String sorted,
-                                              Pageable pageable,
-                                              Long userId);
+    Page<DrinkListFindResponse> findAllByType(final String type,
+                                              final String sorted,
+                                              final Pageable pageable,
+                                              final Long userId);
 
     Page<DrinkBannerListFindResponse> findForBanner();
 }

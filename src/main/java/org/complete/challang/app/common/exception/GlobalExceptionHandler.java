@@ -14,19 +14,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(final ApiException ex) {
         final ErrorResponse errorResponse = ErrorResponse.toErrorResponse(ex);
+
         return new ResponseEntity<>(errorResponse, errorResponse.getHttpStatus());
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException ex) {
         log.error(ex.getMessage(), ex);
         final ErrorResponse errorResponse = ErrorResponse.toErrorResponse(new ApiException(ErrorCode.UNHANDLED_EXCEPTION), ex);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNoHandlerFoundExceptioin(final NoHandlerFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(final NoHandlerFoundException ex) {
         final ErrorResponse errorResponse = ErrorResponse.toErrorResponse(new ApiException(ErrorCode.API_NOT_FOUND), ex);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

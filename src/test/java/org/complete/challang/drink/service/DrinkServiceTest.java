@@ -58,7 +58,6 @@ public class DrinkServiceTest {
         //then
         assertThat(drinkFindResponse.getDrinkId()).isEqualTo(1L);
         assertThat(drinkFindResponse.getName()).isEqualTo("트롤브루 레몬 라들러");
-        assertThat(drinkFindResponse.getTags().get(0).getTag()).isEqualTo("태그");
         assertThat(drinkFindResponse.getPackages().get(0).getType()).isEqualTo("패키지");
         assertThat(drinkFindResponse.getManufacturer().getManufacturerName()).isEqualTo("제조사");
         assertThat(drinkFindResponse.getManufacturer().getLocation()).isEqualTo("지역");
@@ -118,7 +117,6 @@ public class DrinkServiceTest {
                 .abv(5.0)
                 .build();
 
-        drink.getDrinkTags().add(drinkTag(drink));
         drink.getDrinkPackages().add(drinkPackage(drink));
 
         return drink;
@@ -131,17 +129,6 @@ public class DrinkServiceTest {
                 .location(Location.builder()
                         .id(1L)
                         .location("지역")
-                        .build())
-                .build();
-    }
-
-    private DrinkTag drinkTag(Drink drink) {
-        return DrinkTag.builder()
-                .id(1L)
-                .drink(drink)
-                .tag(Tag.builder()
-                        .id(1L)
-                        .tag("태그")
                         .build())
                 .build();
     }

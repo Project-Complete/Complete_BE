@@ -8,24 +8,19 @@ import org.complete.challang.app.drink.controller.dto.item.ManufacturerDto;
 
 import java.util.List;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Getter
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class DrinkBannerListFindResponse {
 
     private Long drinkId;
-
     private String name;
-
     private String imageUrl;
-
+    private double reviewRating;
     private ManufacturerDto manufacturer;
-
     private String description;
-
     private List<FoodStatisticDto> foodStatistics;
-
     private double abv;
 }
