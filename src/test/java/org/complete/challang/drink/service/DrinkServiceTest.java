@@ -1,13 +1,14 @@
 package org.complete.challang.drink.service;
 
-import org.complete.challang.common.exception.ApiException;
-import org.complete.challang.common.exception.ErrorCode;
-import org.complete.challang.drink.domain.entity.Package;
-import org.complete.challang.drink.domain.entity.*;
-import org.complete.challang.drink.controller.dto.response.DrinkFindResponse;
-import org.complete.challang.drink.controller.dto.response.FlavorStatisticFindResponse;
-import org.complete.challang.drink.controller.dto.response.FoodStatisticFindResponse;
-import org.complete.challang.drink.domain.repository.DrinkRepository;
+import org.complete.challang.app.drink.domain.entity.*;
+import org.complete.challang.app.drink.domain.entity.Package;
+import org.complete.challang.app.drink.service.DrinkService;
+import org.complete.challang.app.common.exception.ApiException;
+import org.complete.challang.app.common.exception.ErrorCode;
+import org.complete.challang.app.drink.controller.dto.response.DrinkFindResponse;
+import org.complete.challang.app.drink.controller.dto.item.FlavorStatisticDto;
+import org.complete.challang.app.drink.controller.dto.item.FoodStatisticDto;
+import org.complete.challang.app.drink.domain.repository.DrinkRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,7 +58,6 @@ public class DrinkServiceTest {
         //then
         assertThat(drinkFindResponse.getDrinkId()).isEqualTo(1L);
         assertThat(drinkFindResponse.getName()).isEqualTo("트롤브루 레몬 라들러");
-        assertThat(drinkFindResponse.getTags().get(0).getTag()).isEqualTo("태그");
         assertThat(drinkFindResponse.getPackages().get(0).getType()).isEqualTo("패키지");
         assertThat(drinkFindResponse.getManufacturer().getManufacturerName()).isEqualTo("제조사");
         assertThat(drinkFindResponse.getManufacturer().getLocation()).isEqualTo("지역");
@@ -70,13 +70,13 @@ public class DrinkServiceTest {
     }
 
 
-    private List<FlavorStatisticFindResponse> flavorStatisticFindResponses() {
-        return List.of(FlavorStatisticFindResponse.builder()
+    private List<FlavorStatisticDto> flavorStatisticFindResponses() {
+        return List.of(FlavorStatisticDto.builder()
                         .flavorId(1L)
                         .flavor("만다린")
                         .count(2L)
                         .build(),
-                FlavorStatisticFindResponse.builder()
+                FlavorStatisticDto.builder()
                         .flavorId(2L)
                         .flavor("베리")
                         .count(1L)
@@ -84,14 +84,14 @@ public class DrinkServiceTest {
         );
     }
 
-    private List<FoodStatisticFindResponse> foodStatisticFindResponses() {
-        return List.of(FoodStatisticFindResponse.builder()
+    private List<FoodStatisticDto> foodStatisticFindResponses() {
+        return List.of(FoodStatisticDto.builder()
                         .foodId(1L)
                         .category("육류")
                         .imageUrl("http://localhost")
                         .count(2L)
                         .build(),
-                FoodStatisticFindResponse.builder()
+                FoodStatisticDto.builder()
                         .foodId(2L)
                         .category("가공육")
                         .imageUrl("http://localhost")
@@ -117,7 +117,6 @@ public class DrinkServiceTest {
                 .abv(5.0)
                 .build();
 
-        drink.getDrinkTags().add(drinkTag(drink));
         drink.getDrinkPackages().add(drinkPackage(drink));
 
         return drink;
@@ -130,17 +129,6 @@ public class DrinkServiceTest {
                 .location(Location.builder()
                         .id(1L)
                         .location("지역")
-                        .build())
-                .build();
-    }
-
-    private DrinkTag drinkTag(Drink drink) {
-        return DrinkTag.builder()
-                .id(1L)
-                .drink(drink)
-                .tag(Tag.builder()
-                        .id(1L)
-                        .tag("태그")
                         .build())
                 .build();
     }

@@ -1,21 +1,21 @@
 package org.complete.challang.drink.repository;
 
-import org.complete.challang.account.user.domain.entity.User;
-import org.complete.challang.account.user.domain.repository.UserRepository;
-import org.complete.challang.drink.domain.entity.Drink;
-import org.complete.challang.drink.domain.entity.Food;
-import org.complete.challang.drink.domain.repository.DrinkRepository;
-import org.complete.challang.drink.domain.repository.FoodRepository;
-import org.complete.challang.drink.controller.dto.response.FlavorStatisticFindResponse;
-import org.complete.challang.drink.controller.dto.response.FoodStatisticFindResponse;
-import org.complete.challang.review.domain.entity.Flavor;
-import org.complete.challang.review.domain.entity.Review;
-import org.complete.challang.review.domain.entity.ReviewFlavor;
-import org.complete.challang.review.domain.entity.ReviewFood;
-import org.complete.challang.review.domain.repository.FlavorRepository;
-import org.complete.challang.review.domain.repository.ReviewFlavorRepository;
-import org.complete.challang.review.domain.repository.ReviewFoodRepository;
-import org.complete.challang.review.domain.repository.ReviewRepository;
+import org.complete.challang.app.account.user.domain.entity.User;
+import org.complete.challang.app.account.user.domain.repository.UserRepository;
+import org.complete.challang.app.drink.domain.entity.Drink;
+import org.complete.challang.app.drink.domain.entity.Food;
+import org.complete.challang.app.drink.domain.repository.DrinkRepository;
+import org.complete.challang.app.drink.domain.repository.FoodRepository;
+import org.complete.challang.app.drink.controller.dto.item.FlavorStatisticDto;
+import org.complete.challang.app.drink.controller.dto.item.FoodStatisticDto;
+import org.complete.challang.app.review.domain.entity.Flavor;
+import org.complete.challang.app.review.domain.entity.Review;
+import org.complete.challang.app.review.domain.entity.ReviewFlavor;
+import org.complete.challang.app.review.domain.entity.ReviewFood;
+import org.complete.challang.app.review.domain.repository.FlavorRepository;
+import org.complete.challang.app.review.domain.repository.ReviewFlavorRepository;
+import org.complete.challang.app.review.domain.repository.ReviewFoodRepository;
+import org.complete.challang.app.review.domain.repository.ReviewRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -120,7 +120,7 @@ public class DrinkRepositoryTest {
         reviewFoodRepository.save(reviewFood1);
         reviewFoodRepository.save(reviewFood2);
         reviewFoodRepository.save(reviewFood3);
-        final List<FoodStatisticFindResponse> findResult = drinkRepository.findFoodStatisticById(drink.getId());//todo: autoincrement로 인해 getId 사용
+        final List<FoodStatisticDto> findResult = drinkRepository.findFoodStatisticById(drink.getId());//todo: autoincrement로 인해 getId 사용
 
         //then
         assertThat(findResult).isNotNull();
@@ -166,7 +166,7 @@ public class DrinkRepositoryTest {
         reviewFlavorRepository.save(reviewFlavor1);
         reviewFlavorRepository.save(reviewFlavor2);
         reviewFlavorRepository.save(reviewFlavor3);
-        final List<FlavorStatisticFindResponse> findResult = drinkRepository.findFlavorStatisticById(drink.getId());//todo: autoincrement로 인해 getId 사용
+        final List<FlavorStatisticDto> findResult = drinkRepository.findFlavorStatisticById(drink.getId());//todo: autoincrement로 인해 getId 사용
 
         //then
         assertThat(findResult).isNotNull();
