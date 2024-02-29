@@ -79,7 +79,7 @@ public class DrinkFindResponse {
         flavorStatistics = flavorStatisticFindRespons;
     }
 
-    public void updateDrinkLike(boolean likeStatus) {
+    public void updateDrinkLike(final boolean likeStatus) {
         drinkLike = likeStatus;
     }
 }
