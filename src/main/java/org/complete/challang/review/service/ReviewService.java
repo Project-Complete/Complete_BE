@@ -25,6 +25,7 @@ import org.complete.challang.review.domain.repository.ReviewLikeRepository;
 import org.complete.challang.review.domain.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,17 +72,24 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewListFindResponse findReviewList(final Long drinkId,
+    public ReviewListFindResponse findReviewList(final UserDetails userDetails,
+                                                 final Long drinkId,
                                                  final Long writerId,
                                                  final int page,
                                                  final String sort) {
         final PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
+        final Long userId = userDetails == null ? 0L : Long.valueOf(userDetails.getUsername());
 
         Page<Review> reviews;
         reviews = reviewCustomRepository.findAllWithOption(pageRequest, drinkId, writerId);
 
         final List<ReviewDto> reviewDtos = reviews.stream()
-                .map(review -> ReviewDto.toDto(review))
+                .map(review -> ReviewDto.toDto(review,
+                        review.getReviewLikes()
+                                .stream()
+                                .anyMatch(reviewLike -> reviewLike.getUser()
+                                        .getId()
+                                        .equals(userId))))
                 .collect(toList());
 
         return ReviewListFindResponse.toDto(reviewDtos,
