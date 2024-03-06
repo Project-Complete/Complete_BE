@@ -22,13 +22,17 @@ public class ReviewDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDate;
 
-    public static ReviewDto toDto(final Review review) {
+    private boolean reviewLike;
+
+    public static ReviewDto toDto(final Review review,
+                                  final boolean reviewLike) {
         return ReviewDto.builder()
                 .id(review.getId())
                 .imageUrl(review.getImageUrl())
                 .reviewRating(review.getRating())
                 .writer(WriterDto.toDto(review.getUser()))
                 .createdDate(review.getCreatedDate())
+                .reviewLike(reviewLike)
                 .build();
     }
 }
