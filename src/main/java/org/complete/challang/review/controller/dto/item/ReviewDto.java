@@ -17,12 +17,12 @@ public class ReviewDto {
     private Long id;
     private String imageUrl;
     private double reviewRating;
-    private WriterDto writer;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDate;
 
     private boolean reviewLike;
+    private WriterDto writer;
 
     public static ReviewDto toDto(final Review review,
                                   final boolean reviewLike) {
@@ -30,9 +30,9 @@ public class ReviewDto {
                 .id(review.getId())
                 .imageUrl(review.getImageUrl())
                 .reviewRating(review.getRating())
-                .writer(WriterDto.toDto(review.getUser()))
                 .createdDate(review.getCreatedDate())
                 .reviewLike(reviewLike)
+                .writer(WriterDto.toDto(review.getUser()))
                 .build();
     }
 }
