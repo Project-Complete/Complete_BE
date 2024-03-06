@@ -40,12 +40,12 @@ public class ReviewController {
     @Operation(summary = "리뷰 리스트 반환",
             description = "옵션(주류, 작성자, 좋아요 유무, 정렬 기준)에 따른 리뷰 리스트 반환")
     @GetMapping()
-    public ResponseEntity<ReviewListFindResponse> findReviewList(@RequestParam(required = false, name = "drink-id") final Long drinkId,
+    public ResponseEntity<ReviewListFindResponse> findReviewList(@AuthenticationPrincipal final UserDetails userDetails,
+                                                                 @RequestParam(required = false, name = "drink-id") final Long drinkId,
                                                                  @RequestParam(required = false, name = "writer-id") final Long writerId,
-                                                                 @RequestParam(required = false, name = "like") final Boolean like,
                                                                  @RequestParam(required = false, name = "page", defaultValue = "0") final int page,
                                                                  @RequestParam(required = false, name = "sort", defaultValue = "latest") final String sort) {
-        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(drinkId, writerId, like, page, sort);
+        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(userDetails, drinkId, writerId, page, sort);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(reviewListFindResponse);
