@@ -54,8 +54,9 @@ public class ReviewController {
     @Operation(summary = "리뷰 상세 정보 반환",
             description = "특정한 1개의 리뷰의 상세 정보를 반환")
     @GetMapping("/{review_id}")
-    public ResponseEntity<ReviewDetailResponse> findReviewDetail(@PathVariable("review_id") final Long reviewId) {
-        final ReviewDetailResponse reviewDetailResponse = reviewService.findReviewDetail(reviewId);
+    public ResponseEntity<ReviewDetailResponse> findReviewDetail(@AuthenticationPrincipal final UserDetails userDetails,
+                                                                 @PathVariable("review_id") final Long reviewId) {
+        final ReviewDetailResponse reviewDetailResponse = reviewService.findReviewDetail(userDetails, reviewId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(reviewDetailResponse);
