@@ -77,8 +77,8 @@ public class ReviewService {
                                                  final Long writerId,
                                                  final int page,
                                                  final String sort) {
+        final Long userId = findUserIdByUserDetails(userDetails);
         final PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
-        final Long userId = userDetails == null ? 0L : Long.valueOf(userDetails.getUsername());
 
         Page<Review> reviews;
         reviews = reviewCustomRepository.findAllWithOption(pageRequest, drinkId, writerId);
@@ -100,10 +100,17 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewDetailResponse findReviewDetail(final Long reviewId) {
+    public ReviewDetailResponse findReviewDetail(final UserDetails userDetails,
+                                                 final Long reviewId) {
+        final Long userId = findUserIdByUserDetails(userDetails);
         final Review review = findReviewById(reviewId);
 
         return ReviewDetailResponse.toDto(review,
+                review.getReviewLikes()
+                        .stream()
+                        .anyMatch(reviewLike -> reviewLike.getUser()
+                                .getId()
+                                .equals(userId)),
                 review.getReviewFlavors()
                         .stream()
                         .map(reviewFlavor -> reviewFlavor.getFlavor().getFlavor())
@@ -162,6 +169,10 @@ public class ReviewService {
         reviewLikeRepository.deleteByUserAndReview(user, review);
 
         return REVIEW_LIKE_DELETE_SUCCESS;
+    }
+
+    private Long findUserIdByUserDetails(final UserDetails userDetails) {
+        return userDetails == null ? 0L : Long.valueOf(userDetails.getUsername());
     }
 
     private User findUserById(final Long userId) {
