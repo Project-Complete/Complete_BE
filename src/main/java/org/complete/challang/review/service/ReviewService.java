@@ -35,7 +35,6 @@ import static java.util.stream.Collectors.toList;
 import static org.complete.challang.common.exception.ErrorCode.*;
 import static org.complete.challang.common.exception.SuccessCode.*;
 
-
 @RequiredArgsConstructor
 @Service
 public class ReviewService {
