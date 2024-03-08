@@ -28,10 +28,9 @@ public class ReviewController {
     @Operation(summary = "주류 리뷰 생성",
             description = "주류 리뷰 생성 및 생성된 리뷰의 미리보기 정보 반환")
     @PostMapping()
-    public ResponseEntity<ReviewCreateResponse> createReview(@AuthenticationPrincipal final UserDetails user,
+    public ResponseEntity<ReviewCreateResponse> createReview(@AuthenticationPrincipal final UserDetails userDetails,
                                                              @RequestBody @Valid final ReviewCreateRequest reviewCreateRequest) {
-        final Long userId = Long.parseLong(user.getUsername());
-        final ReviewCreateResponse reviewCreateResponse = reviewService.createReview(reviewCreateRequest, userId);
+        final ReviewCreateResponse reviewCreateResponse = reviewService.createReview(userDetails, reviewCreateRequest);
 
         return new ResponseEntity<>(reviewCreateResponse, HttpStatus.CREATED);
     }
@@ -62,10 +61,9 @@ public class ReviewController {
     @Operation(summary = "리뷰 삭제",
             description = "사용자가 자신이 작성한 특정 리뷰를 삭제")
     @DeleteMapping("/{review_id}")
-    public ResponseEntity<SuccessCode> deleteReview(@AuthenticationPrincipal final UserDetails user,
+    public ResponseEntity<SuccessCode> deleteReview(@AuthenticationPrincipal final UserDetails userDetails,
                                                     @PathVariable("review_id") final Long reviewId) {
-        final Long userId = Long.parseLong(user.getUsername());
-        final SuccessCode successCode = reviewService.deleteReview(userId, reviewId);
+        final SuccessCode successCode = reviewService.deleteReview(userDetails, reviewId);
 
         return new ResponseEntity<>(successCode, HttpStatus.NO_CONTENT);
     }
@@ -73,10 +71,9 @@ public class ReviewController {
     @Operation(summary = "리뷰 좋아요",
             description = "사용자가 특정 1개의 리뷰를 좋아요")
     @PostMapping("/like/{review_id}")
-    public ResponseEntity<SuccessCode> createReviewLike(@AuthenticationPrincipal final UserDetails user,
+    public ResponseEntity<SuccessCode> createReviewLike(@AuthenticationPrincipal final UserDetails userDetails,
                                                         @PathVariable("review_id") final Long reviewId) {
-        final Long userId = Long.parseLong(user.getUsername());
-        final SuccessCode successCode = reviewService.createReviewLike(userId, reviewId);
+        final SuccessCode successCode = reviewService.createReviewLike(userDetails, reviewId);
 
         return new ResponseEntity<>(successCode, HttpStatus.CREATED);
     }
@@ -84,10 +81,9 @@ public class ReviewController {
     @Operation(summary = "리뷰 좋아요 취소",
             description = "사용자가 좋아요 한 특정 1개의 리뷰를 좋아요 취소")
     @DeleteMapping("/like/{review_id}")
-    public ResponseEntity<SuccessCode> deleteReviewLike(@AuthenticationPrincipal final UserDetails user,
+    public ResponseEntity<SuccessCode> deleteReviewLike(@AuthenticationPrincipal final UserDetails userDetails,
                                                         @PathVariable("review_id") final Long reviewId) {
-        final Long userId = Long.parseLong(user.getUsername());
-        final SuccessCode successCode = reviewService.deleteReviewLike(userId, reviewId);
+        final SuccessCode successCode = reviewService.deleteReviewLike(userDetails, reviewId);
 
         return new ResponseEntity<>(successCode, HttpStatus.NO_CONTENT);
     }

@@ -50,8 +50,9 @@ public class ReviewService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ReviewCreateResponse createReview(final ReviewCreateRequest reviewCreateRequest,
-                                             final Long userId) {
+    public ReviewCreateResponse createReview(final UserDetails userDetails,
+                                             final ReviewCreateRequest reviewCreateRequest) {
+        final Long userId = Long.parseLong(userDetails.getUsername());
         final User user = findUserById(userId);
         final Drink drink = drinkRepository.findByIdAndIsActiveTrue(reviewCreateRequest.getDrinkId())
                 .orElseThrow(() -> new ApiException(DRINK_NOT_FOUND));
@@ -122,8 +123,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public SuccessCode deleteReview(final Long userId,
+    public SuccessCode deleteReview(final UserDetails userDetails,
                                     final Long reviewId) {
+        final Long userId = Long.parseLong(userDetails.getUsername());
         final Review review = reviewRepository.findByIdAndUserIdAndIsActiveTrue(reviewId, userId)
                 .orElseThrow(() -> new ApiException(REVIEW_REMOVE_FORBIDDEN));
         final Drink drink = review.getDrink();
@@ -138,8 +140,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public SuccessCode createReviewLike(final Long userId,
+    public SuccessCode createReviewLike(final UserDetails userDetails,
                                         final Long reviewId) {
+        final Long userId = Long.parseLong(userDetails.getUsername());
         final User user = findUserById(userId);
         final Review review = findReviewById(reviewId);
 
@@ -157,8 +160,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public SuccessCode deleteReviewLike(final Long userId,
+    public SuccessCode deleteReviewLike(final UserDetails userDetails,
                                         final Long reviewId) {
+        final Long userId = Long.parseLong(userDetails.getUsername());
         final User user = findUserById(userId);
         final Review review = findReviewById(reviewId);
 
