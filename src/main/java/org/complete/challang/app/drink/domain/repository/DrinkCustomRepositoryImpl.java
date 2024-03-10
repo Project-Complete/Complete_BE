@@ -3,8 +3,6 @@ package org.complete.challang.app.drink.domain.repository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +32,7 @@ import static org.complete.challang.app.drink.domain.entity.QFood.food;
 import static org.complete.challang.app.drink.domain.entity.QLocation.location1;
 import static org.complete.challang.app.review.domain.entity.QReview.review;
 import static org.complete.challang.app.review.domain.entity.QReviewFood.reviewFood;
+import static org.complete.challang.app.util.QueryUtils.getReviewRating;
 
 @RequiredArgsConstructor
 @Repository
@@ -190,11 +189,5 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
         }
 
         return randIdSet;
-    }
-
-    private NumberExpression<Double> getReviewRating() {
-        return new CaseBuilder()
-                .when(drink.reviewCount.eq(0L)).then(0.0)
-                .otherwise(drink.reviewSumRating.divide(drink.reviewCount));
     }
 }
