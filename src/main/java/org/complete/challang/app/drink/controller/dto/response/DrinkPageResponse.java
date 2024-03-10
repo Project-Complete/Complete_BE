@@ -18,10 +18,10 @@ public class DrinkPageResponse<T> {
     private List<T> drinks;
     private PageInfoDto pageInfo;
 
-    public static DrinkPageResponse toDto(final List contents,
-                                          final Page page,
-                                          final String sort) {
-        return DrinkPageResponse.builder()
+    public static <T, U> DrinkPageResponse<T> toDto(final List<T> contents,
+                                                    final Page<U> page,
+                                                    final String sort) {
+        return DrinkPageResponse.<T>builder()
                 .drinks(contents)
                 .pageInfo(PageInfoDto.toDto(page.getNumber() + 1, page.getSize(), page.getTotalElements(), sort))
                 .build();
