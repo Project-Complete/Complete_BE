@@ -12,6 +12,12 @@ import org.complete.challang.app.account.user.domain.repository.FollowRepository
 import org.complete.challang.app.account.user.domain.repository.UserRepository;
 import org.complete.challang.app.common.exception.ApiException;
 import org.complete.challang.app.common.exception.SuccessCode;
+import org.complete.challang.app.drink.controller.dto.response.DrinkListFindResponse;
+import org.complete.challang.app.drink.controller.dto.response.DrinkPageResponse;
+import org.complete.challang.app.drink.domain.entity.criteria.DrinkSortCriteria;
+import org.complete.challang.app.drink.domain.repository.DrinkRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +34,7 @@ public class UserService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final DrinkRepository drinkRepository;
 
     public UserProfileFindResponse findUserProfile(final Long requestUserId,
                                                    final Long targetUserId) {
@@ -101,6 +108,16 @@ public class UserService {
         followRepository.deleteByFromUserAndToUser(requestUser, targetUser);
 
         return FOLLOW_DELETE_SUCCESS;
+    }
+
+    @Transactional(readOnly = true)
+    public DrinkPageResponse<DrinkListFindResponse> findLikeDrinks(final Long userId) {
+        final User user = findUserById(userId);
+        final Page<DrinkListFindResponse> drinks = drinkRepository.findByUserLike(user.getId(), PageRequest.of(0, 3));
+
+        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria("latest_order");
+
+        return DrinkPageResponse.toDto(drinks.getContent(), drinks, drinkSortCriteria.getDescription());
     }
 
     private User findUserById(final Long userId) {

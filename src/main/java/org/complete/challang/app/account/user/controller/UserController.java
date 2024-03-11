@@ -10,6 +10,8 @@ import org.complete.challang.app.account.user.controller.dto.response.ProfileUpd
 import org.complete.challang.app.account.user.controller.dto.response.UserProfileFindResponse;
 import org.complete.challang.app.account.user.service.UserService;
 import org.complete.challang.app.common.exception.SuccessCode;
+import org.complete.challang.app.drink.controller.dto.response.DrinkListFindResponse;
+import org.complete.challang.app.drink.controller.dto.response.DrinkPageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -83,5 +85,15 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(successCode);
+    }
+
+    @Operation(summary = "사용자 좋아요 주류 조회",
+            description = "성공 코드 반환, 좋아요 누른 주류 리스트 조회")
+    @GetMapping("/drinks/like")
+    public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findLikeDrinks(@AuthenticationPrincipal final UserDetails user) {
+        final Long userId = Long.parseLong(user.getUsername());
+        final DrinkPageResponse<DrinkListFindResponse> drinks = userService.findLikeDrinks(userId);
+
+        return new ResponseEntity<>(drinks, HttpStatus.OK);
     }
 }

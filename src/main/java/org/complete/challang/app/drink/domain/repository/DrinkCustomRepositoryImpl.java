@@ -24,6 +24,7 @@ import java.util.Set;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static org.complete.challang.app.account.user.domain.entity.QDrinkLike.drinkLike;
+import static org.complete.challang.app.account.user.domain.entity.QUser.user;
 import static org.complete.challang.app.drink.domain.entity.QDrink.drink;
 import static org.complete.challang.app.drink.domain.entity.QDrinkManufacturer.drinkManufacturer;
 import static org.complete.challang.app.drink.domain.entity.QDrinkType.drinkType1;
@@ -31,6 +32,7 @@ import static org.complete.challang.app.drink.domain.entity.QFood.food;
 import static org.complete.challang.app.drink.domain.entity.QLocation.location1;
 import static org.complete.challang.app.review.domain.entity.QReview.review;
 import static org.complete.challang.app.review.domain.entity.QReviewFood.reviewFood;
+import static org.complete.challang.app.util.QueryUtils.getReviewRating;
 
 @RequiredArgsConstructor
 @Repository
@@ -51,7 +53,7 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                                 drink.drinkManufacturer.manufacturerName,
                                 drinkLike.count().eq(1L),
                                 drink.name,
-                                drink.reviewSumRating.divide(drink.reviewCount)
+                                getReviewRating()
                         )
                 )
                 .from(drink)
@@ -90,7 +92,7 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                                         drink.id,
                                         drink.name,
                                         drink.imageUrl,
-                                        drink.reviewSumRating.divide(drink.reviewCount),
+                                        getReviewRating(),
                                         Projections.constructor(
                                                 ManufacturerDto.class,
                                                 drinkManufacturer.id,
@@ -113,6 +115,37 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                 );
 
         return PageableExecutionUtils.getPage(drinkBannerListFindResponses, PageRequest.of(0, 4), drinkBannerListFindResponses::size);
+    }
+
+    @Override
+    public Page<DrinkListFindResponse> findByUserLike(Long userId,
+                                                      Pageable pageable) {
+        final List<DrinkListFindResponse> drinks = jpaQueryFactory.select(
+                        Projections.constructor(
+                                DrinkListFindResponse.class,
+                                drink.id,
+                                drink.imageUrl,
+                                drink.drinkManufacturer.manufacturerName,
+                                drinkLike.count().eq(1L),
+                                drink.name,
+                                getReviewRating()
+                        )
+                )
+                .from(user)
+                .join(user.drinkLikes, drinkLike)
+                .join(drinkLike.drink, drink)
+                .where(user.id.eq(userId))
+                .orderBy(drinkLike.createdDate.desc())
+                .groupBy(drink.id)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        final JPAQuery<Long> count = jpaQueryFactory.select(drinkLike.count())
+                .from(drinkLike)
+                .where(drinkLike.user.id.eq(userId));
+
+        return PageableExecutionUtils.getPage(drinks, pageable, count::fetchOne);
     }
 
     private BooleanExpression whereType(final String type) {

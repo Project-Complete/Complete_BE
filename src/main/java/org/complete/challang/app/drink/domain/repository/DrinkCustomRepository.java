@@ -13,4 +13,7 @@ public interface DrinkCustomRepository {
                                               final Long userId);
 
     Page<DrinkBannerListFindResponse> findForBanner();
+
+    Page<DrinkListFindResponse> findByUserLike(final Long userId,
+                                               final Pageable pageable);
 }
