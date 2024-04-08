@@ -137,6 +137,7 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                 .join(user.drinkLikes, drinkLike)
                 .join(drinkLike.drink, drink)
                 .where(user.id.eq(userId))
+                .where(drink.isActive.isTrue())
                 .orderBy(drinkLike.createdDate.desc())
                 .groupBy(drink.id)
                 .offset(pageable.getOffset())
