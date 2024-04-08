@@ -17,7 +17,15 @@ public class DrinkSpec {
                     root.get(drinkSortCriteria.getEmbeddedValue()).get(drinkSortCriteria.getValue()),
                     root.get("reviewCount")
             );
-            return query.where(cb.notEqual(root.get("id"), drinkId)).orderBy(cb.desc(avgExpression)).getRestriction();
+            return query
+                    .where(
+                            cb.and(
+                                    cb.notEqual(root.get("id"), drinkId),
+                                    cb.isTrue(root.get("isActive"))
+                            )
+                    )
+                    .orderBy(cb.desc(avgExpression))
+                    .getRestriction();
         };
     }
 }
