@@ -84,6 +84,7 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                 .join(review.reviewFoods, reviewFood)
                 .join(reviewFood.food, food)
                 .where(drink.id.in(randomIds))
+                .where(drink.isActive.isTrue())
                 .groupBy(drink.id, food.id)
                 .orderBy(drink.id.asc(), food.id.count().desc())
                 .transform(
