@@ -186,7 +186,12 @@ public class DrinkService {
     }
 
     private Drink findDrink(final Long drinkId) {
-        return drinkRepository.findById(drinkId).orElseThrow(() -> new ApiException(ErrorCode.DRINK_NOT_FOUND));
+        final Drink drink = drinkRepository.findById(drinkId).orElseThrow(() -> new ApiException(ErrorCode.DRINK_NOT_FOUND));
+        if (!drink.isActive()) {
+            throw new ApiException(ErrorCode.DRINK_NOT_FOUND);
+        }
+
+        return drink;
     }
 
     private <T> String extractMaxRateField(final T statistic,
