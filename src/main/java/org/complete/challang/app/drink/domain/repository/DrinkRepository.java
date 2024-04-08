@@ -25,7 +25,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>, DrinkQueryR
             + "left join d.drinkLikes dl "
             + "left join dl.user u "
             + "on u.id = :userId "
-            + "where d.id != :drinkId "
+            + "where d.id != :drinkId and d.isActive = true "
             + "group by d.id "
             + "order by count(f.flavor) desc")
     Page<DrinkListFindResponse> findDrinksOrderByMaxFlavor(@Param("flavor") final String flavor,
