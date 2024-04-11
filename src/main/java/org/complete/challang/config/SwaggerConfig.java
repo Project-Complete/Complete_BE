@@ -5,8 +5,11 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
@@ -30,10 +33,17 @@ public class SwaggerConfig {
                         .in(SecurityScheme.In.HEADER)
                 );
 
+        Server devServer = new Server();
+        devServer.setUrl("https://dev-backend.challang.com");
+
+        Server localServer = new Server();
+        localServer.setUrl("http://localhost:8080");
+
         return new OpenAPI()
                 .info(apiInfo())
                 .addSecurityItem(securityRequirement)
-                .components(components);
+                .components(components)
+                .servers(List.of(devServer, localServer));
     }
 
     private Info apiInfo() {
