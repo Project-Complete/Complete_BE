@@ -53,7 +53,7 @@ public class Drink extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private DrinkDetailType drinkDetailType;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private DrinkManufacturer drinkManufacturer;
 
     @Builder.Default
