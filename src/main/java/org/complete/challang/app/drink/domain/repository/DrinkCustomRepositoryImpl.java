@@ -68,6 +68,8 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                 .fetch();
 
         final JPAQuery<Long> count = jpaQueryFactory.select(drink.count())
+                .from(drink)
+                .join(drink.drinkDetailType.drinkType, drinkType1)
                 .where(whereType(type));
 
         return PageableExecutionUtils.getPage(drinks, pageable, count::fetchOne);

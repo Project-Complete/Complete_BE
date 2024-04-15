@@ -23,7 +23,15 @@ public class DrinkPageResponse<T> {
                                                     final String sort) {
         return DrinkPageResponse.<T>builder()
                 .drinks(contents)
-                .pageInfo(PageInfoDto.toDto(page.getNumber() + 1, page.getSize(), page.getTotalElements(), sort))
+                .pageInfo(
+                        PageInfoDto.toDto(
+                                page.getNumber() + 1,
+                                page.getSize(),
+                                page.getTotalElements(),
+                                page.getTotalElements() / page.getSize() + 1,
+                                sort
+                        )
+                )
                 .build();
     }
 }
