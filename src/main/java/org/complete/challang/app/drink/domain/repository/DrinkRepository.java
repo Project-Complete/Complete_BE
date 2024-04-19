@@ -16,7 +16,8 @@ public interface DrinkRepository extends JpaRepository<Drink, Long>, DrinkQueryR
 
     Page<Drink> findAll(final Specification<Drink> spec, final Pageable pageable);
 
-    @Query(value = "select new org.complete.challang.app.drink.controller.dto.response.DrinkListFindResponse(d.id, d.imageUrl, d.drinkManufacturer.manufacturerName, count(u.id) > 0, d.name, d.reviewSumRating/d.reviewCount) "
+    @Query(value = "select new org.complete.challang.app.drink.controller.dto.response.DrinkListFindResponse(d.id, d.imageUrl, d.drinkManufacturer.manufacturerName, count(u.id) > 0, d.name, "
+            + "case when d.reviewCount = 0 then 0 else d.reviewSumRating/d.reviewCount end) "
             + "from Drink d "
             + "left join d.reviews r "
             + "left join r.reviewFlavors rf "
