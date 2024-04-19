@@ -13,6 +13,7 @@ public class PageInfoDto {
     private int page;
     private int size;
     private long totalElements;
+    private long totalPages;
     private String sort;
 
     public static PageInfoDto toDto(int page,
@@ -23,6 +24,20 @@ public class PageInfoDto {
                 .page(page)
                 .size(size)
                 .totalElements(totalElements)
+                .sort(sort)
+                .build();
+    }
+
+    public static PageInfoDto toDto(int page,
+                                    int size,
+                                    long totalElements,
+                                    long totalPages,
+                                    String sort) {
+        return PageInfoDto.builder()
+                .page(page)
+                .size(size)
+                .totalElements(totalElements)
+                .totalPages(totalPages)
                 .sort(sort)
                 .build();
     }

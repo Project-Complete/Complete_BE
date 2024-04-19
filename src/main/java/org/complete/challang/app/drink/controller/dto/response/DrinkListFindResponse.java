@@ -28,7 +28,7 @@ public class DrinkListFindResponse {
                 .drinkLike(drink.getDrinkLikes().stream()
                         .anyMatch(drinkLike -> drinkLike.getUser().getId().equals(userId)))
                 .drinkName(drink.getName())
-                .reviewRating(drink.getReviewSumRating() / drink.getReviewCount())
+                .reviewRating(drink.getReviewSumRating() / drink.getReviewCount() == 0 ? 1L : drink.getReviewCount())
                 .build();
     }
 }

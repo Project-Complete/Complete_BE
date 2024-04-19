@@ -60,6 +60,7 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                 .join(drink.drinkDetailType.drinkType, drinkType1)//.fetchJoin()
                 .leftJoin(drink.drinkLikes, drinkLike).on(drinkLike.user.id.eq(userId))
                 .where(whereType(type))
+                .where(drink.isActive.isTrue())
                 .orderBy(orderBySort(sorted))
                 .groupBy(drink.id)
                 .offset(pageable.getOffset())
@@ -67,7 +68,10 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                 .fetch();
 
         final JPAQuery<Long> count = jpaQueryFactory.select(drink.count())
-                .where(whereType(type));
+                .from(drink)
+                .join(drink.drinkDetailType.drinkType, drinkType1)
+                .where(whereType(type))
+                .where(drink.isActive.isTrue());
 
         return PageableExecutionUtils.getPage(drinks, pageable, count::fetchOne);
     }
@@ -83,6 +87,7 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                 .join(review.reviewFoods, reviewFood)
                 .join(reviewFood.food, food)
                 .where(drink.id.in(randomIds))
+                .where(drink.isActive.isTrue())
                 .groupBy(drink.id, food.id)
                 .orderBy(drink.id.asc(), food.id.count().desc())
                 .transform(
@@ -135,6 +140,7 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                 .join(user.drinkLikes, drinkLike)
                 .join(drinkLike.drink, drink)
                 .where(user.id.eq(userId))
+                .where(drink.isActive.isTrue())
                 .orderBy(drinkLike.createdDate.desc())
                 .groupBy(drink.id)
                 .offset(pageable.getOffset())
@@ -143,7 +149,8 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
 
         final JPAQuery<Long> count = jpaQueryFactory.select(drinkLike.count())
                 .from(drinkLike)
-                .where(drinkLike.user.id.eq(userId));
+                .where(drinkLike.user.id.eq(userId))
+                .where(drinkLike.drink.isActive.isTrue());
 
         return PageableExecutionUtils.getPage(drinks, pageable, count::fetchOne);
     }

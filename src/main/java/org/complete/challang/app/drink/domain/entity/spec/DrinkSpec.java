@@ -15,9 +15,20 @@ public class DrinkSpec {
         return (root, query, cb) -> {
             final Expression<Number> avgExpression = cb.quot(
                     root.get(drinkSortCriteria.getEmbeddedValue()).get(drinkSortCriteria.getValue()),
-                    root.get("reviewCount")
+                    cb.<Number>selectCase()
+                            .when(cb.equal(root.get("reviewCount"), 0), cb.literal(1))
+                            .otherwise(root.get("reviewCount"))
             );
-            return query.where(cb.notEqual(root.get("id"), drinkId)).orderBy(cb.desc(avgExpression)).getRestriction();
+
+            return query
+                    .where(
+                            cb.and(
+                                    cb.notEqual(root.get("id"), drinkId),
+                                    cb.isTrue(root.get("isActive"))
+                            )
+                    )
+                    .orderBy(cb.desc(avgExpression))
+                    .getRestriction();
         };
     }
 }
