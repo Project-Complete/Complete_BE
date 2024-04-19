@@ -70,7 +70,8 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
         final JPAQuery<Long> count = jpaQueryFactory.select(drink.count())
                 .from(drink)
                 .join(drink.drinkDetailType.drinkType, drinkType1)
-                .where(whereType(type));
+                .where(whereType(type))
+                .where(drink.isActive.isTrue());
 
         return PageableExecutionUtils.getPage(drinks, pageable, count::fetchOne);
     }
@@ -148,7 +149,8 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
 
         final JPAQuery<Long> count = jpaQueryFactory.select(drinkLike.count())
                 .from(drinkLike)
-                .where(drinkLike.user.id.eq(userId));
+                .where(drinkLike.user.id.eq(userId))
+                .where(drinkLike.drink.isActive.isTrue());
 
         return PageableExecutionUtils.getPage(drinks, pageable, count::fetchOne);
     }
