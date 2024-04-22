@@ -39,11 +39,12 @@ public class ReviewController {
     @Operation(summary = "리뷰 리스트 반환",
             description = "옵션(주류, 작성자, 좋아요 유무, 정렬 기준)에 따른 리뷰 리스트 반환")
     @GetMapping()
-    public ResponseEntity<ReviewListFindResponse> findReviewList(@RequestParam(required = false, name = "drink-id") final Long drinkId,
+    public ResponseEntity<ReviewListFindResponse> findReviewList(@AuthenticationPrincipal final UserDetails userDetails,
+                                                                 @RequestParam(required = false, name = "drink-id") final Long drinkId,
                                                                  @RequestParam(required = false, name = "writer-id") final Long writerId,
                                                                  @RequestParam(required = false, name = "page", defaultValue = "0") final int page,
                                                                  @RequestParam(required = false, name = "sort", defaultValue = "latest") final String sort) {
-        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(drinkId, writerId, page, sort);
+        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(userDetails, drinkId, writerId, page, sort);
 
         return new ResponseEntity<>(reviewListFindResponse, HttpStatus.OK);
     }
@@ -51,8 +52,9 @@ public class ReviewController {
     @Operation(summary = "리뷰 상세 정보 반환",
             description = "특정한 1개의 리뷰의 상세 정보를 반환")
     @GetMapping("/{review_id}")
-    public ResponseEntity<ReviewDetailResponse> findReviewDetail(@PathVariable("review_id") final Long reviewId) {
-        final ReviewDetailResponse reviewDetailResponse = reviewService.findReviewDetail(reviewId);
+    public ResponseEntity<ReviewDetailResponse> findReviewDetail(@AuthenticationPrincipal final UserDetails userDetails,
+                                                                 @PathVariable("review_id") final Long reviewId) {
+        final ReviewDetailResponse reviewDetailResponse = reviewService.findReviewDetail(userDetails, reviewId);
 
         return new ResponseEntity<>(reviewDetailResponse, HttpStatus.OK);
     }
