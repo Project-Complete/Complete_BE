@@ -33,31 +33,30 @@ public class ReviewController {
         final Long userId = Long.parseLong(user.getUsername());
         final ReviewCreateResponse reviewCreateResponse = reviewService.createReview(reviewCreateRequest, userId);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(reviewCreateResponse);
+        return new ResponseEntity<>(reviewCreateResponse, HttpStatus.CREATED);
     }
 
     @Operation(summary = "리뷰 리스트 반환",
             description = "옵션(주류, 작성자, 좋아요 유무, 정렬 기준)에 따른 리뷰 리스트 반환")
     @GetMapping()
-    public ResponseEntity<ReviewListFindResponse> findReviewList(@RequestParam(required = false, name = "drink-id") final Long drinkId,
+    public ResponseEntity<ReviewListFindResponse> findReviewList(@AuthenticationPrincipal final UserDetails userDetails,
+                                                                 @RequestParam(required = false, name = "drink-id") final Long drinkId,
                                                                  @RequestParam(required = false, name = "writer-id") final Long writerId,
                                                                  @RequestParam(required = false, name = "page", defaultValue = "0") final int page,
                                                                  @RequestParam(required = false, name = "sort", defaultValue = "latest") final String sort) {
-        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(drinkId, writerId, page, sort);
+        final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(userDetails, drinkId, writerId, page, sort);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(reviewListFindResponse);
+        return new ResponseEntity<>(reviewListFindResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "리뷰 상세 정보 반환",
             description = "특정한 1개의 리뷰의 상세 정보를 반환")
     @GetMapping("/{review_id}")
-    public ResponseEntity<ReviewDetailResponse> findReviewDetail(@PathVariable("review_id") final Long reviewId) {
-        final ReviewDetailResponse reviewDetailResponse = reviewService.findReviewDetail(reviewId);
+    public ResponseEntity<ReviewDetailResponse> findReviewDetail(@AuthenticationPrincipal final UserDetails userDetails,
+                                                                 @PathVariable("review_id") final Long reviewId) {
+        final ReviewDetailResponse reviewDetailResponse = reviewService.findReviewDetail(userDetails, reviewId);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(reviewDetailResponse);
+        return new ResponseEntity<>(reviewDetailResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "리뷰 삭제",
@@ -68,8 +67,7 @@ public class ReviewController {
         final Long userId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = reviewService.deleteReview(userId, reviewId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(successCode);
+        return new ResponseEntity<>(successCode, HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "리뷰 좋아요",
@@ -80,8 +78,7 @@ public class ReviewController {
         final Long userId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = reviewService.createReviewLike(userId, reviewId);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(successCode);
+        return new ResponseEntity<>(successCode, HttpStatus.CREATED);
     }
 
     @Operation(summary = "리뷰 좋아요 취소",
@@ -92,7 +89,6 @@ public class ReviewController {
         final Long userId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = reviewService.deleteReviewLike(userId, reviewId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(successCode);
+        return new ResponseEntity<>(successCode, HttpStatus.NO_CONTENT);
     }
 }

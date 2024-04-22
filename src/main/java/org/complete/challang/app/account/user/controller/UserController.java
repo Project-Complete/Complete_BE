@@ -35,8 +35,7 @@ public class UserController {
         final Long requestUserId = Long.parseLong(user.getUsername());
         final UserProfileFindResponse userProfileFindResponse = userService.findUserProfile(requestUserId, targetUserId);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(userProfileFindResponse);
+        return new ResponseEntity<>(userProfileFindResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "사용자 프로필 업데이트",
@@ -47,8 +46,7 @@ public class UserController {
         final Long userId = Long.parseLong(user.getUsername());
         final ProfileUpdateResponse profileUpdateResponse = userService.updateProfile(userId, profileUpdateRequest);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(profileUpdateResponse);
+        return new ResponseEntity<>(profileUpdateResponse, HttpStatus.CREATED);
     }
 
     @Operation(summary = "사용자 팔로우",
@@ -59,8 +57,7 @@ public class UserController {
         final Long requestUserId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = userService.createFollow(requestUserId, targetUserId);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(successCode);
+        return new ResponseEntity<>(successCode, HttpStatus.CREATED);
     }
 
     @Operation(summary = "사용자 팔로잉, 팔로워 리스트 조회",
@@ -71,8 +68,7 @@ public class UserController {
         final Long requestUserId = Long.parseLong(user.getUsername());
         final FollowsFindResponse followsFindResponse = userService.findFollows(requestUserId, targetUserId);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(followsFindResponse);
+        return new ResponseEntity<>(followsFindResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "사용자 팔로우 취소",
@@ -83,8 +79,7 @@ public class UserController {
         final Long requestUserId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = userService.deleteFollow(requestUserId, targetUserId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(successCode);
+        return new ResponseEntity<>(successCode, HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "사용자 좋아요 주류 조회",
