@@ -25,6 +25,7 @@ import org.complete.challang.app.review.domain.repository.ReviewLikeRepository;
 import org.complete.challang.app.review.domain.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static org.complete.challang.app.common.exception.ErrorCode.*;
 import static org.complete.challang.app.common.exception.SuccessCode.*;
-
 
 @RequiredArgsConstructor
 @Service
@@ -71,17 +71,24 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewListFindResponse findReviewList(final Long drinkId,
+    public ReviewListFindResponse findReviewList(final UserDetails userDetails,
+                                                 final Long drinkId,
                                                  final Long writerId,
                                                  final int page,
                                                  final String sort) {
         final PageRequest pageRequest = PageRequest.of(page, REVIEW_LIST_SIZE, ReviewSortCriteria.sortCriteriaOfValue(sort));
+        final Long userId = userDetails == null ? 0L : Long.valueOf(userDetails.getUsername());
 
         Page<Review> reviews;
         reviews = reviewCustomRepository.findAllWithOption(pageRequest, drinkId, writerId);
 
         final List<ReviewDto> reviewDtos = reviews.stream()
-                .map(review -> ReviewDto.toDto(review))
+                .map(review -> ReviewDto.toDto(review,
+                        review.getReviewLikes()
+                                .stream()
+                                .anyMatch(reviewLike -> reviewLike.getUser()
+                                        .getId()
+                                        .equals(userId))))
                 .collect(toList());
 
         return ReviewListFindResponse.toDto(reviewDtos,
@@ -92,10 +99,17 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewDetailResponse findReviewDetail(final Long reviewId) {
+    public ReviewDetailResponse findReviewDetail(final UserDetails userDetails,
+                                                 final Long reviewId) {
+        final Long userId = findUserIdByUserDetails(userDetails);
         final Review review = findReviewById(reviewId);
 
         return ReviewDetailResponse.toDto(review,
+                review.getReviewLikes()
+                                .stream()
+                                        .anyMatch(reviewLike -> reviewLike.getUser()
+                                                .getId()
+                                                .equals(userId)),
                 review.getReviewFlavors()
                         .stream()
                         .map(reviewFlavor -> reviewFlavor.getFlavor().getFlavor())
@@ -159,6 +173,10 @@ public class ReviewService {
     private User findUserById(final Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+    }
+
+    private Long findUserIdByUserDetails(final UserDetails userDetails) {
+        return userDetails == null ? 0L : Long.valueOf(userDetails.getUsername());
     }
 
     private Review findReviewById(final Long reviewId) {
