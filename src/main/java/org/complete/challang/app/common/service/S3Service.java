@@ -39,7 +39,7 @@ public class S3Service {
 
         final PutObjectRequest putObjectRequest = generatePutObjectRequest(presignedUrlFindRequest, userDetails.getUsername());
         final PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(10))
+                .signatureDuration(Duration.ofSeconds(30))
                 .putObjectRequest(putObjectRequest)
                 .build();
         final PresignedPutObjectRequest presignedPutObjectRequest = s3Presigner.presignPutObject(putObjectPresignRequest);
