@@ -33,8 +33,7 @@ public class ReviewController {
         final Long userId = Long.parseLong(user.getUsername());
         final ReviewCreateResponse reviewCreateResponse = reviewService.createReview(reviewCreateRequest, userId);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(reviewCreateResponse);
+        return new ResponseEntity<>(reviewCreateResponse, HttpStatus.CREATED);
     }
 
     @Operation(summary = "리뷰 리스트 반환",
@@ -46,8 +45,7 @@ public class ReviewController {
                                                                  @RequestParam(required = false, name = "sort", defaultValue = "latest") final String sort) {
         final ReviewListFindResponse reviewListFindResponse = reviewService.findReviewList(drinkId, writerId, page, sort);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(reviewListFindResponse);
+        return new ResponseEntity<>(reviewListFindResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "리뷰 상세 정보 반환",
@@ -56,8 +54,7 @@ public class ReviewController {
     public ResponseEntity<ReviewDetailResponse> findReviewDetail(@PathVariable("review_id") final Long reviewId) {
         final ReviewDetailResponse reviewDetailResponse = reviewService.findReviewDetail(reviewId);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(reviewDetailResponse);
+        return new ResponseEntity<>(reviewDetailResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "리뷰 삭제",
@@ -68,8 +65,7 @@ public class ReviewController {
         final Long userId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = reviewService.deleteReview(userId, reviewId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(successCode);
+        return new ResponseEntity<>(successCode, HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "리뷰 좋아요",
@@ -80,8 +76,7 @@ public class ReviewController {
         final Long userId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = reviewService.createReviewLike(userId, reviewId);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(successCode);
+        return new ResponseEntity<>(successCode, HttpStatus.CREATED);
     }
 
     @Operation(summary = "리뷰 좋아요 취소",
@@ -92,7 +87,6 @@ public class ReviewController {
         final Long userId = Long.parseLong(user.getUsername());
         final SuccessCode successCode = reviewService.deleteReviewLike(userId, reviewId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(successCode);
+        return new ResponseEntity<>(successCode, HttpStatus.NO_CONTENT);
     }
 }
