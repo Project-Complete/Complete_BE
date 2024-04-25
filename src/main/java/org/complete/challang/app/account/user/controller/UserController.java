@@ -29,8 +29,19 @@ public class UserController {
 
     @Operation(summary = "사용자 프로필 조회",
             description = "특정 사용자의 프로필 정보 반환, 자신의 정보 조회 시에만 email 정보 반환")
-    @GetMapping("/{user_id}")
+    @GetMapping({"", "/{user_id}"})
     public ResponseEntity<UserProfileFindResponse> findUserProfile(@AuthenticationPrincipal final UserDetails user,
+                                                                   @PathVariable(name = "user_id", required = false) final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final UserProfileFindResponse userProfileFindResponse = userService.findUserProfile(requestUserId, targetUserId);
+
+        return new ResponseEntity<>(userProfileFindResponse, HttpStatus.OK);
+    }
+
+    @Operation(summary = "사용자 프로필 조회",
+            description = "특정 사용자의 프로필 정보 반환, 자신의 정보 조회 시에만 email 정보 반환")
+    @GetMapping("/{user_id}")
+    public ResponseEntity<UserProfileFindResponse> findMyProfile(@AuthenticationPrincipal final UserDetails user,
                                                                    @PathVariable(name = "user_id", required = false) final Long targetUserId) {
         final Long requestUserId = Long.parseLong(user.getUsername());
         final UserProfileFindResponse userProfileFindResponse = userService.findUserProfile(requestUserId, targetUserId);
