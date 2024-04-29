@@ -3,12 +3,12 @@ package org.complete.challang.app.common.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.complete.challang.annotation.AuthUser;
+import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.common.controller.dto.response.SearchListFindResponse;
 import org.complete.challang.app.common.service.MainService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +26,8 @@ public class MainController {
     @GetMapping("/search")
     public ResponseEntity<SearchListFindResponse> findByKeyword(@RequestParam("keyword") final String keyword,
                                                                 @RequestParam(value = "page", defaultValue = "1") final int page,
-                                                                @AuthenticationPrincipal final UserDetails userDetails) {
-        final long userId = userDetails != null ? Long.parseLong(userDetails.getUsername()) : 0L;
+                                                                @AuthUser final CustomOAuth2User customOAuth2User) {
+        final long userId = customOAuth2User.getUserId();
         final SearchListFindResponse searchResult = mainService.findByKeyword(keyword, userId, page);
 
         return new ResponseEntity<>(searchResult, HttpStatus.OK);
