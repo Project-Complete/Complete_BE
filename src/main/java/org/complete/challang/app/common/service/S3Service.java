@@ -1,13 +1,13 @@
 package org.complete.challang.app.common.service;
 
 import lombok.RequiredArgsConstructor;
+import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.account.user.domain.repository.UserRepository;
-import org.complete.challang.app.common.exception.ApiException;
-import org.complete.challang.app.common.exception.ErrorCode;
 import org.complete.challang.app.common.controller.dto.request.PreSignedUrlFindRequest;
 import org.complete.challang.app.common.controller.dto.response.PreSignedUrlFindResponse;
+import org.complete.challang.app.common.exception.ApiException;
+import org.complete.challang.app.common.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -32,12 +32,12 @@ public class S3Service {
     private final UserRepository userRepository;
 
     public PreSignedUrlFindResponse findPreSignedUrl(final PreSignedUrlFindRequest presignedUrlFindRequest,
-                                                     final UserDetails userDetails) {
-        if (!userRepository.existsById(Long.valueOf(userDetails.getUsername()))) {
+                                                     final CustomOAuth2User customOAuth2User) {
+        if (!userRepository.existsById(customOAuth2User.getUserId())) {
             throw new ApiException(ErrorCode.USER_NOT_FOUND);
         }
 
-        final PutObjectRequest putObjectRequest = generatePutObjectRequest(presignedUrlFindRequest, userDetails.getUsername());
+        final PutObjectRequest putObjectRequest = generatePutObjectRequest(presignedUrlFindRequest, customOAuth2User.getUserId());
         final PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofSeconds(30))
                 .putObjectRequest(putObjectRequest)
@@ -51,7 +51,7 @@ public class S3Service {
     }
 
     private PutObjectRequest generatePutObjectRequest(final PreSignedUrlFindRequest presignedUrlFindRequest,
-                                                      final String userId) {
+                                                      final Long userId) {
         final String fileName = StringUtils.stripFilenameExtension(presignedUrlFindRequest.getFileName());
         if (!fileName.matches("^[^/\\s]+$")) {
             throw new ApiException(ErrorCode.INVALID_FILENAME);
