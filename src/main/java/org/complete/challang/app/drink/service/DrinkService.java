@@ -1,6 +1,7 @@
 package org.complete.challang.app.drink.service;
 
 import lombok.RequiredArgsConstructor;
+import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.account.user.domain.entity.User;
 import org.complete.challang.app.account.user.domain.repository.UserRepository;
 import org.complete.challang.app.common.exception.ApiException;
@@ -9,8 +10,8 @@ import org.complete.challang.app.common.exception.SuccessCode;
 import org.complete.challang.app.common.exception.SuccessResponse;
 import org.complete.challang.app.drink.controller.dto.request.DrinkCreateRequest;
 import org.complete.challang.app.drink.controller.dto.response.*;
-import org.complete.challang.app.drink.domain.entity.*;
 import org.complete.challang.app.drink.domain.entity.Package;
+import org.complete.challang.app.drink.domain.entity.*;
 import org.complete.challang.app.drink.domain.entity.criteria.DrinkSortCriteria;
 import org.complete.challang.app.drink.domain.entity.criteria.DrinkTypeCriteria;
 import org.complete.challang.app.drink.domain.entity.spec.DrinkSpec;
@@ -20,7 +21,6 @@ import org.complete.challang.app.drink.domain.repository.DrinkRepository;
 import org.complete.challang.app.drink.domain.repository.PackageRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,9 +43,9 @@ public class DrinkService {
     private final PackageRepository packageRepository;
 
     public DrinkFindResponse findDetailDrink(final Long drinkId,
-                                             final UserDetails userDetails) {
+                                             final CustomOAuth2User customOAuth2User) {
         final Drink drink = findDrink(drinkId);
-        final Long userId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L;
+        final Long userId = customOAuth2User.getUserId();
         final DrinkFindResponse drinkFindResponse = DrinkFindResponse.toDto(drink);
         drinkFindResponse.updateStatistic(
                 drinkRepository.findFoodStatisticById(drinkId),
@@ -59,9 +59,9 @@ public class DrinkService {
 
     public DrinkPageResponse<DrinkListFindResponse> findRateDrinks(final Long drinkId,
                                                                    final String rate,
-                                                                   final UserDetails userDetails) {
+                                                                   final CustomOAuth2User customOAuth2User) {
         final Drink drink = findDrink(drinkId);
-        final Long userId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L;
+        final Long userId = customOAuth2User.getUserId();
 
         // todo: refactor 예정
         String maxField = null;
@@ -116,14 +116,14 @@ public class DrinkService {
     public DrinkPageResponse<DrinkListFindResponse> findDrinks(final String drinkType,
                                                                final String sorted,
                                                                final int page,
-                                                               final UserDetails userDetails) {
+                                                               final CustomOAuth2User customOAuth2User) {
         final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria(sorted);
         final String type = DrinkTypeCriteria.getPhysicalType(drinkType);
         final Page<DrinkListFindResponse> drinks = drinkRepository.findAllByType(
                 type,
                 sorted,
                 PageRequest.of(page - 1, 8),
-                userDetails != null ? Long.valueOf(userDetails.getUsername()) : 0L
+                customOAuth2User.getUserId()
         );
 
         return DrinkPageResponse.toDto(drinks.getContent(), drinks, drinkSortCriteria.getDescription());
@@ -131,9 +131,9 @@ public class DrinkService {
 
     @Transactional
     public SuccessResponse likeDrink(final Long drinkId,
-                                     final UserDetails userDetails) {
+                                     final CustomOAuth2User customOAuth2User) {
         final Drink drink = findDrink(drinkId);
-        final Long userId = Long.valueOf(userDetails.getUsername());
+        final Long userId = customOAuth2User.getUserId();
         final User user = userRepository.getReferenceById(userId);
 
         drink.likeDrink(user);
@@ -143,9 +143,9 @@ public class DrinkService {
 
     @Transactional
     public SuccessResponse unLikeDrink(final Long drinkId,
-                                       final UserDetails userDetails) {
+                                       final CustomOAuth2User customOAuth2User) {
         final Drink drink = findDrink(drinkId);
-        final Long userId = Long.valueOf(userDetails.getUsername());
+        final Long userId = customOAuth2User.getUserId();
         final User user = userRepository.getReferenceById(userId);
 
         drink.unLikeDrink(user);
