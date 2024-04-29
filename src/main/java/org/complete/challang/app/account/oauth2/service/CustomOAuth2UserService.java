@@ -30,14 +30,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .getRegistrationId()
                 .toUpperCase());
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(socialType, oAuth2User.getAttributes());
-        String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails()
-                .getUserInfoEndpoint()
-                .getUserNameAttributeName();
-
         User user = getUser(oAuth2UserInfo, socialType);
 
-        return user.toOAuth2User(oAuth2User.getAttributes(), userNameAttributeName);
+        return user.toOAuth2User(oAuth2User.getAttributes());
     }
 
     private User getUser(OAuth2UserInfo oAuth2UserInfo, SocialType socialType) {
