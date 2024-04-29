@@ -10,18 +10,21 @@ import lombok.RequiredArgsConstructor;
 import org.complete.challang.app.account.jwt.Token;
 import org.complete.challang.app.account.jwt.TokenProvider;
 import org.complete.challang.app.account.jwt.util.TokenUtil;
+import org.complete.challang.app.account.oauth2.CustomOAuth2User;
+import org.complete.challang.app.account.user.domain.entity.RoleType;
 import org.complete.challang.app.account.user.domain.entity.User;
 import org.complete.challang.app.account.user.domain.repository.UserRepository;
 import org.complete.challang.app.common.exception.ErrorCode;
 import org.complete.challang.app.common.exception.FilterErrorResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -80,10 +83,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         if (accessToken.validateToken()) {
             Map<String, Object> tokenPayload = accessToken.getPayload();
-            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                    .username(Integer.toString((Integer) tokenPayload.get(TokenUtil.ID_CLAIM)))
-                    .password("")
-                    .roles((String) tokenPayload.get(TokenUtil.ROLE_CLAIM))
+            RoleType roleType = RoleType.valueOf((String) tokenPayload.get(TokenUtil.ROLE_CLAIM));
+            CustomOAuth2User userDetails = CustomOAuth2User.builder()
+                    .userId(Long.valueOf((Integer) tokenPayload.get(TokenUtil.ID_CLAIM)))
+                    .roleType(roleType)
+                    .authorities(Collections.singletonList(new SimpleGrantedAuthority(roleType.getRole())))
+                    .attributes(Map.of("temp", new Object()))
                     .build();
             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
