@@ -65,13 +65,13 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ReviewLike> reviewLikes = new ArrayList<>();
 
-    public CustomOAuth2User toOAuth2User(Map<String, Object> attributes, String nameAttributeKey) {
+    public CustomOAuth2User toOAuth2User(Map<String, Object> attributes) {
         return CustomOAuth2User.builder()
                 .email(this.email)
                 .roleType(this.roleType)
+                .userId(getId())
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority(roleType.getRole())))
                 .attributes(attributes)
-                .nameAttributeKey(nameAttributeKey)
                 .build();
     }
 

@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException ex) {
+    public ResponseEntity<ErrorResponse> handleRuntimeException(final Exception ex) {
         log.error(ex.getMessage(), ex);
         final ErrorResponse errorResponse = ErrorResponse.toErrorResponse(new ApiException(ErrorCode.UNHANDLED_EXCEPTION), ex);
 
