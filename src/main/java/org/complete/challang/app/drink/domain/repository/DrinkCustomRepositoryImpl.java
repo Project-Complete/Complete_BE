@@ -114,6 +114,7 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                                                         food.id.count()
                                                 )
                                         ),
+                                        drink.situationStatistic,
                                         drink.abv
                                 )
                         )
