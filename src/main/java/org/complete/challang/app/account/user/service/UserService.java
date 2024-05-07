@@ -111,9 +111,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public DrinkPageResponse<DrinkListFindResponse> findLikeDrinks(final Long userId) {
+    public DrinkPageResponse<DrinkListFindResponse> findLikeDrinks(final Long userId,
+                                                                   final int page,
+                                                                   final int size) {
         final User user = findUserById(userId);
-        final Page<DrinkListFindResponse> drinks = drinkRepository.findByUserLike(user.getId(), PageRequest.of(0, 3));
+        final Page<DrinkListFindResponse> drinks = drinkRepository.findByUserLike(user.getId(), PageRequest.of(page - 1, size));
 
         final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria("latest_order");
 
