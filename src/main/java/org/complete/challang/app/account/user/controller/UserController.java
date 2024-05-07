@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.complete.challang.annotation.AuthUser;
+import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.account.user.controller.dto.request.ProfileUpdateRequest;
 import org.complete.challang.app.account.user.controller.dto.response.FollowsFindResponse;
 import org.complete.challang.app.account.user.controller.dto.response.ProfileUpdateResponse;
@@ -42,7 +44,7 @@ public class UserController {
             description = "특정 사용자의 프로필 정보 반환, 자신의 정보 조회 시에만 email 정보 반환")
     @GetMapping("/{user_id}")
     public ResponseEntity<UserProfileFindResponse> findMyProfile(@AuthenticationPrincipal final UserDetails user,
-                                                                   @PathVariable(name = "user_id", required = false) final Long targetUserId) {
+                                                                 @PathVariable(name = "user_id", required = false) final Long targetUserId) {
         final Long requestUserId = Long.parseLong(user.getUsername());
         final UserProfileFindResponse userProfileFindResponse = userService.findUserProfile(requestUserId, targetUserId);
 
@@ -96,9 +98,11 @@ public class UserController {
     @Operation(summary = "사용자 좋아요 주류 조회",
             description = "성공 코드 반환, 좋아요 누른 주류 리스트 조회")
     @GetMapping("/drinks/like")
-    public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findLikeDrinks(@AuthenticationPrincipal final UserDetails user) {
-        final Long userId = Long.parseLong(user.getUsername());
-        final DrinkPageResponse<DrinkListFindResponse> drinks = userService.findLikeDrinks(userId);
+    public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findLikeDrinks(@AuthUser final CustomOAuth2User customOAuth2User,
+                                                                                   @RequestParam(value = "page", defaultValue = "1") final int page,
+                                                                                   @RequestParam(value = "size", defaultValue = "3") final int size) {
+        final Long userId = customOAuth2User.getUserId();
+        final DrinkPageResponse<DrinkListFindResponse> drinks = userService.findLikeDrinks(userId, page, size);
 
         return new ResponseEntity<>(drinks, HttpStatus.OK);
     }
