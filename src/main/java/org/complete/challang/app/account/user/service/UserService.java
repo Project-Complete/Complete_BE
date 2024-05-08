@@ -3,6 +3,7 @@ package org.complete.challang.app.account.user.service;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.app.account.user.controller.dto.item.FollowDto;
 import org.complete.challang.app.account.user.controller.dto.request.ProfileUpdateRequest;
+import org.complete.challang.app.account.user.controller.dto.response.FollowCheckResponse;
 import org.complete.challang.app.account.user.controller.dto.response.FollowsFindResponse;
 import org.complete.challang.app.account.user.controller.dto.response.ProfileUpdateResponse;
 import org.complete.challang.app.account.user.controller.dto.response.UserProfileFindResponse;
@@ -102,12 +103,18 @@ public class UserService {
         final User requestUser = findUserById(requestUserId);
         final User targetUser = findUserById(targetUserId);
 
-        if (!followRepository.existsByFromUserAndToUser(requestUser, targetUser)) {
+        if (!checkFollow(requestUserId, targetUserId)) {
             throw new ApiException(FOLLOW_NOT_FOUND);
         }
         followRepository.deleteByFromUserAndToUser(requestUser, targetUser);
 
         return FOLLOW_DELETE_SUCCESS;
+    }
+
+    public FollowCheckResponse checkFollowing(final Long requestUserId,
+                                              final Long targetUserId) {
+
+        return FollowCheckResponse.toDto(checkFollow(requestUserId, targetUserId));
     }
 
     @Transactional(readOnly = true)
