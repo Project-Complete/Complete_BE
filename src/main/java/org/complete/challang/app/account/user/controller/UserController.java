@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.complete.challang.annotation.AuthUser;
 import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.account.user.controller.dto.request.ProfileUpdateRequest;
+import org.complete.challang.app.account.user.controller.dto.response.FollowCheckResponse;
 import org.complete.challang.app.account.user.controller.dto.response.FollowsFindResponse;
 import org.complete.challang.app.account.user.controller.dto.response.ProfileUpdateResponse;
 import org.complete.challang.app.account.user.controller.dto.response.UserProfileFindResponse;
@@ -93,6 +94,16 @@ public class UserController {
         final SuccessCode successCode = userService.deleteFollow(requestUserId, targetUserId);
 
         return new ResponseEntity<>(successCode, HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "사용자 팔로우 유무 조회",
+            description = "")
+    public ResponseEntity<FollowCheckResponse> checkFollowing(@AuthenticationPrincipal final UserDetails user,
+                                                           @PathVariable("user_id") final Long targetUserId) {
+        final Long requestUserId = Long.parseLong(user.getUsername());
+        final FollowCheckResponse followCheckResponse = userService.checkFollowing(requestUserId, targetUserId);
+
+        return new ResponseEntity<>(followCheckResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "사용자 좋아요 주류 조회",
