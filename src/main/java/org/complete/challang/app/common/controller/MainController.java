@@ -2,6 +2,7 @@ package org.complete.challang.app.common.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.annotation.AuthUser;
 import org.complete.challang.app.account.oauth2.CustomOAuth2User;
@@ -25,7 +26,8 @@ public class MainController {
     @Operation(summary = "통합 검색", description = "주류 및 술 조합 검색 API")
     @GetMapping("/search")
     public ResponseEntity<SearchListFindResponse> findByKeyword(@RequestParam("keyword") final String keyword,
-                                                                @RequestParam(value = "page", defaultValue = "1") final int page,
+                                                                @RequestParam(value = "page", defaultValue = "1")
+                                                                @Positive(message = "page는 1이상이어야 합니다") final int page,
                                                                 @AuthUser final CustomOAuth2User customOAuth2User) {
         final long userId = customOAuth2User.getUserId();
         final SearchListFindResponse searchResult = mainService.findByKeyword(keyword, userId, page);
