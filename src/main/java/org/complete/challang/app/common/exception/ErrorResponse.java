@@ -41,6 +41,34 @@ public class ErrorResponse {
                 .httpStatus(ex.getErrorCode().getHttpStatus())
                 .build();
     }
+
+    public static ErrorResponse toErrorResponse(BindException ex) {
+        List<ValidationError> validationErrors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(ValidationError::of)
+                .toList();
+
+        return ErrorResponse.builder()
+                .message(ErrorCode.VALIDATION_FAILURE.getMessage())
+                .errors(validationErrors)
+                .httpStatus(ErrorCode.VALIDATION_FAILURE.getHttpStatus())
+                .build();
+    }
+
+    public static ErrorResponse toErrorResponse(ConstraintViolationException ex) {
+        List<ValidationError> validationErrors = ex.getConstraintViolations()
+                .stream()
+                .map(ValidationError::of)
+                .toList();
+
+        return ErrorResponse.builder()
+                .message(ErrorCode.VALIDATION_FAILURE.getMessage())
+                .errors(validationErrors)
+                .httpStatus(ErrorCode.VALIDATION_FAILURE.getHttpStatus())
+                .build();
+    }
+
     @Getter
     @Builder
     @RequiredArgsConstructor
