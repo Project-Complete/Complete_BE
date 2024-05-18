@@ -3,6 +3,7 @@ package org.complete.challang.app.account.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.annotation.AuthUser;
 import org.complete.challang.app.account.oauth2.CustomOAuth2User;
@@ -99,7 +100,7 @@ public class UserController {
     @Operation(summary = "사용자 팔로우 유무 조회",
             description = "")
     public ResponseEntity<FollowCheckResponse> checkFollowing(@AuthenticationPrincipal final UserDetails user,
-                                                           @PathVariable("user_id") final Long targetUserId) {
+                                                              @PathVariable("user_id") final Long targetUserId) {
         final Long requestUserId = Long.parseLong(user.getUsername());
         final FollowCheckResponse followCheckResponse = userService.checkFollowing(requestUserId, targetUserId);
 
@@ -110,8 +111,10 @@ public class UserController {
             description = "성공 코드 반환, 좋아요 누른 주류 리스트 조회")
     @GetMapping("/drinks/like")
     public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findLikeDrinks(@AuthUser final CustomOAuth2User customOAuth2User,
-                                                                                   @RequestParam(value = "page", defaultValue = "1") final int page,
-                                                                                   @RequestParam(value = "size", defaultValue = "3") final int size) {
+                                                                                   @RequestParam(value = "page", defaultValue = "1")
+                                                                                   @Positive(message = "page는 1이상이어야 합니다") final int page,
+                                                                                   @RequestParam(value = "size", defaultValue = "3")
+                                                                                   @Positive(message = "size는 1이상이어야 합니다") final int size) {
         final Long userId = customOAuth2User.getUserId();
         final DrinkPageResponse<DrinkListFindResponse> drinks = userService.findLikeDrinks(userId, page, size);
 
