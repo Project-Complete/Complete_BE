@@ -20,6 +20,9 @@ spring:
 logging:
   level:
     root: info
+  discord:
+    webhook-uri: ${DISCORD_WEBHOOK_URI}
+  config: classpath:logback-spring.xml
 
 springdoc:
   swagger-ui:

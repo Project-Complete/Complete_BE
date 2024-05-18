@@ -81,6 +81,7 @@ jobs:
       S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
       S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
       S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+      DISCORD_WEBHOOK_URI: ${{ secrets.DISCORD_WEBHOOK_URI }}
 
     steps:
       # 커스텀 image pull
