@@ -16,10 +16,10 @@ public class CombinationCreateDto {
     private String name;
     private String volume;
 
-    @JsonProperty("x_coordinate")
+    @JsonProperty("xcoordinate")
     private int xCoordinate;
 
-    @JsonProperty("y_coordinate")
+    @JsonProperty("ycoordinate")
     private int yCoordinate;
 
     public Combination toEntity(CombinationBoard combinationBoard,
