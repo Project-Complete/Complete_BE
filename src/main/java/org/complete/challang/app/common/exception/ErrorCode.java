@@ -36,6 +36,7 @@ public enum ErrorCode {
     DRINK_TYPE_NOT_FOUND("세부 주류 타입이 존재하지 않습니다", HttpStatus.NOT_FOUND),
     DRINK_MANUFACTURER_NOT_FOUND("제조사가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     DRINK_PACKAGE_NOT_FOUND("주류 패키지가 존재하지 않습니다", HttpStatus.NOT_FOUND),
+    COMBINATION_BOARD_NOT_FOUND("주류 조합 게시글이 존재하지 않습니다", HttpStatus.NOT_FOUND),
 
     HTTP_REQUEST_NOT_SUPPORTED("지원하지 않는 HTTP METHOD 입니다", HttpStatus.METHOD_NOT_ALLOWED),
 
