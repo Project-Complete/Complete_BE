@@ -1,5 +1,6 @@
 package org.complete.challang.app.combination.controller.dto.item;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
@@ -18,7 +19,11 @@ public class CombinationFindDto {
     private boolean drinkLike;
     private String name;
     private String volume;
+
+    @JsonProperty("xcoordinate")
     private int xCoordinate;
+
+    @JsonProperty("ycoordinate")
     private int yCoordinate;
 
     public static CombinationFindDto toDto(Combination combination,
