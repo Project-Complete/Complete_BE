@@ -16,7 +16,7 @@ public enum SuccessCode {
     FOLLOW_DELETE_SUCCESS("팔로우 삭제를 성공했습니다", HttpStatus.NO_CONTENT),
     REVIEW_DELETE_SUCCESS("리뷰 삭제를 성공했습니다", HttpStatus.NO_CONTENT),
     REVIEW_LIKE_DELETE_SUCCESS("주류 리뷰 좋아요 삭제를 성공했습니다", HttpStatus.NO_CONTENT),
-    ;
+    COMBINATION_BOARD_DELETE_SUCCESS("주류 리뷰 좋아요 삭제를 성공했습니다", HttpStatus.NO_CONTENT);
 
     private final String message;
     private final HttpStatus httpStatus;
