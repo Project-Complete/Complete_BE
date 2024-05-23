@@ -23,7 +23,7 @@ public enum ErrorCode {
 
     FORBIDDEN("권한이 없는 사용자입니다", HttpStatus.FORBIDDEN),
     REVIEW_REMOVE_FORBIDDEN("리뷰 삭제 접근 권한이 없습니다", HttpStatus.FORBIDDEN),
-    COMBINATION_UPDATE_FORBIDDEN("리뷰 조합 수정 접근 권한이 없습니다", HttpStatus.FORBIDDEN),
+    COMBINATION_USER_FORBIDDEN("리뷰 조합 접근 권한이 없습니다", HttpStatus.FORBIDDEN),
 
     API_NOT_FOUND("해당 API 요청이 존재하지 않습니다", HttpStatus.NOT_FOUND),
     DRINK_LIKE_NOT_FOUND("해당 주류의 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND),
