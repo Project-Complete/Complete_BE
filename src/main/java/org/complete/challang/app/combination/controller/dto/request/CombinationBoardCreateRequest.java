@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import org.complete.challang.app.account.user.domain.entity.User;
-import org.complete.challang.app.combination.controller.dto.item.CombinationCreateDto;
+import org.complete.challang.app.combination.controller.dto.item.CombinationCreateUpdateDto;
 import org.complete.challang.app.combination.domain.entity.CombinationBoard;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class CombinationBoardCreateRequest {
     private String title;
     private String description;
     private String content;
-    private List<CombinationCreateDto> combinations;
+    private List<CombinationCreateUpdateDto> combinations;
 
     public CombinationBoard toEntity(User user) {
         return CombinationBoard.builder()
