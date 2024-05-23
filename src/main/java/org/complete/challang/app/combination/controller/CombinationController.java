@@ -1,6 +1,5 @@
 package org.complete.challang.app.combination.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.complete.challang.annotation.AuthUser;
 import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.combination.controller.dto.request.CombinationBoardCreateRequest;
-import org.complete.challang.app.combination.controller.dto.response.CombinationBoardCreateResponse;
+import org.complete.challang.app.combination.controller.dto.request.CombinationBoardUpdateRequest;
+import org.complete.challang.app.combination.controller.dto.response.CombinationBoardCreateUpdateResponse;
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardFindResponse;
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardListFindResponse;
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardPageResponse;
@@ -47,10 +47,20 @@ public class CombinationController {
 
     @Operation(summary = "주류 조합 작성", description = "주류 조합 게시판 작성")
     @PostMapping("")
-    public ResponseEntity<CombinationBoardCreateResponse> createCombinationBoard(@RequestBody final CombinationBoardCreateRequest combinationBoardCreateRequest,
-                                                                                 @AuthUser final CustomOAuth2User customOAuth2User) throws JsonProcessingException {
+    public ResponseEntity<CombinationBoardCreateUpdateResponse> createCombinationBoard(@RequestBody final CombinationBoardCreateRequest combinationBoardCreateRequest,
+                                                                                       @AuthUser final CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getUserId();
 
         return new ResponseEntity<>(combinationService.createCombinationBoard(combinationBoardCreateRequest, userId), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "주류 조합 게시글 수정", description = "주류 조합 게시글 수정")
+    @PatchMapping("/{combination_board_id}")
+    public ResponseEntity<CombinationBoardCreateUpdateResponse> updateCombinationBoard(@PathVariable("combination_board_id") final Long combinationBoardId,
+                                                                                       @RequestBody final CombinationBoardUpdateRequest combinationBoardUpdateRequest,
+                                                                                       @AuthUser final CustomOAuth2User customOAuth2User) {
+        Long userId = customOAuth2User.getUserId();
+
+        return new ResponseEntity<>(combinationService.updateCombinationBoard(combinationBoardId, combinationBoardUpdateRequest, userId), HttpStatus.CREATED);
     }
 }
