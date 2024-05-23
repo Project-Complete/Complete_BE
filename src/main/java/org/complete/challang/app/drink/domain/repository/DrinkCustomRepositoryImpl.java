@@ -28,10 +28,8 @@ import static org.complete.challang.app.account.user.domain.entity.QUser.user;
 import static org.complete.challang.app.drink.domain.entity.QDrink.drink;
 import static org.complete.challang.app.drink.domain.entity.QDrinkManufacturer.drinkManufacturer;
 import static org.complete.challang.app.drink.domain.entity.QDrinkType.drinkType1;
-import static org.complete.challang.app.drink.domain.entity.QFood.food;
 import static org.complete.challang.app.drink.domain.entity.QLocation.location1;
-import static org.complete.challang.app.review.domain.entity.QReview.review;
-import static org.complete.challang.app.review.domain.entity.QReviewFood.reviewFood;
+import static org.complete.challang.app.drink.domain.entity.view.QDrinkFoodRank.drinkFoodRank;
 import static org.complete.challang.app.util.QueryUtils.getReviewRating;
 
 @RequiredArgsConstructor
@@ -79,17 +77,17 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
     @Override
     public Page<DrinkBannerListFindResponse> findForBanner() {
         final Set<Long> randomIds = randomDrinkIds();
+
         final List<DrinkBannerListFindResponse> drinkBannerListFindResponses = jpaQueryFactory
                 .from(drink)
                 .join(drink.drinkManufacturer, drinkManufacturer)
                 .join(drinkManufacturer.location, location1)
-                .join(drink.reviews, review)
-                .join(review.reviewFoods, reviewFood)
-                .join(reviewFood.food, food)
+                .join(drinkFoodRank, drinkFoodRank).on(drinkFoodRank.drinkId.eq(drink.id))
                 .where(drink.id.in(randomIds))
                 .where(drink.isActive.isTrue())
-                .groupBy(drink.id, food.id)
-                .orderBy(drink.id.asc(), food.id.count().desc())
+                .where(drinkFoodRank.rn.loe(4))
+                .groupBy(drink.id, drinkFoodRank.foodId)
+                .orderBy(drink.id.asc(), drinkFoodRank.fCount.desc())
                 .transform(
                         groupBy(drink.id).list(
                                 Projections.constructor(
@@ -108,10 +106,10 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
                                         list(
                                                 Projections.constructor(
                                                         FoodStatisticDto.class,
-                                                        food.id,
-                                                        food.category,
-                                                        food.imageUrl,
-                                                        food.id.count()
+                                                        drinkFoodRank.foodId,
+                                                        drinkFoodRank.category,
+                                                        drinkFoodRank.imageUrl,
+                                                        drinkFoodRank.fCount
                                                 )
                                         ),
                                         drink.situationStatistic,
