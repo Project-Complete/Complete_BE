@@ -23,6 +23,7 @@ public enum ErrorCode {
 
     FORBIDDEN("권한이 없는 사용자입니다", HttpStatus.FORBIDDEN),
     REVIEW_REMOVE_FORBIDDEN("리뷰 삭제 접근 권한이 없습니다", HttpStatus.FORBIDDEN),
+    COMBINATION_UPDATE_FORBIDDEN("리뷰 조합 수정 접근 권한이 없습니다", HttpStatus.FORBIDDEN),
 
     API_NOT_FOUND("해당 API 요청이 존재하지 않습니다", HttpStatus.NOT_FOUND),
     DRINK_LIKE_NOT_FOUND("해당 주류의 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND),
@@ -45,8 +46,7 @@ public enum ErrorCode {
     FOLLOW_CONFLICT("해당 팔로우가 이미 존재합니다", HttpStatus.CONFLICT),
     NICKNAME_CONFLICT("해당 닉네임이 이미 존재합니다", HttpStatus.CONFLICT),
     REVIEW_LIKE_CONFLICT("해당 이메일에 이미 좋아요를 하였습니다", HttpStatus.CONFLICT),
-    DRINK_PACKAGE_CONFLICT("해당 주류에 이미 패키지가 등록되었습니다", HttpStatus.CONFLICT)
-    ;
+    DRINK_PACKAGE_CONFLICT("해당 주류에 이미 패키지가 등록되었습니다", HttpStatus.CONFLICT);
 
     private final String message;
     private final HttpStatus httpStatus;
