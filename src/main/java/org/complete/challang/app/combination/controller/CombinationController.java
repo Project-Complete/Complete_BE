@@ -13,6 +13,7 @@ import org.complete.challang.app.combination.controller.dto.response.Combination
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardListFindResponse;
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardPageResponse;
 import org.complete.challang.app.combination.service.CombinationService;
+import org.complete.challang.app.common.exception.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,14 @@ public class CombinationController {
         Long userId = customOAuth2User.getUserId();
 
         return new ResponseEntity<>(combinationService.updateCombinationBoard(combinationBoardId, combinationBoardUpdateRequest, userId), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "주류 조합 게시글 삭제", description = "주류 조합 게시글 삭제")
+    @DeleteMapping("/{combination_board_id}")
+    public ResponseEntity<SuccessResponse> deleteCombinationBoard(@PathVariable("combination_board_id") final Long combinationBoardId,
+                                                                  @AuthUser final CustomOAuth2User customOAuth2User) {
+        Long userId = customOAuth2User.getUserId();
+
+        return new ResponseEntity<>(combinationService.deleteCombinationBoard(combinationBoardId, userId), HttpStatus.OK);
     }
 }
