@@ -16,6 +16,8 @@ import org.complete.challang.app.combination.domain.entity.CombinationSortCriter
 import org.complete.challang.app.combination.domain.repository.CombinationBoardRepository;
 import org.complete.challang.app.common.exception.ApiException;
 import org.complete.challang.app.common.exception.ErrorCode;
+import org.complete.challang.app.common.exception.SuccessCode;
+import org.complete.challang.app.common.exception.SuccessResponse;
 import org.complete.challang.app.drink.domain.entity.Drink;
 import org.complete.challang.app.drink.domain.repository.DrinkRepository;
 import org.springframework.data.domain.Page;
@@ -75,15 +77,31 @@ public class CombinationService {
         CombinationBoard combinationBoard = findByCombinationBoard(combinationBoardId);
         User user = findByUser(userId);
 
-        if (combinationBoard.getUser().getId() != user.getId()) {
-            throw new ApiException(ErrorCode.COMBINATION_UPDATE_FORBIDDEN);
-        }
+        authorizeUser(combinationBoard, user);
 
         combinationBoard.updateCombinationBoard(combinationBoardUpdateRequest);
         Set<Combination> combinations = toCombinations(combinationBoardUpdateRequest.getCombinations(), combinationBoard);
         combinationBoard.updateCombinations(combinations);
 
         return CombinationBoardCreateUpdateResponse.toDto(combinationBoard);
+    }
+
+    @Transactional
+    public SuccessResponse deleteCombinationBoard(final Long combinationBoardId,
+                                                  final Long userId) {
+        CombinationBoard combinationBoard = findByCombinationBoard(combinationBoardId);
+        User user = findByUser(userId);
+
+        authorizeUser(combinationBoard, user);
+        combinationBoard.deleteCombinationBoard();
+
+        return SuccessResponse.toSuccessResponse(SuccessCode.COMBINATION_BOARD_DELETE_SUCCESS);
+    }
+
+    private static void authorizeUser(CombinationBoard combinationBoard, User user) {
+        if (combinationBoard.getUser().getId() != user.getId()) {
+            throw new ApiException(ErrorCode.COMBINATION_USER_FORBIDDEN);
+        }
     }
 
     private Set<Combination> toCombinations(List<CombinationCreateUpdateDto> combinationBoardUpdateRequest, CombinationBoard combinationBoard) {
