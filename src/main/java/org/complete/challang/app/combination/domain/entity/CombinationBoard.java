@@ -2,6 +2,7 @@ package org.complete.challang.app.combination.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -10,6 +11,7 @@ import org.complete.challang.app.combination.controller.dto.request.CombinationB
 import org.complete.challang.app.common.domain.entity.BaseEntity;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,8 +34,9 @@ public class CombinationBoard extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "combinationBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Combination> combinations;
+    private Set<Combination> combinations = new HashSet<>();
 
     public void updateCombinations(final Set<Combination> combinations) {
         if (this.combinations.size() == combinations.size() && this.combinations.equals(combinations)) {
@@ -52,5 +55,9 @@ public class CombinationBoard extends BaseEntity {
                 .ifPresent(imageUrl -> this.imageUrl = imageUrl);
         Optional.ofNullable(combinationBoardUpdateRequest.getDescription())
                 .ifPresent(description -> this.description = description);
+    }
+
+    public void deleteCombinationBoard() {
+        super.delete();
     }
 }
