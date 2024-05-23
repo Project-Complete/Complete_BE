@@ -10,7 +10,7 @@ import org.complete.challang.app.drink.domain.entity.Drink;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CombinationCreateDto {
+public class CombinationCreateUpdateDto {
 
     private Long drinkId;
     private String name;
