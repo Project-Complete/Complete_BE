@@ -13,19 +13,22 @@ import lombok.Getter;
 public class CombinationBoardListFindResponse {
 
     private Long combinationBoardId;
-    private String imageUrl;
+    private String combinationImageUrl;
     private String title;
+    private String profileImageUrl;
     private String nickname;
     private boolean combinationLike;
     private boolean combinationBookmark;
 
     public CombinationBoardListFindResponse(Long combinationBoardId,
-                                            String imageUrl,
+                                            String combinationImageUrl,
                                             String title,
+                                            String profileImageUrl,
                                             String nickname) {
         this.combinationBoardId = combinationBoardId;
-        this.imageUrl = imageUrl;
+        this.combinationImageUrl = combinationImageUrl;
         this.title = title;
+        this.profileImageUrl = profileImageUrl;
         this.nickname = nickname;
     }
 }
