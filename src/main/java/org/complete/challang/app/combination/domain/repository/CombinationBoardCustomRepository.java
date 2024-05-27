@@ -8,6 +8,6 @@ import org.springframework.data.domain.Pageable;
 public interface CombinationBoardCustomRepository {
 
     Page<CombinationBoardListFindResponse> findAllBySorted(final CombinationSortCriteria combinationSortCriteria,
-                                                                  final Pageable pageable,
-                                                                  final Long userId);
+                                                           final Pageable pageable,
+                                                           final Long userId);
 }

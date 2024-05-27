@@ -33,6 +33,7 @@ public class CombinationBoardCustomRepositoryImpl implements CombinationBoardCus
                                 combinationBoard.id,
                                 combinationBoard.imageUrl,
                                 combinationBoard.title,
+                                user.profileImageUrl,
                                 user.nickname
                         )
                 )
