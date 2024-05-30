@@ -9,7 +9,7 @@ import org.complete.challang.app.combination.domain.entity.CombinationBoard;
 @Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CombinationBoardCreateResponse {
+public class CombinationBoardCreateUpdateResponse {
 
     private Long combinationBoardId;
     private String title;
@@ -17,8 +17,8 @@ public class CombinationBoardCreateResponse {
     private String imageUrl;
     private String description;
 
-    public static CombinationBoardCreateResponse toDto(CombinationBoard combinationBoard) {
-        return CombinationBoardCreateResponse.builder()
+    public static CombinationBoardCreateUpdateResponse toDto(CombinationBoard combinationBoard) {
+        return CombinationBoardCreateUpdateResponse.builder()
                 .combinationBoardId(combinationBoard.getId())
                 .title(combinationBoard.getTitle())
                 .content(combinationBoard.getContent())
