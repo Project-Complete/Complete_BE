@@ -16,6 +16,8 @@ import java.util.List;
 
 import static org.complete.challang.app.account.user.domain.entity.QUser.user;
 import static org.complete.challang.app.combination.domain.entity.QCombinationBoard.combinationBoard;
+import static org.complete.challang.app.combination.domain.entity.QCombinationBoardBookmark.combinationBoardBookmark;
+import static org.complete.challang.app.combination.domain.entity.QCombinationBoardLike.combinationBoardLike;
 
 @RequiredArgsConstructor
 @Repository
@@ -34,13 +36,18 @@ public class CombinationBoardCustomRepositoryImpl implements CombinationBoardCus
                                 combinationBoard.imageUrl,
                                 combinationBoard.title,
                                 user.profileImageUrl,
-                                user.nickname
+                                user.nickname,
+                                combinationBoardLike.count().eq(1L),
+                                combinationBoardBookmark.count().eq(1L)
                         )
                 )
                 .from(combinationBoard)
                 .join(combinationBoard.user, user)
+                .leftJoin(combinationBoard.combinationBoardLikes, combinationBoardLike).on(combinationBoardLike.user.id.eq(userId))
+                .leftJoin(combinationBoard.combinationBoardBookmarks, combinationBoardBookmark).on(combinationBoardBookmark.user.id.eq(userId))
                 .where(combinationBoard.isActive.isTrue())
                 .orderBy(orderBySort(combinationSortCriteria))
+                .groupBy(combinationBoard.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

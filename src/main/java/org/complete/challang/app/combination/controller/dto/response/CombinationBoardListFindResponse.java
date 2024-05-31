@@ -19,16 +19,4 @@ public class CombinationBoardListFindResponse {
     private String nickname;
     private boolean combinationLike;
     private boolean combinationBookmark;
-
-    public CombinationBoardListFindResponse(Long combinationBoardId,
-                                            String combinationImageUrl,
-                                            String title,
-                                            String profileImageUrl,
-                                            String nickname) {
-        this.combinationBoardId = combinationBoardId;
-        this.combinationImageUrl = combinationImageUrl;
-        this.title = title;
-        this.profileImageUrl = profileImageUrl;
-        this.nickname = nickname;
-    }
 }

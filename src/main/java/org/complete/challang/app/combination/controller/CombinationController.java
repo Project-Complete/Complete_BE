@@ -1,10 +1,10 @@
 package org.complete.challang.app.combination.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.annotation.AuthUser;
+import org.complete.challang.annotation.IdValid;
 import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.combination.controller.dto.request.CombinationBoardCreateRequest;
 import org.complete.challang.app.combination.controller.dto.request.CombinationBoardUpdateRequest;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 public class CombinationController {
 
     private final CombinationService combinationService;
-    private final ObjectMapper objectMapper;
 
     @Operation(summary = "주류 조합 상세 조회", description = "주류 조합 단건 상세 조회")
     @GetMapping("/{combination_board_id}")
@@ -72,5 +71,41 @@ public class CombinationController {
         Long userId = customOAuth2User.getUserId();
 
         return new ResponseEntity<>(combinationService.deleteCombinationBoard(combinationBoardId, userId), HttpStatus.OK);
+    }
+
+    @Operation(summary = "주류 조합 좋아요", description = "유저 주류 조합 좋아요 추가")
+    @PostMapping("/{combination_board_id}/like")
+    public ResponseEntity<SuccessResponse> createLikeCombinationBoard(@PathVariable("combination_board_id")
+                                                                      @IdValid final Long combinationBoardId,
+                                                                      @AuthUser final CustomOAuth2User customOAuth2User) {
+
+        return new ResponseEntity<>(combinationService.likeCombinationBoard(combinationBoardId, customOAuth2User), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "주류 조합 좋아요 삭제", description = "유저 주류 조합 좋아요 삭제")
+    @DeleteMapping("/{combination_board_id}/like")
+    public ResponseEntity<SuccessResponse> deleteLikeCombinationBoard(@PathVariable("combination_board_id")
+                                                                      @IdValid final Long combinationBoardId,
+                                                                      @AuthUser final CustomOAuth2User customOAuth2User) {
+
+        return new ResponseEntity<>(combinationService.unLikeCombinationBoard(combinationBoardId, customOAuth2User), HttpStatus.OK);
+    }
+
+    @Operation(summary = "주류 조합 북마크", description = "유저 주류 조합 북마크 추가")
+    @PostMapping("/{combination_board_id}/bookmark")
+    public ResponseEntity<SuccessResponse> createCombinationBoardBookmark(@PathVariable("combination_board_id")
+                                                                          @IdValid final Long combinationBoardId,
+                                                                          @AuthUser final CustomOAuth2User customOAuth2User) {
+
+        return new ResponseEntity<>(combinationService.createBookmark(combinationBoardId, customOAuth2User), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "주류 조합 북마크 삭제", description = "유저 주류 조합 북마크 삭제")
+    @DeleteMapping("/{combination_board_id}/bookmark")
+    public ResponseEntity<SuccessResponse> deleteCombinationBoardBookmark(@PathVariable("combination_board_id")
+                                                                          @IdValid final Long combinationBoardId,
+                                                                          @AuthUser final CustomOAuth2User customOAuth2User) {
+
+        return new ResponseEntity<>(combinationService.deleteBookmark(combinationBoardId, customOAuth2User), HttpStatus.OK);
     }
 }
