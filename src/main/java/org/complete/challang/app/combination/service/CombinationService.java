@@ -1,6 +1,7 @@
 package org.complete.challang.app.combination.service;
 
 import lombok.RequiredArgsConstructor;
+import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.account.user.domain.entity.User;
 import org.complete.challang.app.account.user.domain.repository.UserRepository;
 import org.complete.challang.app.combination.controller.dto.item.CombinationCreateUpdateDto;
@@ -96,6 +97,54 @@ public class CombinationService {
         combinationBoard.deleteCombinationBoard();
 
         return SuccessResponse.toSuccessResponse(SuccessCode.COMBINATION_BOARD_DELETE_SUCCESS);
+    }
+
+    @Transactional
+    public SuccessResponse likeCombinationBoard(final Long combinationBoardId,
+                                                final CustomOAuth2User customOAuth2User) {
+        final CombinationBoard combinationBoard = findByCombinationBoard(combinationBoardId);
+        final Long userId = customOAuth2User.getUserId();
+        final User user = userRepository.getReferenceById(userId);
+
+        combinationBoard.likeCombinationBoard(user);
+
+        return SuccessResponse.toSuccessResponse(SuccessCode.COMBINATION_BOARD_LIKE_SUCCESS);
+    }
+
+    @Transactional
+    public SuccessResponse unLikeCombinationBoard(final Long combinationBoardId,
+                                                  final CustomOAuth2User customOAuth2User) {
+        final CombinationBoard combinationBoard = findByCombinationBoard(combinationBoardId);
+        final Long userId = customOAuth2User.getUserId();
+        final User user = userRepository.getReferenceById(userId);
+
+        combinationBoard.unLikeCombinationBoard(user);
+
+        return SuccessResponse.toSuccessResponse(SuccessCode.COMBINATION_BOARD_LIKE_DELETE_SUCCESS);
+    }
+
+    @Transactional
+    public SuccessResponse createBookmark(final Long combinationBoardId,
+                                          final CustomOAuth2User customOAuth2User) {
+        final CombinationBoard combinationBoard = findByCombinationBoard(combinationBoardId);
+        final Long userId = customOAuth2User.getUserId();
+        final User user = userRepository.getReferenceById(userId);
+
+        combinationBoard.createBookmark(user);
+
+        return SuccessResponse.toSuccessResponse(SuccessCode.COMBINATION_BOARD_BOOKMARK_SUCCESS);
+    }
+
+    @Transactional
+    public SuccessResponse deleteBookmark(final Long combinationBoardId,
+                                          final CustomOAuth2User customOAuth2User) {
+        final CombinationBoard combinationBoard = findByCombinationBoard(combinationBoardId);
+        final Long userId = customOAuth2User.getUserId();
+        final User user = userRepository.getReferenceById(userId);
+
+        combinationBoard.deleteBookmark(user);
+
+        return SuccessResponse.toSuccessResponse(SuccessCode.COMBINATION_BOARD_BOOKMARK_DELETE_SUCCESS);
     }
 
     private static void authorizeUser(CombinationBoard combinationBoard, User user) {
