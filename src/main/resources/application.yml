@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    include: jwt, oauth, cloud
+    include: jwt, oauth, cloud, prod
 
   jpa:
     properties:
