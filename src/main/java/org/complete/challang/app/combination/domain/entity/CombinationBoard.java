@@ -9,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 import org.complete.challang.app.account.user.domain.entity.User;
 import org.complete.challang.app.combination.controller.dto.request.CombinationBoardUpdateRequest;
 import org.complete.challang.app.common.domain.entity.BaseEntity;
+import org.complete.challang.app.common.exception.ApiException;
+import org.complete.challang.app.common.exception.ErrorCode;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.HashSet;
@@ -38,6 +40,12 @@ public class CombinationBoard extends BaseEntity {
     @OneToMany(mappedBy = "combinationBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Combination> combinations = new HashSet<>();
 
+    @OneToMany(mappedBy = "combinationBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CombinationBoardLike> combinationBoardLikes;
+
+    @OneToMany(mappedBy = "combinationBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CombinationBoardBookmark> combinationBoardBookmarks;
+
     public void updateCombinations(final Set<Combination> combinations) {
         if (this.combinations.size() == combinations.size() && this.combinations.equals(combinations)) {
             return;
@@ -59,5 +67,57 @@ public class CombinationBoard extends BaseEntity {
 
     public void deleteCombinationBoard() {
         super.delete();
+    }
+
+    public void likeCombinationBoard(final User user) {
+        CombinationBoardLike combinationBoardLike = CombinationBoardLike.builder()
+                .combinationBoard(this)
+                .user(user)
+                .build();
+
+        if (combinationBoardLikes.contains(combinationBoardLike)) {
+            throw new ApiException(ErrorCode.COMBINATION_BOARD_LIKE_CONFLICT);
+        }
+
+        combinationBoardLikes.add(combinationBoardLike);
+    }
+
+    public void unLikeCombinationBoard(final User user) {
+        CombinationBoardLike combinationBoardLike = CombinationBoardLike.builder()
+                .combinationBoard(this)
+                .user(user)
+                .build();
+
+        if (!combinationBoardLikes.contains(combinationBoardLike)) {
+            throw new ApiException(ErrorCode.COMBINATION_BOARD_LIKE_NOT_FOUND);
+        }
+
+        combinationBoardLikes.remove(combinationBoardLike);
+    }
+
+    public void createBookmark(final User user) {
+        CombinationBoardBookmark combinationBoardBookmark = CombinationBoardBookmark.builder()
+                .combinationBoard(this)
+                .user(user)
+                .build();
+
+        if (combinationBoardBookmarks.contains(combinationBoardBookmark)) {
+            throw new ApiException(ErrorCode.COMBINATION_BOARD_BOOKMARK_CONFLICT);
+        }
+
+        combinationBoardBookmarks.add(combinationBoardBookmark);
+    }
+
+    public void deleteBookmark(final User user) {
+        CombinationBoardBookmark combinationBoardBookmark = CombinationBoardBookmark.builder()
+                .combinationBoard(this)
+                .user(user)
+                .build();
+
+        if (!combinationBoardBookmarks.contains(combinationBoardBookmark)) {
+            throw new ApiException(ErrorCode.COMBINATION_BOARD_BOOKMARK_NOT_FOUND);
+        }
+
+        combinationBoardBookmarks.remove(combinationBoardBookmark);
     }
 }
