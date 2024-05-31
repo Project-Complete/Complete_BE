@@ -38,6 +38,8 @@ public enum ErrorCode {
     DRINK_MANUFACTURER_NOT_FOUND("제조사가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     DRINK_PACKAGE_NOT_FOUND("주류 패키지가 존재하지 않습니다", HttpStatus.NOT_FOUND),
     COMBINATION_BOARD_NOT_FOUND("주류 조합 게시글이 존재하지 않습니다", HttpStatus.NOT_FOUND),
+    COMBINATION_BOARD_LIKE_NOT_FOUND("해당 주류 조합의 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND),
+    COMBINATION_BOARD_BOOKMARK_NOT_FOUND("해당 주류 조합의 좋아요가 존재하지 않습니다", HttpStatus.NOT_FOUND),
 
     HTTP_REQUEST_NOT_SUPPORTED("지원하지 않는 HTTP METHOD 입니다", HttpStatus.METHOD_NOT_ALLOWED),
 
@@ -46,7 +48,9 @@ public enum ErrorCode {
     FOLLOW_CONFLICT("해당 팔로우가 이미 존재합니다", HttpStatus.CONFLICT),
     NICKNAME_CONFLICT("해당 닉네임이 이미 존재합니다", HttpStatus.CONFLICT),
     REVIEW_LIKE_CONFLICT("해당 이메일에 이미 좋아요를 하였습니다", HttpStatus.CONFLICT),
-    DRINK_PACKAGE_CONFLICT("해당 주류에 이미 패키지가 등록되었습니다", HttpStatus.CONFLICT);
+    DRINK_PACKAGE_CONFLICT("해당 주류에 이미 패키지가 등록되었습니다", HttpStatus.CONFLICT),
+    COMBINATION_BOARD_LIKE_CONFLICT("해당 주류 조합에 이미 좋아요를 하였습니다", HttpStatus.CONFLICT),
+    COMBINATION_BOARD_BOOKMARK_CONFLICT("해당 주류 조합에 이미 북마크를 하였습니다", HttpStatus.CONFLICT);
 
     private final String message;
     private final HttpStatus httpStatus;
