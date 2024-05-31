@@ -46,6 +46,18 @@ public class CombinationBoardFindResponse {
                                 .map(combination -> CombinationFindDto.toDto(combination, userId))
                                 .toList()
                 )
+                .combinationLike(
+                        combinationBoard.getCombinationBoardLikes()
+                                .stream()
+                                .anyMatch(combinationBoardLike -> combinationBoardLike.getUser().getId().equals(userId))
+                )
+                .combinationLikeCount(combinationBoard.getCombinationBoardLikes().size())
+                .combinationBookmark(
+                        combinationBoard.getCombinationBoardBookmarks()
+                                .stream()
+                                .anyMatch(combinationBoardBookmark -> combinationBoardBookmark.getUser().getId().equals(userId))
+                )
+                .combinationBookmarkCount(combinationBoard.getCombinationBoardBookmarks().size())
                 .build();
     }
 }
