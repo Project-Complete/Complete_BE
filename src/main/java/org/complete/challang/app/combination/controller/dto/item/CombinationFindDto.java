@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import org.complete.challang.app.combination.domain.entity.Combination;
-import org.complete.challang.app.drink.domain.entity.Drink;
 
 @Getter
 @Builder
@@ -28,17 +27,6 @@ public class CombinationFindDto {
 
     public static CombinationFindDto toDto(Combination combination,
                                            Long userId) {
-        Drink drink = combination.getDrink();
-
-        if (drink == null) {
-            return CombinationFindDto.builder()
-                    .name(drink != null ? drink.getName() : combination.getName())
-                    .volume(combination.getVolume())
-                    .xCoordinate(combination.getXCoordinate())
-                    .yCoordinate(combination.getYCoordinate())
-                    .build();
-        }
-
         return CombinationFindDto.builder()
                 .drinkId(combination.getDrink().getId())
                 .imageUrl(combination.getDrink().getImageUrl())
