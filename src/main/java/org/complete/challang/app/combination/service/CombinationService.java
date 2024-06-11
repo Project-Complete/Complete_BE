@@ -42,8 +42,10 @@ public class CombinationService {
     public CombinationBoardFindResponse findCombinationBoard(final Long combinationBoardId,
                                                              final Long userId) {
         final CombinationBoard combinationBoard = findByCombinationBoard(combinationBoardId);
+        CombinationBoardFindResponse combinationBoardFindResponse = CombinationBoardFindResponse.toDto(combinationBoard, userId);
+        combinationBoardFindResponse.updateCombinations(combinationBoard.getCombinations(), userId);
 
-        return CombinationBoardFindResponse.toDto(combinationBoard, userId);
+        return combinationBoardFindResponse;
     }
 
     public CombinationBoardPageResponse<CombinationBoardListFindResponse> findCombinationBoards(final int page,
@@ -153,7 +155,8 @@ public class CombinationService {
         }
     }
 
-    private Set<Combination> toCombinations(List<CombinationCreateUpdateDto> combinationBoardUpdateRequest, CombinationBoard combinationBoard) {
+    private Set<Combination> toCombinations(List<CombinationCreateUpdateDto> combinationBoardUpdateRequest,
+                                            CombinationBoard combinationBoard) {
         return combinationBoardUpdateRequest
                 .stream()
                 .map(combinationCreateUpdateDto -> {
