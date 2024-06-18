@@ -12,7 +12,7 @@ import org.complete.challang.app.combination.controller.dto.response.Combination
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardFindResponse;
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardListFindResponse;
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardPageResponse;
-import org.complete.challang.app.combination.service.CombinationService;
+import org.complete.challang.app.combination.service.CombinationBoardService;
 import org.complete.challang.app.common.exception.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/combinations")
 @RequiredArgsConstructor
 @RestController
-public class CombinationController {
+public class CombinationBoardController {
 
-    private final CombinationService combinationService;
+    private final CombinationBoardService combinationBoardService;
 
     @Operation(summary = "주류 조합 상세 조회", description = "주류 조합 단건 상세 조회")
     @GetMapping("/{combination_board_id}")
@@ -32,7 +32,7 @@ public class CombinationController {
                                                                              @AuthUser final CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getUserId();
 
-        return new ResponseEntity<>(combinationService.findCombinationBoard(combinationBoardId, userId), HttpStatus.OK);
+        return new ResponseEntity<>(combinationBoardService.findCombinationBoard(combinationBoardId, userId), HttpStatus.OK);
     }
 
     @Operation(summary = "주류 조합 리스트 조회", description = "주류 조합 목록 조회")
@@ -42,7 +42,7 @@ public class CombinationController {
                                                                                                                 @AuthUser final CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getUserId();
 
-        return new ResponseEntity<>(combinationService.findCombinationBoards(page, sorted, userId), HttpStatus.OK);
+        return new ResponseEntity<>(combinationBoardService.findCombinationBoards(page, sorted, userId), HttpStatus.OK);
     }
 
     @Operation(summary = "주류 조합 작성", description = "주류 조합 게시판 작성")
@@ -51,7 +51,7 @@ public class CombinationController {
                                                                                        @AuthUser final CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getUserId();
 
-        return new ResponseEntity<>(combinationService.createCombinationBoard(combinationBoardCreateRequest, userId), HttpStatus.CREATED);
+        return new ResponseEntity<>(combinationBoardService.createCombinationBoard(combinationBoardCreateRequest, userId), HttpStatus.CREATED);
     }
 
     @Operation(summary = "주류 조합 게시글 수정", description = "주류 조합 게시글 수정")
@@ -61,7 +61,7 @@ public class CombinationController {
                                                                                        @AuthUser final CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getUserId();
 
-        return new ResponseEntity<>(combinationService.updateCombinationBoard(combinationBoardId, combinationBoardUpdateRequest, userId), HttpStatus.CREATED);
+        return new ResponseEntity<>(combinationBoardService.updateCombinationBoard(combinationBoardId, combinationBoardUpdateRequest, userId), HttpStatus.CREATED);
     }
 
     @Operation(summary = "주류 조합 게시글 삭제", description = "주류 조합 게시글 삭제")
@@ -70,7 +70,7 @@ public class CombinationController {
                                                                   @AuthUser final CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getUserId();
 
-        return new ResponseEntity<>(combinationService.deleteCombinationBoard(combinationBoardId, userId), HttpStatus.OK);
+        return new ResponseEntity<>(combinationBoardService.deleteCombinationBoard(combinationBoardId, userId), HttpStatus.OK);
     }
 
     @Operation(summary = "주류 조합 좋아요", description = "유저 주류 조합 좋아요 추가")
@@ -79,7 +79,7 @@ public class CombinationController {
                                                                       @IdValid final Long combinationBoardId,
                                                                       @AuthUser final CustomOAuth2User customOAuth2User) {
 
-        return new ResponseEntity<>(combinationService.likeCombinationBoard(combinationBoardId, customOAuth2User), HttpStatus.CREATED);
+        return new ResponseEntity<>(combinationBoardService.likeCombinationBoard(combinationBoardId, customOAuth2User), HttpStatus.CREATED);
     }
 
     @Operation(summary = "주류 조합 좋아요 삭제", description = "유저 주류 조합 좋아요 삭제")
@@ -88,7 +88,7 @@ public class CombinationController {
                                                                       @IdValid final Long combinationBoardId,
                                                                       @AuthUser final CustomOAuth2User customOAuth2User) {
 
-        return new ResponseEntity<>(combinationService.unLikeCombinationBoard(combinationBoardId, customOAuth2User), HttpStatus.OK);
+        return new ResponseEntity<>(combinationBoardService.unLikeCombinationBoard(combinationBoardId, customOAuth2User), HttpStatus.OK);
     }
 
     @Operation(summary = "주류 조합 북마크", description = "유저 주류 조합 북마크 추가")
@@ -97,7 +97,7 @@ public class CombinationController {
                                                                           @IdValid final Long combinationBoardId,
                                                                           @AuthUser final CustomOAuth2User customOAuth2User) {
 
-        return new ResponseEntity<>(combinationService.createBookmark(combinationBoardId, customOAuth2User), HttpStatus.CREATED);
+        return new ResponseEntity<>(combinationBoardService.createBookmark(combinationBoardId, customOAuth2User), HttpStatus.CREATED);
     }
 
     @Operation(summary = "주류 조합 북마크 삭제", description = "유저 주류 조합 북마크 삭제")
@@ -106,6 +106,6 @@ public class CombinationController {
                                                                           @IdValid final Long combinationBoardId,
                                                                           @AuthUser final CustomOAuth2User customOAuth2User) {
 
-        return new ResponseEntity<>(combinationService.deleteBookmark(combinationBoardId, customOAuth2User), HttpStatus.OK);
+        return new ResponseEntity<>(combinationBoardService.deleteBookmark(combinationBoardId, customOAuth2User), HttpStatus.OK);
     }
 }

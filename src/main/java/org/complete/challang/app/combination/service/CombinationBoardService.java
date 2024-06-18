@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class CombinationService {
+public class CombinationBoardService {
 
     private final CombinationBoardRepository combinationBoardRepository;
     private final UserRepository userRepository;
