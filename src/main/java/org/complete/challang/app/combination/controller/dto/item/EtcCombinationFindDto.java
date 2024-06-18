@@ -16,10 +16,10 @@ public class EtcCombinationFindDto {
     private String volume;
 
     @JsonProperty("xcoordinate")
-    private int xCoordinate;
+    private float xCoordinate;
 
     @JsonProperty("ycoordinate")
-    private int yCoordinate;
+    private float yCoordinate;
 
     public static EtcCombinationFindDto toDto(Combination combination) {
         return EtcCombinationFindDto.builder()

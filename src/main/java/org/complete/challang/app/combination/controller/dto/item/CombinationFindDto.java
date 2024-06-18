@@ -20,10 +20,10 @@ public class CombinationFindDto {
     private String volume;
 
     @JsonProperty("xcoordinate")
-    private int xCoordinate;
+    private float xCoordinate;
 
     @JsonProperty("ycoordinate")
-    private int yCoordinate;
+    private float yCoordinate;
 
     public static CombinationFindDto toDto(Combination combination,
                                            Long userId) {
