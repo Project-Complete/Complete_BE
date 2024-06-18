@@ -29,6 +29,7 @@ public class CombinationBoard extends BaseEntity {
 
     private String content;
 
+    @Column(length = 400)
     private String imageUrl;
 
     private String description;
