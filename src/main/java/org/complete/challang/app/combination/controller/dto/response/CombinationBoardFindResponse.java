@@ -5,10 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import org.complete.challang.app.combination.controller.dto.item.CombinationFindDto;
+import org.complete.challang.app.combination.controller.dto.item.EtcCombinationFindDto;
+import org.complete.challang.app.combination.domain.entity.Combination;
 import org.complete.challang.app.combination.domain.entity.CombinationBoard;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -27,7 +31,12 @@ public class CombinationBoardFindResponse {
     private boolean combinationBookmark;
     private int combinationBookmarkCount;
     private String content;
-    private List<CombinationFindDto> combinations;
+
+    @Builder.Default
+    private List<CombinationFindDto> combinations = new ArrayList<>();
+
+    @Builder.Default
+    private List<EtcCombinationFindDto> etcCombinations = new ArrayList<>();
 
     public static CombinationBoardFindResponse toDto(final CombinationBoard combinationBoard,
                                                      final Long userId) {
@@ -40,12 +49,6 @@ public class CombinationBoardFindResponse {
                 .createdDate(combinationBoard.getCreatedDate())
                 .description(combinationBoard.getDescription())
                 .content(combinationBoard.getContent())
-                .combinations(
-                        combinationBoard.getCombinations()
-                                .stream()
-                                .map(combination -> CombinationFindDto.toDto(combination, userId))
-                                .toList()
-                )
                 .combinationLike(
                         combinationBoard.getCombinationBoardLikes()
                                 .stream()
@@ -59,5 +62,16 @@ public class CombinationBoardFindResponse {
                 )
                 .combinationBookmarkCount(combinationBoard.getCombinationBoardBookmarks().size())
                 .build();
+    }
+
+    public void updateCombinations(final Set<Combination> combinations,
+                                   final Long userId) {
+        combinations.forEach(combination -> {
+            if (combination.getDrink() == null) {
+                this.etcCombinations.add(EtcCombinationFindDto.toDto(combination));
+            } else {
+                this.combinations.add(CombinationFindDto.toDto(combination, userId));
+            }
+        });
     }
 }

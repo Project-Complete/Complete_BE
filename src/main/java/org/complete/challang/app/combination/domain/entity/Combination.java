@@ -21,9 +21,9 @@ public class Combination extends BaseEntity {
 
     private String volume;
 
-    private int xCoordinate;
+    private float xCoordinate;
 
-    private int yCoordinate;
+    private float yCoordinate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CombinationBoard combinationBoard;
