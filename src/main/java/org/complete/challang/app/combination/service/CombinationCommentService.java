@@ -14,6 +14,8 @@ import org.complete.challang.app.combination.domain.repository.CombinationBoardR
 import org.complete.challang.app.combination.domain.repository.CombinationCommentRepository;
 import org.complete.challang.app.common.exception.ApiException;
 import org.complete.challang.app.common.exception.ErrorCode;
+import org.complete.challang.app.common.exception.SuccessCode;
+import org.complete.challang.app.common.exception.SuccessResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,7 @@ public class CombinationCommentService {
         CombinationComment combinationComment = combinationCommentCreateRequest.toEntity(combinationBoard, user);
 
         if (combinationCommentCreateRequest.getParentCombinationCommentId() != null) {
-            CombinationComment parentComment = combinationCommentRepository.findById(combinationCommentCreateRequest.getParentCombinationCommentId()).orElseThrow(() -> new ApiException(ErrorCode.COMBINATION_COMMENT_NOT_FOUND));
+            CombinationComment parentComment = findCombinationCommentById(combinationCommentCreateRequest.getParentCombinationCommentId());
             if (parentComment.getDepth() > 0) {
                 throw new ApiException(ErrorCode.REPLY_COMMENT_DEPTH_EXCEPTION);
             }
@@ -78,15 +80,38 @@ public class CombinationCommentService {
     public CombinationCommentResponse updateComment(final Long combinationCommentId,
                                                     final CombinationCommentUpdateRequest combinationCommentUpdateRequest,
                                                     final Long userId) {
-        CombinationComment combinationComment = combinationCommentRepository.findById(combinationCommentId).orElseThrow(() -> new ApiException(ErrorCode.COMBINATION_COMMENT_NOT_FOUND));
+        CombinationComment combinationComment = findCombinationCommentById(combinationCommentId);
+        authorizeUser(userId, combinationComment);
+
+        combinationComment.updateComment(combinationCommentUpdateRequest);
+
+        return CombinationCommentResponse.toDto(combinationComment);
+    }
+
+    @Transactional
+    public SuccessResponse deleteComment(final Long combinationCommentId,
+                                         final Long userId) {
+        CombinationComment combinationComment = findCombinationCommentById(combinationCommentId);
+        authorizeUser(userId, combinationComment);
+
+        if (combinationComment.getParent() != null) {
+            combinationComment.deleteComment();
+            return SuccessResponse.toSuccessResponse(SuccessCode.COMBINATION_REPLY_COMMENT_DELETE_SUCCESS);
+        }
+
+        combinationCommentRepository.delete(combinationComment);
+        return SuccessResponse.toSuccessResponse(SuccessCode.COMBINATION_COMMENT_DELETE_SUCCESS);
+    }
+
+    private void authorizeUser(Long userId, CombinationComment combinationComment) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
 
         if (!combinationComment.getUser().getId().equals(user.getId())) {
             throw new ApiException(ErrorCode.COMBINATION_COMMENT_USER_FORBIDDEN);
         }
+    }
 
-        combinationComment.updateComment(combinationCommentUpdateRequest);
-
-        return CombinationCommentResponse.toDto(combinationComment);
+    private CombinationComment findCombinationCommentById(Long combinationCommentId) {
+        return combinationCommentRepository.findById(combinationCommentId).orElseThrow(() -> new ApiException(ErrorCode.COMBINATION_COMMENT_NOT_FOUND));
     }
 }
