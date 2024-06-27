@@ -23,8 +23,8 @@ public class CombinationCommentResponse {
     public static CombinationCommentResponse toDto(CombinationComment combinationComment) {
         return CombinationCommentResponse.builder()
                 .combinationCommentId(combinationComment.getId())
-                .userId(combinationComment.getUser().getId())
-                .nickname(combinationComment.getUser().getNickname())
+                .userId(combinationComment.getUser() != null ? combinationComment.getUser().getId() : null)
+                .nickname(combinationComment.getUser() != null ? combinationComment.getUser().getNickname() : null)
                 .content(combinationComment.getContent())
                 .replyCount(combinationComment.getChildren().size())
                 .createdDate(combinationComment.getCreatedDate())
