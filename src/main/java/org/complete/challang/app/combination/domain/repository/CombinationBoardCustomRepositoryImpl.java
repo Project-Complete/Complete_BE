@@ -1,6 +1,5 @@
 package org.complete.challang.app.combination.domain.repository;
 
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 import static org.complete.challang.app.account.user.domain.entity.QUser.user;
 import static org.complete.challang.app.combination.domain.entity.QCombinationBoard.combinationBoard;
@@ -29,7 +26,7 @@ public class CombinationBoardCustomRepositoryImpl implements CombinationBoardCus
     public Page<CombinationBoardListFindResponse> findAllBySorted(final CombinationSortCriteria combinationSortCriteria,
                                                                   final Pageable pageable,
                                                                   final Long userId) {
-        List<CombinationBoardListFindResponse> combinations = jpaQueryFactory.select(
+        JPAQuery<CombinationBoardListFindResponse> query = jpaQueryFactory.select(
                         Projections.constructor(
                                 CombinationBoardListFindResponse.class,
                                 combinationBoard.id,
@@ -46,23 +43,30 @@ public class CombinationBoardCustomRepositoryImpl implements CombinationBoardCus
                 .leftJoin(combinationBoard.combinationBoardLikes, combinationBoardLike).on(combinationBoardLike.user.id.eq(userId))
                 .leftJoin(combinationBoard.combinationBoardBookmarks, combinationBoardBookmark).on(combinationBoardBookmark.user.id.eq(userId))
                 .where(combinationBoard.isActive.isTrue())
-                .orderBy(orderBySort(combinationSortCriteria))
                 .groupBy(combinationBoard.id)
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+                .limit(pageable.getPageSize());
+
+        orderBySort(query, combinationSortCriteria);
 
         final JPAQuery<Long> count = jpaQueryFactory.select(combinationBoard.count())
                 .from(combinationBoard)
                 .where(combinationBoard.isActive.isTrue());
 
-        return PageableExecutionUtils.getPage(combinations, pageable, count::fetchOne);
+        return PageableExecutionUtils.getPage(query.fetch(), pageable, count::fetchOne);
     }
 
-    private OrderSpecifier<?> orderBySort(CombinationSortCriteria combinationSortCriteria) {
+    private void orderBySort(JPAQuery<?> query,
+                             CombinationSortCriteria combinationSortCriteria) {
         if (combinationSortCriteria.equals(CombinationSortCriteria.COMBINATION_LATEST_DESC)) {
-            return combinationBoard.createdDate.desc();
+            query.orderBy(combinationBoard.createdDate.desc());
         }
-        return null;
+
+        if (combinationSortCriteria.equals(CombinationSortCriteria.COMBINATION_POPULAR_DESC)) {
+            query.orderBy(
+                    combinationBoard.combinationBoardLikes.size().add(combinationBoard.combinationBoardBookmarks.size()).desc(),
+                    combinationBoard.createdDate.desc()
+            );
+        }
     }
 }
