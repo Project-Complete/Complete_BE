@@ -15,6 +15,7 @@ public class CombinationCommentResponse {
 
     private Long combinationCommentId;
     private Long userId;
+    private String profileImageUrl;
     private String nickname;
     private String content;
     private long replyCount;
@@ -24,6 +25,7 @@ public class CombinationCommentResponse {
         return CombinationCommentResponse.builder()
                 .combinationCommentId(combinationComment.getId())
                 .userId(combinationComment.getUser() != null ? combinationComment.getUser().getId() : null)
+                .profileImageUrl(combinationComment.getUser().getProfileImageUrl())
                 .nickname(combinationComment.getUser() != null ? combinationComment.getUser().getNickname() : null)
                 .content(combinationComment.getContent())
                 .replyCount(combinationComment.getChildren().size())
