@@ -35,7 +35,7 @@ public enum DrinkSortCriteria {
     DRINK_POPULARITY_DESC("popularity", null, "인기순으로 정렬"),
     DRINK_LATEST_DESC("latest", null, "최신순으로 정렬"),
     DRINK_RANDOM_DESC("random", null, "랜덤순으로 정렬"),
-    ;
+    DRINK_REVIEW_DESC("review", null, "리뷰순으로 정렬");
 
     private final String value;
     private final String embeddedValue;

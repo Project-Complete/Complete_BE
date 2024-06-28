@@ -163,12 +163,13 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
     }
 
     private OrderSpecifier<?> orderBySort(final String sorted) {
-        if (sorted.equals("latest_order")) {
-            return drink.createdDate.desc();
-        } else if (sorted.equals("popularity_order")) {
-            return drink.drinkLikes.size().desc();
-        }
-        return null;
+        return switch (sorted) {
+            case "latest" -> drink.createdDate.desc();
+            case "popularity" -> drink.drinkLikes.size().desc();
+            case "review" -> drink.reviewCount.desc();
+            default -> null;
+        };
+
     }
 
     private Set<Long> randomDrinkIds() {
