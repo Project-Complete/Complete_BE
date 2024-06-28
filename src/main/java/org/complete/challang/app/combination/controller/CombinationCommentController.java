@@ -10,6 +10,7 @@ import org.complete.challang.app.combination.controller.dto.request.CombinationC
 import org.complete.challang.app.combination.controller.dto.response.CombinationCommentPageResponse;
 import org.complete.challang.app.combination.controller.dto.response.CombinationCommentResponse;
 import org.complete.challang.app.combination.service.CombinationCommentService;
+import org.complete.challang.app.common.exception.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,5 +64,14 @@ public class CombinationCommentController {
         Long userId = customOAuth2User.getUserId();
 
         return new ResponseEntity<>(combinationCommentService.updateComment(combinationCommentId, combinationCommentUpdateRequest, userId), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "주류 조합 댓글 삭제", description = "주류 조합 게시글 내 댓글 삭제")
+    @DeleteMapping("/comment/{combination_comment_id}")
+    public ResponseEntity<SuccessResponse> deleteComment(@PathVariable("combination_comment_id") final Long combinationCommentId,
+                                                         @AuthUser final CustomOAuth2User customOAuth2User) {
+        Long userId = customOAuth2User.getUserId();
+
+        return new ResponseEntity<>(combinationCommentService.deleteComment(combinationCommentId, userId), HttpStatus.OK);
     }
 }

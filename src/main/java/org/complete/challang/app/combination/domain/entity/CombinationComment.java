@@ -47,4 +47,9 @@ public class CombinationComment extends BaseEntity {
     public void updateComment(CombinationCommentUpdateRequest combinationCommentUpdateRequest) {
         this.content = combinationCommentUpdateRequest.getContent();
     }
+
+    public void deleteComment() {
+        this.content = "삭제된 메시지입니다.";
+        this.user = null;
+    }
 }

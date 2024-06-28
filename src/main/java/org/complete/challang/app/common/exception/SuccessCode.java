@@ -20,7 +20,9 @@ public enum SuccessCode {
     REVIEW_LIKE_DELETE_SUCCESS("주류 리뷰 좋아요 삭제를 성공했습니다", HttpStatus.NO_CONTENT),
     COMBINATION_BOARD_DELETE_SUCCESS("주류 리뷰 좋아요 삭제를 성공했습니다", HttpStatus.NO_CONTENT),
     COMBINATION_BOARD_LIKE_DELETE_SUCCESS("주류 조합 좋아요 삭제를 성공했습니다", HttpStatus.NO_CONTENT),
-    COMBINATION_BOARD_BOOKMARK_DELETE_SUCCESS("주류 조합 북마크 삭제를 성공했습니다", HttpStatus.NO_CONTENT);
+    COMBINATION_BOARD_BOOKMARK_DELETE_SUCCESS("주류 조합 북마크 삭제를 성공했습니다", HttpStatus.NO_CONTENT),
+    COMBINATION_COMMENT_DELETE_SUCCESS("주류 조합 댓글 삭제를 성공했습니다", HttpStatus.NO_CONTENT),
+    COMBINATION_REPLY_COMMENT_DELETE_SUCCESS("주류 조합 답글 삭제를 성공했습니다", HttpStatus.NO_CONTENT);
 
     private final String message;
     private final HttpStatus httpStatus;
