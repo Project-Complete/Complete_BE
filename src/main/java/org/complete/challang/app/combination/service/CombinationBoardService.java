@@ -42,6 +42,11 @@ public class CombinationBoardService {
     public CombinationBoardFindResponse findCombinationBoard(final Long combinationBoardId,
                                                              final Long userId) {
         final CombinationBoard combinationBoard = findByCombinationBoard(combinationBoardId);
+
+        if (!combinationBoard.isActive()) {
+            throw new ApiException(ErrorCode.COMBINATION_BOARD_NOT_FOUND);
+        }
+
         CombinationBoardFindResponse combinationBoardFindResponse = CombinationBoardFindResponse.toDto(combinationBoard, userId);
         combinationBoardFindResponse.updateCombinations(combinationBoard.getCombinations(), userId);
 
