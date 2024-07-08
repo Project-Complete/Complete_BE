@@ -56,8 +56,8 @@ public class CombinationBoardCustomRepositoryImpl implements CombinationBoardCus
         return PageableExecutionUtils.getPage(query.fetch(), pageable, count::fetchOne);
     }
 
-    private void orderBySort(JPAQuery<?> query,
-                             CombinationSortCriteria combinationSortCriteria) {
+    private void orderBySort(final JPAQuery<?> query,
+                             final CombinationSortCriteria combinationSortCriteria) {
         if (combinationSortCriteria.equals(CombinationSortCriteria.COMBINATION_LATEST_DESC)) {
             query.orderBy(combinationBoard.createdDate.desc());
         }

@@ -169,7 +169,6 @@ public class DrinkCustomRepositoryImpl implements DrinkCustomRepository {
             case "review" -> drink.reviewCount.desc();
             default -> null;
         };
-
     }
 
     private Set<Long> randomDrinkIds() {

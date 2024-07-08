@@ -14,6 +14,7 @@ import org.complete.challang.app.combination.controller.dto.response.Combination
 import org.complete.challang.app.combination.controller.dto.response.CombinationBoardPageResponse;
 import org.complete.challang.app.combination.service.CombinationBoardService;
 import org.complete.challang.app.common.exception.SuccessResponse;
+import org.complete.challang.app.common.service.SearchService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class CombinationBoardController {
 
     private final CombinationBoardService combinationBoardService;
+    private final SearchService searchService;
 
     @Operation(summary = "주류 조합 상세 조회", description = "주류 조합 단건 상세 조회")
     @GetMapping("/{combination_board_id}")
@@ -39,8 +41,18 @@ public class CombinationBoardController {
     @GetMapping("/search")
     public ResponseEntity<CombinationBoardPageResponse<CombinationBoardListFindResponse>> findCombinationBoards(@RequestParam(value = "page", defaultValue = "1") final int page,
                                                                                                                 @RequestParam("sorted") final String sorted,
+                                                                                                                @RequestParam(value = "keyword", required = false) final String keyword,
+                                                                                                                @RequestParam(value = "drink_id", required = false) final Long drinkId,
                                                                                                                 @AuthUser final CustomOAuth2User customOAuth2User) {
         Long userId = customOAuth2User.getUserId();
+        if (keyword != null) {
+            return new ResponseEntity<>(searchService.findCombinationBoardsByKeyword(keyword, userId, sorted, page), HttpStatus.OK);
+        }
+
+        if (drinkId != null) {
+            return new ResponseEntity<>(searchService.findCombinationBoardsByDrinkId(drinkId, userId, sorted, page), HttpStatus.OK);
+        }
+
 
         return new ResponseEntity<>(combinationBoardService.findCombinationBoards(page, sorted, userId), HttpStatus.OK);
     }
