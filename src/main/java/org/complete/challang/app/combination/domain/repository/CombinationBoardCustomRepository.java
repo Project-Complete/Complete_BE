@@ -18,4 +18,8 @@ public interface CombinationBoardCustomRepository {
     Page<CombinationBoardListFindResponse> findAllByUserLike(final Long userId,
                                                              final CombinationSortCriteria combinationSortCriteria,
                                                              final Pageable pageable);
+
+    Page<CombinationBoardListFindResponse> findAllByUserBookmark(final Long userId,
+                                                                 final CombinationSortCriteria combinationSortCriteria,
+                                                                 final Pageable pageable);
 }
