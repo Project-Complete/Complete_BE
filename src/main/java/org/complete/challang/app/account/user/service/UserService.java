@@ -174,6 +174,26 @@ public class UserService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public CombinationBoardPageResponse<CombinationBoardListFindResponse> findBookmarkCombinationBoards(final Long userId,
+                                                                                                        final int page,
+                                                                                                        final int size) {
+        final User user = findUserById(userId);
+        final CombinationSortCriteria combinationSortCriteria = CombinationSortCriteria.getCombinationSortCriteria("latest");
+
+        final Page<CombinationBoardListFindResponse> combinationBoardListFindResponses = combinationBoardRepository.findAllByUserBookmark(
+                user.getId(),
+                combinationSortCriteria,
+                PageRequest.of(page - 1, size)
+        );
+
+        return CombinationBoardPageResponse.toDto(
+                combinationBoardListFindResponses.getContent(),
+                combinationBoardListFindResponses,
+                combinationSortCriteria.getDescription()
+        );
+    }
+
     private User findUserById(final Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
