@@ -56,6 +56,41 @@ public class CombinationBoardCustomRepositoryImpl implements CombinationBoardCus
         return PageableExecutionUtils.getPage(query.fetch(), pageable, count::fetchOne);
     }
 
+    @Override
+    public Page<CombinationBoardListFindResponse> findAllByUser(final Long userId,
+                                                                final CombinationSortCriteria combinationSortCriteria,
+                                                                final Pageable pageable) {
+        JPAQuery<CombinationBoardListFindResponse> query = jpaQueryFactory.select(
+                        Projections.constructor(
+                                CombinationBoardListFindResponse.class,
+                                combinationBoard.id,
+                                combinationBoard.imageUrl,
+                                combinationBoard.title,
+                                user.profileImageUrl,
+                                user.nickname,
+                                combinationBoardLike.count().eq(1L),
+                                combinationBoardBookmark.count().eq(1L)
+                        )
+                )
+                .from(combinationBoard)
+                .join(combinationBoard.user, user).on(user.id.eq(userId))
+                .leftJoin(combinationBoard.combinationBoardLikes, combinationBoardLike).on(combinationBoardLike.user.id.eq(userId))
+                .leftJoin(combinationBoard.combinationBoardBookmarks, combinationBoardBookmark).on(combinationBoardBookmark.user.id.eq(userId))
+                .where(combinationBoard.isActive.isTrue())
+                .groupBy(combinationBoard.id)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        orderBySort(query, combinationSortCriteria);
+
+        final JPAQuery<Long> count = jpaQueryFactory.select(combinationBoard.count())
+                .from(combinationBoard)
+                .where(combinationBoard.user.id.eq(userId))
+                .where(combinationBoard.isActive.isTrue());
+
+        return PageableExecutionUtils.getPage(query.fetch(), pageable, count::fetchOne);
+    }
+
     private void orderBySort(final JPAQuery<?> query,
                              final CombinationSortCriteria combinationSortCriteria) {
         if (combinationSortCriteria.equals(CombinationSortCriteria.COMBINATION_LATEST_DESC)) {
