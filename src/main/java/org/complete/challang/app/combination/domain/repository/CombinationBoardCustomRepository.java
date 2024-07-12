@@ -14,4 +14,8 @@ public interface CombinationBoardCustomRepository {
     Page<CombinationBoardListFindResponse> findAllByUser(final Long userId,
                                                          final CombinationSortCriteria combinationSortCriteria,
                                                          final Pageable pageable);
+
+    Page<CombinationBoardListFindResponse> findAllByUserLike(final Long userId,
+                                                             final CombinationSortCriteria combinationSortCriteria,
+                                                             final Pageable pageable);
 }
