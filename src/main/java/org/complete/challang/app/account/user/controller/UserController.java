@@ -150,4 +150,18 @@ public class UserController {
 
         return new ResponseEntity<>(combinationBoards, HttpStatus.OK);
     }
+
+    @Operation(summary = "사용자 주류 조합 리스트 조회",
+            description = "성공 코드 반환, 좋아요 누른 주류 리스트 조회")
+    @GetMapping("/combinations/bookmark")
+    public ResponseEntity<CombinationBoardPageResponse<CombinationBoardListFindResponse>> findBookmarkCombinationBoards(@AuthUser final CustomOAuth2User customOAuth2User,
+                                                                                                                        @RequestParam(value = "page", defaultValue = "1")
+                                                                                                                        @Positive(message = "page는 1이상이어야 합니다") final int page,
+                                                                                                                        @RequestParam(value = "size", defaultValue = "3")
+                                                                                                                        @Positive(message = "size는 1이상이어야 합니다") final int size) {
+        final Long userId = customOAuth2User.getUserId();
+        final CombinationBoardPageResponse<CombinationBoardListFindResponse> combinationBoards = userService.findBookmarkCombinationBoards(userId, page, size);
+
+        return new ResponseEntity<>(combinationBoards, HttpStatus.OK);
+    }
 }
