@@ -10,7 +10,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public enum CombinationSortCriteria {
 
-    COMBINATION_LATEST_DESC("latest", "최신순으로 정렬");
+    COMBINATION_LATEST_DESC("latest", "최신순으로 정렬"),
+    COMBINATION_POPULAR_DESC("popularity", "인기순으로 정렬");
 
     private final String value;
     private final String description;

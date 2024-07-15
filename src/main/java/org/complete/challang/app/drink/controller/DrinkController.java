@@ -9,6 +9,7 @@ import org.complete.challang.annotation.AuthUser;
 import org.complete.challang.annotation.IdValid;
 import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.common.exception.SuccessResponse;
+import org.complete.challang.app.common.service.SearchService;
 import org.complete.challang.app.drink.controller.dto.request.DrinkCreateRequest;
 import org.complete.challang.app.drink.controller.dto.response.*;
 import org.complete.challang.app.drink.service.DrinkService;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class DrinkController {
 
     private final DrinkService drinkService;
+    private final SearchService searchService;
 
     @Operation(summary = "주류 상세 조회", description = "주류 단건 상세 조회")
     @GetMapping("/detail/{drink_id}")
@@ -49,10 +51,15 @@ public class DrinkController {
     @GetMapping("/search")
     public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findDrinks(@RequestParam("drink_type") final String drinkType,
                                                                                @RequestParam("sorted") final String sorted,
+                                                                               @RequestParam(value = "keyword", required = false) final String keyword,
                                                                                @RequestParam(value = "page", defaultValue = "1")
                                                                                @Positive(message = "page는 1이상이어야 합니다") final int page,
                                                                                @AuthUser final CustomOAuth2User customOAuth2User) {
+        Long userId = customOAuth2User.getUserId();
 
+        if (keyword != null) {
+            return new ResponseEntity<>(searchService.findDrinksByKeyword(keyword, userId, sorted, page), HttpStatus.OK);
+        }
         return new ResponseEntity<>(drinkService.findDrinks(drinkType, sorted, page, customOAuth2User), HttpStatus.OK);
     }
 
