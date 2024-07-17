@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.complete.challang.app.account.jwt.Token;
 import org.complete.challang.app.account.jwt.TokenProvider;
 import org.complete.challang.app.account.jwt.util.TokenUtil;
+import org.complete.challang.app.account.oauth2.CustomOAuth2User;
 import org.complete.challang.app.account.oauth2.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.complete.challang.app.account.oauth2.userinfo.OAuth2UserInfo;
 import org.complete.challang.app.account.oauth2.userinfo.OAuth2UserInfoFactory;
@@ -18,6 +19,7 @@ import org.complete.challang.app.account.user.domain.repository.UserRepository;
 import org.complete.challang.app.common.exception.ErrorCode;
 import org.complete.challang.app.common.exception.FilterErrorResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Optional;
 
 import static org.complete.challang.app.account.oauth2.repository.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
@@ -42,21 +45,17 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final UserRepository userRepository;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final FilterErrorResponse filterErrorResponse;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         try {
-            User user = findUserByAuthentication(authentication);
-            /*if (customOAuth2User.getRoleType().equals(RoleType.GUEST)) {
-                Token token = tokenProvider.createAccessToken(user);
-                TokenUtil.setAccessTokenHeader(response, token.getToken());
-            } else {
-                loginSuccess(response, user);
-            }*/
+            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
+            CustomOAuth2User customOAuth2User = (CustomOAuth2User) authToken.getPrincipal();
 
-            String redirectUri = loginSuccess(request, response, user);
+            String redirectUri = loginSuccess(request, response, customOAuth2User);
 
             response.setStatus(HttpServletResponse.SC_OK);
             clearAuthenticationAttributes(request, response);
@@ -66,7 +65,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }
     }
 
-    private String loginSuccess(HttpServletRequest request,
+    /*private String loginSuccess(HttpServletRequest request,
                                 HttpServletResponse response,
                                 User user) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
@@ -79,8 +78,31 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Token refreshToken = tokenProvider.createRefreshToken(user);
         TokenUtil.setAccessTokenHeader(response, accessToken.getToken());
         TokenUtil.setRefreshTokenHeader(response, refreshToken.getToken());
+        redisTemplate.opsForValue().set(user.getId(), refreshToken.getToken(), );
         user.updateRefreshToken(refreshToken.getToken());
         userRepository.saveAndFlush(user);
+
+        return makeRedirectUri(redirectUri.get(), accessToken.getToken(), refreshToken.getToken());
+    }*/
+
+    private String loginSuccess(HttpServletRequest request,
+                                HttpServletResponse response,
+                                CustomOAuth2User customOAuth2User) {
+        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
+
+        if (!redirectUri.isPresent()) {
+            throw new IllegalArgumentException("redirect uri가 존재하지 않음");
+        }
+
+        Token accessToken = tokenProvider.createAccessToken(customOAuth2User);
+        Token refreshToken = tokenProvider.createRefreshToken(customOAuth2User);
+        TokenUtil.setAccessTokenHeader(response, accessToken.getToken());
+        TokenUtil.setRefreshTokenHeader(response, refreshToken.getToken());
+        redisTemplate.opsForValue().set(
+                customOAuth2User.getUserId().toString(),
+                refreshToken.getToken(),
+                Duration.ofMillis(refreshToken.getTokenExpirationDate())
+        );
 
         return makeRedirectUri(redirectUri.get(), accessToken.getToken(), refreshToken.getToken());
     }
