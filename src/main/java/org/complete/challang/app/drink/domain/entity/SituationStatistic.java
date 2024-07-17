@@ -7,13 +7,19 @@ import lombok.*;
 import org.complete.challang.app.review.controller.dto.item.SituationDto;
 import org.complete.challang.app.review.domain.entity.Situation;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Embeddable
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class SituationStatistic {
+public class SituationStatistic implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -7685456392097040465L;
 
     private long adultSum;
 
