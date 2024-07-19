@@ -6,6 +6,7 @@ import jakarta.persistence.Embeddable;
 import lombok.*;
 import org.complete.challang.app.review.controller.dto.item.SituationDto;
 import org.complete.challang.app.review.domain.entity.Situation;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -21,14 +22,19 @@ public class SituationStatistic implements Serializable {
     @Serial
     private static final long serialVersionUID = -7685456392097040465L;
 
+    @ColumnDefault("0")
     private long adultSum;
 
+    @ColumnDefault("0")
     private long partnerSum;
 
+    @ColumnDefault("0")
     private long friendSum;
 
+    @ColumnDefault("0")
     private long businessSum;
 
+    @ColumnDefault("0")
     private long aloneSum;
 
     public void updateSituationStatistic(final SituationDto situationDto) {

@@ -9,7 +9,7 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     generate-ddl: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

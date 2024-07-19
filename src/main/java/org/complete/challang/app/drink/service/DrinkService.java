@@ -149,7 +149,7 @@ public class DrinkService {
 
     public DrinkPageResponse<DrinkBannerListFindResponse> findDrinksForBanner() {
         final Page<DrinkBannerListFindResponse> drinkBannerListFindResponses = drinkRepository.findForBanner();
-        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria("random_order");
+        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria("random");
 
         return DrinkPageResponse.toDto(drinkBannerListFindResponses.getContent(), drinkBannerListFindResponses, drinkSortCriteria.getDescription());
     }

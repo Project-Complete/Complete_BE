@@ -11,6 +11,10 @@ import org.complete.challang.app.account.user.domain.entity.Follow;
 import org.complete.challang.app.account.user.domain.entity.User;
 import org.complete.challang.app.account.user.domain.repository.FollowRepository;
 import org.complete.challang.app.account.user.domain.repository.UserRepository;
+import org.complete.challang.app.combination.controller.dto.response.CombinationBoardListFindResponse;
+import org.complete.challang.app.combination.controller.dto.response.CombinationBoardPageResponse;
+import org.complete.challang.app.combination.domain.entity.CombinationSortCriteria;
+import org.complete.challang.app.combination.domain.repository.CombinationBoardRepository;
 import org.complete.challang.app.common.exception.ApiException;
 import org.complete.challang.app.common.exception.SuccessCode;
 import org.complete.challang.app.drink.controller.dto.response.DrinkListFindResponse;
@@ -36,6 +40,7 @@ public class UserService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
     private final DrinkRepository drinkRepository;
+    private final CombinationBoardRepository combinationBoardRepository;
 
     public UserProfileFindResponse findUserProfile(final Long requestUserId,
                                                    final Long targetUserId) {
@@ -124,9 +129,69 @@ public class UserService {
         final User user = findUserById(userId);
         final Page<DrinkListFindResponse> drinks = drinkRepository.findByUserLike(user.getId(), PageRequest.of(page - 1, size));
 
-        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria("latest_order");
+        final DrinkSortCriteria drinkSortCriteria = DrinkSortCriteria.getDrinkSortCriteria("latest");
 
         return DrinkPageResponse.toDto(drinks.getContent(), drinks, drinkSortCriteria.getDescription());
+    }
+
+    @Transactional(readOnly = true)
+    public CombinationBoardPageResponse<CombinationBoardListFindResponse> findCombinationBoards(final Long userId,
+                                                                                                final int page,
+                                                                                                final int size) {
+        final User user = findUserById(userId);
+        final CombinationSortCriteria combinationSortCriteria = CombinationSortCriteria.getCombinationSortCriteria("latest");
+
+        final Page<CombinationBoardListFindResponse> combinationBoardListFindResponses = combinationBoardRepository.findAllByUser(
+                user.getId(),
+                combinationSortCriteria,
+                PageRequest.of(page - 1, size)
+        );
+
+        return CombinationBoardPageResponse.toDto(
+                combinationBoardListFindResponses.getContent(),
+                combinationBoardListFindResponses,
+                combinationSortCriteria.getDescription()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public CombinationBoardPageResponse<CombinationBoardListFindResponse> findLikeCombinationBoards(final Long userId,
+                                                                                                    final int page,
+                                                                                                    final int size) {
+        final User user = findUserById(userId);
+        final CombinationSortCriteria combinationSortCriteria = CombinationSortCriteria.getCombinationSortCriteria("latest");
+
+        final Page<CombinationBoardListFindResponse> combinationBoardListFindResponses = combinationBoardRepository.findAllByUserLike(
+                user.getId(),
+                combinationSortCriteria,
+                PageRequest.of(page - 1, size)
+        );
+
+        return CombinationBoardPageResponse.toDto(
+                combinationBoardListFindResponses.getContent(),
+                combinationBoardListFindResponses,
+                combinationSortCriteria.getDescription()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public CombinationBoardPageResponse<CombinationBoardListFindResponse> findBookmarkCombinationBoards(final Long userId,
+                                                                                                        final int page,
+                                                                                                        final int size) {
+        final User user = findUserById(userId);
+        final CombinationSortCriteria combinationSortCriteria = CombinationSortCriteria.getCombinationSortCriteria("latest");
+
+        final Page<CombinationBoardListFindResponse> combinationBoardListFindResponses = combinationBoardRepository.findAllByUserBookmark(
+                user.getId(),
+                combinationSortCriteria,
+                PageRequest.of(page - 1, size)
+        );
+
+        return CombinationBoardPageResponse.toDto(
+                combinationBoardListFindResponses.getContent(),
+                combinationBoardListFindResponses,
+                combinationSortCriteria.getDescription()
+        );
     }
 
     private User findUserById(final Long userId) {
