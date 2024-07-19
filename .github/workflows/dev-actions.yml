@@ -105,6 +105,7 @@ jobs:
       - name: docker compose up
         run: |
           echo "${{ secrets.APP_ENVIRONMENT }}" > dev.env
+          docker-compose down
           docker-compose up -d
 
       # 미사용 이미지 정리
