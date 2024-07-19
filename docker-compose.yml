@@ -25,8 +25,8 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_ROOT_HOST: '%'
-      volumes:
-        - /mount/mysql:/var/lib/mysql
+    volumes:
+      - /mount/mysql:/var/lib/mysql
     command:
       - "mysqld"
       - "--character-set-server=utf8mb4"
