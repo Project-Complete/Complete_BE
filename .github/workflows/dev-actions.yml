@@ -89,11 +89,12 @@ jobs:
       DISCORD_WEBHOOK_URI: ${{ secrets.DISCORD_WEBHOOK_URI }}
       REDIS_PORT: ${{secrets.REDIS_PORT}}
       REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
+      DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
 
     steps:
       # 커스텀 image pull
       - name: docker pull
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/challang-api
+        run: sudo docker pull $DOCKER_USERNAME/challang-api
 
       - name: Download artifact
         uses: actions/download-artifact@v2
