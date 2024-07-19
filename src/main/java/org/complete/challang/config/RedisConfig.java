@@ -1,6 +1,5 @@
 package org.complete.challang.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.app.drink.controller.dto.response.DrinkFindResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,9 +33,7 @@ public class RedisConfig {
     @Primary
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
-        redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
+        LettuceConnectionFactory lettuceConnectionFactory = getLettuceConnectionFactory();
         lettuceConnectionFactory.setDatabase(0);
 
         return lettuceConnectionFactory;
@@ -44,7 +41,7 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisTokenConnectionFactory() {
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
+        LettuceConnectionFactory lettuceConnectionFactory = getLettuceConnectionFactory();
         lettuceConnectionFactory.setDatabase(1);
 
         return lettuceConnectionFactory;
@@ -76,5 +73,12 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         return redisTemplate;
+    }
+
+    private LettuceConnectionFactory getLettuceConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
+        redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
+
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 }
