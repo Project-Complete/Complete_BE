@@ -1,0 +1,55 @@
+services:
+  redis-docker:
+    container_name: "redis-docker"
+    image: redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD} --port ${REDIS_PORT}
+    volumes:
+      - /mount/redis:/data
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - ${REDIS_PORT}:6379
+    networks:
+      - challang-network
+
+  mysql-docker:
+    container_name: "mysql-docker"
+    image: mysql:8.3.0
+    restart: unless-stopped
+    ports:
+      - ${DB_PORT}:3306
+    environment:
+      TZ: Asia/Seoul
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_HOST: '%'
+      volumes:
+        - /mount/mysql:/var/lib/mysql
+    command:
+      - "mysqld"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+    networks:
+      - challang-network
+
+  app:
+    container_name: challang-api
+    image: ${DOCKER_USERNAME}/challang-api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: mysql-docker
+      REDIS_HOST: redis-docker
+    env_file:
+      - dev.env
+    depends_on:
+      - mysql-docker
+      - redis-docker
+    networks:
+      - challang-network
+
+networks:
+  challang-network:
