@@ -65,26 +65,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }
     }
 
-    /*private String loginSuccess(HttpServletRequest request,
-                                HttpServletResponse response,
-                                User user) {
-        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
-
-        if (!redirectUri.isPresent()) {
-            throw new IllegalArgumentException("redirect uri가 존재하지 않음");
-        }
-
-        Token accessToken = tokenProvider.createAccessToken(user);
-        Token refreshToken = tokenProvider.createRefreshToken(user);
-        TokenUtil.setAccessTokenHeader(response, accessToken.getToken());
-        TokenUtil.setRefreshTokenHeader(response, refreshToken.getToken());
-        redisTemplate.opsForValue().set(user.getId(), refreshToken.getToken(), );
-        user.updateRefreshToken(refreshToken.getToken());
-        userRepository.saveAndFlush(user);
-
-        return makeRedirectUri(redirectUri.get(), accessToken.getToken(), refreshToken.getToken());
-    }*/
-
     private String loginSuccess(HttpServletRequest request,
                                 HttpServletResponse response,
                                 CustomOAuth2User customOAuth2User) {
