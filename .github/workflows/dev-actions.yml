@@ -9,7 +9,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "develop", "feature/#102" ]
 
 permissions:
   contents: read
@@ -60,7 +60,6 @@ jobs:
     runs-on: self-hosted
     environment: Develop
     env:
-      DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_PORT: ${{ secrets.DB_PORT }}
@@ -82,23 +81,19 @@ jobs:
       S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
       S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
       DISCORD_WEBHOOK_URI: ${{ secrets.DISCORD_WEBHOOK_URI }}
+      REDIS_PORT: ${{secrets.REDIS_PORT}}
+      REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
 
     steps:
       # 커스텀 image pull
       - name: docker pull
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/challang-api
 
-      # 존재하는 컨테이너 stop
-      - name: docker stop container
-        run: | 
-          sudo docker stop $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true
-          sudo docker rm $(sudo docker ps -f "name=challang-api" -a -q) 2>/dev/null || true 
-
-      # 받아온 이미지 컨테이너 실행
-      - name: docker run new container
+      # Docker Compose Up
+      - name: docker compose up
         run: |
           echo "${{ secrets.APP_ENVIRONMENT }}" > dev.env
-          sudo docker run --name challang-api --network=challang-network --env-file=dev.env --restart=always -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/challang-api
+          docker-compose up -d
 
       # 미사용 이미지 정리
       - name: delete old docker image
