@@ -17,6 +17,9 @@ public class Token {
     @Getter
     private final String token;
 
+    @Getter
+    private Long tokenExpirationDate;
+
     private final Key key;
 
     public Token(String subject,
@@ -24,6 +27,7 @@ public class Token {
                  Long tokenExpirationDate,
                  String secretKey) {
         this.key = getKey(secretKey);
+        this.tokenExpirationDate = tokenExpirationDate;
         token = generateKey(subject, claims, tokenExpirationDate, key);
     }
 

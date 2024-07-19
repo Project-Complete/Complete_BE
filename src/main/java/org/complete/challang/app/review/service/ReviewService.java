@@ -23,6 +23,7 @@ import org.complete.challang.app.review.domain.repository.FlavorRepository;
 import org.complete.challang.app.review.domain.repository.ReviewCustomRepositoryImpl;
 import org.complete.challang.app.review.domain.repository.ReviewLikeRepository;
 import org.complete.challang.app.review.domain.repository.ReviewRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,6 +51,7 @@ public class ReviewService {
     private final UserRepository userRepository;
 
     @Transactional
+    @CacheEvict(value = "readDrink", key = "#reviewCreateRequest.drinkId")
     public ReviewCreateResponse createReview(final ReviewCreateRequest reviewCreateRequest,
                                              final Long userId) {
         final User user = findUserById(userId);
@@ -106,10 +108,10 @@ public class ReviewService {
 
         return ReviewDetailResponse.toDto(review,
                 review.getReviewLikes()
-                                .stream()
-                                        .anyMatch(reviewLike -> reviewLike.getUser()
-                                                .getId()
-                                                .equals(userId)),
+                        .stream()
+                        .anyMatch(reviewLike -> reviewLike.getUser()
+                                .getId()
+                                .equals(userId)),
                 review.getReviewFlavors()
                         .stream()
                         .map(reviewFlavor -> reviewFlavor.getFlavor().getFlavor())

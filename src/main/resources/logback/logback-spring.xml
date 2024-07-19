@@ -4,15 +4,15 @@
     <springProperty name="DISCORD_WEBHOOK_URI" source="logging.discord.webhook-uri"/>
 
     <springProfile name="local">
-        <include resource="console-appender.xml"/>
+        <include resource="logback/console-appender.xml"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
     <springProfile name="!local">
-        <include resource="console-appender.xml"/>
-        <include resource="discord-appender.xml"/>
+        <include resource="logback/console-appender.xml"/>
+        <include resource="logback/discord-appender.xml"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ASYNC_DISCORD" />

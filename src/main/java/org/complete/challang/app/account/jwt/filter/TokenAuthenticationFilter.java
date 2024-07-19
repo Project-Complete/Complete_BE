@@ -16,6 +16,7 @@ import org.complete.challang.app.account.user.domain.entity.User;
 import org.complete.challang.app.account.user.domain.repository.UserRepository;
 import org.complete.challang.app.common.exception.ErrorCode;
 import org.complete.challang.app.common.exception.FilterErrorResponse;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
     private final FilterErrorResponse filterErrorResponse;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -58,23 +61,24 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response,
                                                         Token refreshToken) {
-        userRepository.findByRefreshToken(refreshToken.getToken())
-                .ifPresent(user -> {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    String newAccess = tokenProvider.createAccessToken(user)
-                            .getToken();
-                    String newRefresh = reIssueRefreshToken(user);
-                    TokenUtil.setAccessTokenHeader(response, newAccess);
-                    TokenUtil.setRefreshTokenHeader(response, newRefresh);
-                });
+        Long userId = (long) (int) refreshToken.getPayload().get(TokenUtil.ID_CLAIM);
+        userRepository.findById(userId).ifPresent(user -> {
+            response.setStatus(HttpServletResponse.SC_OK);
+            String newAccess = tokenProvider.createAccessToken(user).getToken();
+            String newRefresh = reIssueRefreshToken(user);
+            TokenUtil.setAccessTokenHeader(response, newAccess);
+            TokenUtil.setRefreshTokenHeader(response, newRefresh);
+        });
     }
 
     private String reIssueRefreshToken(User user) {
-        String reIssueRefreshToken = tokenProvider.createRefreshToken(user)
-                .getToken();
-        user.updateRefreshToken(reIssueRefreshToken);
-        userRepository.saveAndFlush(user);
-        return reIssueRefreshToken;
+        Token reIssueRefreshToken = tokenProvider.createRefreshToken(user);
+        redisTemplate.opsForValue().set(
+                user.getId().toString(),
+                reIssueRefreshToken.getToken(),
+                Duration.ofMillis(reIssueRefreshToken.getTokenExpirationDate())
+        );
+        return reIssueRefreshToken.getToken();
     }
 
     private void checkAccessToken(HttpServletRequest request) {

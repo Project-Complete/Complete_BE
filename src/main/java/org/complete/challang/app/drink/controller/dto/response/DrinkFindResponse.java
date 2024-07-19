@@ -7,6 +7,8 @@ import org.complete.challang.app.drink.controller.dto.item.*;
 import org.complete.challang.app.drink.domain.entity.Drink;
 import org.complete.challang.app.drink.domain.entity.SituationStatistic;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +17,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class DrinkFindResponse {
+public class DrinkFindResponse implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -3929867831211329544L;
 
     private Long drinkId;
     private String name;
@@ -73,10 +78,10 @@ public class DrinkFindResponse {
                 .build();
     }
 
-    public void updateStatistic(final List<FoodStatisticDto> foodStatisticFindRespons,
-                                final List<FlavorStatisticDto> flavorStatisticFindRespons) {
-        foodStatistics = foodStatisticFindRespons;
-        flavorStatistics = flavorStatisticFindRespons;
+    public void updateStatistic(final List<FoodStatisticDto> foodStatisticDtos,
+                                final List<FlavorStatisticDto> flavorStatisticDtos) {
+        foodStatistics = foodStatisticDtos;
+        flavorStatistics = flavorStatisticDtos;
     }
 
     public void updateDrinkLike(final boolean likeStatus) {

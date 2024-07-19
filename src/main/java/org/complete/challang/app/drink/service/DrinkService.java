@@ -15,10 +15,7 @@ import org.complete.challang.app.drink.domain.entity.*;
 import org.complete.challang.app.drink.domain.entity.criteria.DrinkSortCriteria;
 import org.complete.challang.app.drink.domain.entity.criteria.DrinkTypeCriteria;
 import org.complete.challang.app.drink.domain.entity.spec.DrinkSpec;
-import org.complete.challang.app.drink.domain.repository.DrinkDetailTypeRepository;
-import org.complete.challang.app.drink.domain.repository.DrinkManufacturerRepository;
-import org.complete.challang.app.drink.domain.repository.DrinkRepository;
-import org.complete.challang.app.drink.domain.repository.PackageRepository;
+import org.complete.challang.app.drink.domain.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -41,16 +38,13 @@ public class DrinkService {
     private final DrinkManufacturerRepository drinkManufacturerRepository;
     private final DrinkDetailTypeRepository drinkDetailTypeRepository;
     private final PackageRepository packageRepository;
+    private final DrinkCacheRepository drinkCacheRepository;
 
     public DrinkFindResponse findDetailDrink(final Long drinkId,
                                              final CustomOAuth2User customOAuth2User) {
         final Drink drink = findDrink(drinkId);
         final Long userId = customOAuth2User.getUserId();
-        final DrinkFindResponse drinkFindResponse = DrinkFindResponse.toDto(drink);
-        drinkFindResponse.updateStatistic(
-                drinkRepository.findFoodStatisticById(drinkId),
-                drinkRepository.findFlavorStatisticById(drinkId)
-        );
+        final DrinkFindResponse drinkFindResponse = drinkCacheRepository.toDrinkFindResponse(drink);
 
         drinkFindResponse.updateDrinkLike(drinkRepository.existByDrinkLike(userId, drinkId));
 
