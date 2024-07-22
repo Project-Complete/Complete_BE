@@ -22,6 +22,4 @@ public class DrinkCacheRepository {
 
         return drinkFindResponse;
     }
-
-
 }

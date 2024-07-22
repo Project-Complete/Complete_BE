@@ -24,12 +24,7 @@ public class CombinationCommentController {
 
     private final CombinationCommentService combinationCommentService;
 
-    @Operation(
-            summary = "주류 조합 댓글 작성", description = "주류 조합 게시글 내 댓글 작성",
-            parameters = {
-                    @Parameter(name = "combination_board_id", description = "최상위 댓글은 'null'을 입력")
-            }
-    )
+    @Operation(summary = "주류 조합 댓글 작성", description = "주류 조합 게시글 내 댓글 작성")
     @PostMapping("/{combination_board_id}/comment")
     public ResponseEntity<CombinationCommentResponse> createComment(@PathVariable("combination_board_id") final Long combinationBoardId,
                                                                     @RequestBody final CombinationCommentCreateRequest combinationCommentCreateRequest,

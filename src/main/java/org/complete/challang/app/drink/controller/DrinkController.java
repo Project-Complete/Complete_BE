@@ -57,11 +57,12 @@ public class DrinkController {
     @Operation(
             summary = "주류 타입별 리스트 조회", description = "주류 타입(맥주/전통주)별 및 정렬순 리스트 조회",
             parameters = {
-                    @Parameter(name = "sorted", schema = @Schema(allowableValues = {"latest", "popularity", "review", "random"}))
+                    @Parameter(name = "sorted", schema = @Schema(allowableValues = {"latest", "popularity", "review", "random"})),
+                    @Parameter(name = "drink_type", schema = @Schema(allowableValues = {"all", "beer", "tradition"}))
             }
     )
     @GetMapping("/search")
-    public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findDrinks(@RequestParam("drink_type") final String drinkType,
+    public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findDrinks(@RequestParam(value = "drink_type", required = false) final String drinkType,
                                                                                @RequestParam("sorted") final String sorted,
                                                                                @RequestParam(value = "keyword", required = false) final String keyword,
                                                                                @RequestParam(value = "page", defaultValue = "1")
