@@ -1,6 +1,8 @@
 package org.complete.challang.app.combination.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.complete.challang.annotation.AuthUser;
@@ -37,7 +39,12 @@ public class CombinationBoardController {
         return new ResponseEntity<>(combinationBoardService.findCombinationBoard(combinationBoardId, userId), HttpStatus.OK);
     }
 
-    @Operation(summary = "주류 조합 리스트 조회", description = "주류 조합 목록 조회")
+    @Operation(
+            summary = "주류 조합 리스트 조회", description = "주류 조합 목록 조회",
+            parameters = {
+                    @Parameter(name = "sorted", schema = @Schema(allowableValues = {"latest", "popularity"}))
+            }
+    )
     @GetMapping("/search")
     public ResponseEntity<CombinationBoardPageResponse<CombinationBoardListFindResponse>> findCombinationBoards(@RequestParam(value = "page", defaultValue = "1") final int page,
                                                                                                                 @RequestParam("sorted") final String sorted,

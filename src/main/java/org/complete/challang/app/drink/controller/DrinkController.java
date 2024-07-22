@@ -1,6 +1,8 @@
 package org.complete.challang.app.drink.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -37,7 +39,12 @@ public class DrinkController {
         return new ResponseEntity<>(drinkService.findDetailDrink(drinkId, customOAuth2User), HttpStatus.OK);
     }
 
-    @Operation(summary = "주류 평가 리스트 조회", description = "주류 평가(맛/향/상황)별 추천 리스트 조회")
+    @Operation(
+            summary = "주류 평가 리스트 조회", description = "주류 평가(맛/향/상황)별 추천 리스트 조회",
+            parameters = {
+                    @Parameter(name = "rate", schema = @Schema(allowableValues = {"taste", "situation", "flavor"}))
+            }
+    )
     @GetMapping("/{drink_id}/search")
     public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findRateDrinks(@PathVariable("drink_id")
                                                                                    @IdValid final Long drinkId,
@@ -47,7 +54,12 @@ public class DrinkController {
         return new ResponseEntity<>(drinkService.findRateDrinks(drinkId, rate, customOAuth2User), HttpStatus.OK);
     }
 
-    @Operation(summary = "주류 타입별 리스트 조회", description = "주류 타입(맥주/전통주)별 및 정렬순 리스트 조회")
+    @Operation(
+            summary = "주류 타입별 리스트 조회", description = "주류 타입(맥주/전통주)별 및 정렬순 리스트 조회",
+            parameters = {
+                    @Parameter(name = "sorted", schema = @Schema(allowableValues = {"latest", "popularity", "review", "random"}))
+            }
+    )
     @GetMapping("/search")
     public ResponseEntity<DrinkPageResponse<DrinkListFindResponse>> findDrinks(@RequestParam("drink_type") final String drinkType,
                                                                                @RequestParam("sorted") final String sorted,
