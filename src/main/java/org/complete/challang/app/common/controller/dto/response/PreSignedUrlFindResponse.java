@@ -10,4 +10,5 @@ import lombok.*;
 public class PreSignedUrlFindResponse {
 
     private String preSignedUrl;
+    private String imageUrl;
 }
