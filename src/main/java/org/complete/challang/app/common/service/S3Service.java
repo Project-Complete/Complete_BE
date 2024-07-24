@@ -28,6 +28,9 @@ public class S3Service {
     @Value("${cloud.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.cloud_front.url}")
+    private String cloudFrontUrl;
+
     private final S3Presigner s3Presigner;
     private final UserRepository userRepository;
 
