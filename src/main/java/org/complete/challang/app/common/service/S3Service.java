@@ -28,6 +28,9 @@ public class S3Service {
     @Value("${cloud.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.cloud_front.url}")
+    private String cloudFrontUrl;
+
     private final S3Presigner s3Presigner;
     private final UserRepository userRepository;
 
@@ -37,7 +40,8 @@ public class S3Service {
             throw new ApiException(ErrorCode.USER_NOT_FOUND);
         }
 
-        final PutObjectRequest putObjectRequest = generatePutObjectRequest(presignedUrlFindRequest, customOAuth2User.getUserId());
+        final StringBuilder imageUrl = new StringBuilder(cloudFrontUrl);
+        final PutObjectRequest putObjectRequest = generatePutObjectRequest(presignedUrlFindRequest, customOAuth2User.getUserId(), imageUrl);
         final PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofSeconds(30))
                 .putObjectRequest(putObjectRequest)
@@ -47,11 +51,13 @@ public class S3Service {
 
         return PreSignedUrlFindResponse.builder()
                 .preSignedUrl(presignedUrl.toExternalForm())
+                .imageUrl(imageUrl.toString())
                 .build();
     }
 
     private PutObjectRequest generatePutObjectRequest(final PreSignedUrlFindRequest presignedUrlFindRequest,
-                                                      final Long userId) {
+                                                      final Long userId,
+                                                      final StringBuilder imageUrl) {
         final String fileName = StringUtils.stripFilenameExtension(presignedUrlFindRequest.getFileName());
         if (!fileName.matches("^[^/\\s]+$")) {
             throw new ApiException(ErrorCode.INVALID_FILENAME);
@@ -68,6 +74,7 @@ public class S3Service {
 
         final UUID uuid = UUID.randomUUID();
         final String objectKey = "user/" + userId + "/" + uuid + "_" + fileName;
+        imageUrl.append(objectKey);
 
         return PutObjectRequest.builder()
                 .bucket(bucket)

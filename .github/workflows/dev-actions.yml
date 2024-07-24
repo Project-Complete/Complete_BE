@@ -90,6 +90,7 @@ jobs:
       REDIS_PORT: ${{secrets.REDIS_PORT}}
       REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+      CLOUD_FRONT_URL: ${{secrets.CLOUD_FRONT_URL}}
 
     steps:
       # 커스텀 image pull
